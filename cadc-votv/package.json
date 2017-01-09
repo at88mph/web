@@ -1,0 +1,10 @@
+{
+  "name": "cadc-votv",
+  "version": "1.0.1",
+  "description": "OpenSource JavaScript VOTable viewer.",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/opencadc/web"
+  },
+  "author": "OpenCADC - Dustin Jenkins"
+}
