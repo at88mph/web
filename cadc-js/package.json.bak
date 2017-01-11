@@ -1,26 +1,30 @@
 {
   "name": "cadc-js",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "OpenCADC JavaScript libraries.",
+  "files": [
+    "js/org.opencadc.js",
+    "js/cadc.util.js",
+    "js/cadc.uri.js"
+  ],
+  "directories": {
+    "test": "test"
+  },
   "dependencies": {
     "jquery": "^1.12.4",
     "jsdom": "^9.9.1",
     "qunit": "^0.9.1"
   },
   "devDependencies": {
-    "jsdom-global": "^2.1.1",
     "mocha": "^3.2.0"
   },
   "scripts": {
-    "test": "mocha -r jsdom-global/register"
+    "test": "mocha test/org_opencadc"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com/opencadc/web"
   },
   "author": "OpenCADC - Dustin Jenkins",
-  "license": "GPL-3.0",
-  "directories": {
-    "test": "test"
-  }
+  "license": "GPL-3.0"
 }

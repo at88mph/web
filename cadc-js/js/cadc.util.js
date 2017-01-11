@@ -286,6 +286,7 @@
    *
    * @param _string
    * @constructor
+   * @deprecated
    */
   function StringUtil(_string)
   {
@@ -481,5 +482,12 @@
           "formatPrecision": formatPrecision,
           "formatExponentOrFloat": formatExponentOrFloat
         });
+  }
+
+  exports._test_util = {
+    "NumberFormat": NumberFormat,
+    "Array": Array,
+    "ArrayUtil": ArrayUtil,
+    "GUID": GUID
   }
 })(jQuery);

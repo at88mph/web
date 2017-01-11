@@ -15,7 +15,6 @@
   <property file="${env.CADC_PREFIX}/etc/opencadc.properties" />
   <import file="${env.CADC_PREFIX}/etc/opencadc.targets.xml"/>
 
-
   <target name="install" depends="install_www" />
 
   <target name="install_www" depends="build, test">
@@ -47,8 +46,8 @@
   <target name="build" depends="resourceCopy"/>
 
   <target name="resourceCopy">
-    <copy todir="build/www">
-      <fileset dir="src/www"/>
+    <copy todir="build/js">
+      <fileset dir="js"/>
     </copy>
   </target>
 
@@ -77,13 +76,13 @@
   </target>
 
   <!--  Test directory to test client-side javascript. -->
-  <property name="js.test.dir" value="test/src/www/javascript" />
+  <property name="js.test.dir" value="test" />
   <property name="runner" value="${user.dir}/test/qunitjs-runner.js" />
   <property name="phantomjs" value="phantomjs" />
 
   <target name="js-test">
     <property name="test-execution-dir"
-              value="build/test/www/cadcJS/javascript/${js-test-dir}"/>
+              value="build/js/${js-test-dir}"/>
     <property name="test-source-dir"
               value="test/src/www/javascript/${js-test-dir}"/>
 

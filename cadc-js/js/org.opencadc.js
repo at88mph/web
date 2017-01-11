@@ -103,7 +103,7 @@
     function hasText(_str)
     {
       var wrapper = String(_str);
-      return hasLength(wrapper) && ($.trim(wrapper) !== "");
+      return hasLength(wrapper) && (wrapper.trim() !== "");
     }
 
     /**
@@ -187,5 +187,9 @@
           "contains": contains
         });
   }
+
+  exports._test_opencadc_js = {
+    "StringUtil": StringUtil
+  };
 
 })(jQuery);

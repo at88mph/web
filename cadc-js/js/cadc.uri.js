@@ -561,4 +561,10 @@
                "toEncodedString": toEncodedString
              });
   }
+
+  exports._test_uri = {
+    "URI": URI,
+    "currentURI": currentURI
+  };
+
 })(jQuery);
