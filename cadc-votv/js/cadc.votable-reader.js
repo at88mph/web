@@ -27,7 +27,7 @@
       }
     }
   });
-  
+
   function RowBuilder()
   {
     function setLongest(longestValues, cellID, newValue)
@@ -42,8 +42,8 @@
       {
         longestValues[cellID] = stringLength;
       }
-    }  	
-  	
+    }
+
 	 function buildRowData(tableFields, rowID, rowData, longestValues, extract)
     {
       var rowCells = [];
@@ -99,8 +99,8 @@
       }
 
       return new cadc.vot.Row(rowID, rowCells);
-    }  	
-    
+    }
+
     $.extend(this,
              {
              	"buildRowData": buildRowData
@@ -236,8 +236,8 @@
 
     function buildRowData(tableFields, rowID, rowData, longestValues, extract)
     {
-      return new cadc.vot.RowBuilder().buildRowData(tableFields, rowID, 
-                                                    rowData, longestValues, 
+      return new cadc.vot.RowBuilder().buildRowData(tableFields, rowID,
+                                                    rowData, longestValues,
                                                     extract);
     }
 
@@ -765,7 +765,7 @@
 
       if (pageSize)
       {
-        // Used to calculate the page start and end based on the current row 
+        // Used to calculate the page start and end based on the current row
         // count.
         var moduloPage = (chunk.rowCount % pageSize);
 
@@ -795,7 +795,7 @@
                "subscribe": subscribe,
                "loadEnd": loadEnd
              });
-             
+
     init();
   }
 
@@ -1020,4 +1020,7 @@
     init();
   }
 
+  exports._test_reader = {
+    "Builder": Builder
+  }
 })(jQuery);

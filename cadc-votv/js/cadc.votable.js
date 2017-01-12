@@ -81,7 +81,7 @@
    or variable-length list of Primitives
    or multidimensional array of Primitives
    Primitive 	= 	integer, character, float, floatComplex, etc (see table of primitives below).
-   *  
+   *
    * The VOTable object.
    *
    * @param __metadata    The metadata from the source.
@@ -313,7 +313,7 @@
   }
 
   /**
-   * 
+   *
    * @param _name
    * @param _id
    * @param _ucd
@@ -362,7 +362,7 @@
     {
       return _selfField.utype;
     }
-    
+
     function getUCD()
     {
       return _selfField.ucd;
@@ -416,7 +416,7 @@
   }
 
   /**
-   * 
+   *
    * @param _name
    * @param _id
    * @param _ucd
@@ -493,17 +493,17 @@
 
     _selfInfo.name = _name;
     _selfInfo.value = _value;
-    
+
     function getName()
     {
       return _selfInfo.name;
     }
-    
+
     function getValue()
     {
       return _selfInfo.value;
     }
-    
+
     function isError()
     {
       return getName() == "ERROR";
@@ -734,4 +734,7 @@
              })
   }
 
+  exports._test_votable = {
+
+  };
 })(jQuery);

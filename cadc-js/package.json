@@ -4,8 +4,7 @@
   "description": "OpenCADC JavaScript libraries.",
   "dependencies": {
     "jquery": "^1.12.4",
-    "jsdom": "^9.9.1",
-    "qunit": "^0.9.1"
+    "jsdom": "^9.9.1"
   },
   "devDependencies": {
     "jsdom-global": "^2.1.1",
