@@ -7,7 +7,7 @@ var opencadcJS = require('../js/org.opencadc');
 
 describe('StringUtil.sanitize', function ()
 {
-  var testSubject = new opencadcJS._test.StringUtil();
+  var testSubject = new opencadcJS.StringUtil();
 
   it('Should sanitize the string and encode characters',
      function ()
@@ -20,7 +20,7 @@ describe('StringUtil.sanitize', function ()
 
 describe('StringUtil.hasText.', function ()
 {
-  var testSubject = new opencadcJS._test.StringUtil();
+  var testSubject = new opencadcJS.StringUtil();
 
   it('Should return true.', function ()
   {
@@ -37,7 +37,7 @@ describe('StringUtil.hasText.', function ()
 
 describe('StringUtil.format', function ()
 {
-  var testSubject = new opencadcJS._test.StringUtil();
+  var testSubject = new opencadcJS.StringUtil();
 
   it('Formatted output should match.', function ()
   {
@@ -49,7 +49,7 @@ describe('StringUtil.format', function ()
 
 describe('StringUtil.matches', function ()
 {
-  var testSubject = new opencadcJS._test.StringUtil();
+  var testSubject = new opencadcJS.StringUtil();
   var testString = 'ALL YOUr base Are BEELong to me!';
 
   it('Should match.', function ()
@@ -66,7 +66,7 @@ describe('StringUtil.matches', function ()
 
 describe('StringUtil.contains', function ()
 {
-  var testSubject = new opencadcJS._test.StringUtil();
+  var testSubject = new opencadcJS.StringUtil();
   var testString = 'ALL YOUr base Are BEELong to me!';
 
   it('Should contain.', function ()
@@ -89,7 +89,7 @@ describe('StringUtil.contains', function ()
 
 describe('NumberFormat fix/prec', function ()
 {
-  var testSubject = new opencadcJS._test.NumberFormat();
+  var testSubject = new opencadcJS.NumberFormat();
 
   it('NumberFormat.formatFixation', function ()
   {
@@ -104,7 +104,7 @@ describe('NumberFormat fix/prec', function ()
 
 describe('NumberFormat format 1', function ()
 {
-  var testSubject = new opencadcJS._test.NumberFormat();
+  var testSubject = new opencadcJS.NumberFormat();
 
   it('NumberFormat.formatExponentOrFloat', function ()
   {
@@ -114,7 +114,7 @@ describe('NumberFormat format 1', function ()
 
 describe('NumberFormat format 2', function ()
 {
-  var testSubject = new opencadcJS._test.NumberFormat();
+  var testSubject = new opencadcJS.NumberFormat();
 
   it('NumberFormat.formatExponentOrFloat', function ()
   {
@@ -125,7 +125,7 @@ describe('NumberFormat format 2', function ()
 
 describe('NumberFormat format 3', function ()
 {
-  var testSubject = new opencadcJS._test.NumberFormat();
+  var testSubject = new opencadcJS.NumberFormat();
 
   it('NumberFormat.formatExponentOrFloat', function ()
   {
@@ -140,7 +140,7 @@ describe('NumberFormat format 3', function ()
 
 describe('Array Util subtractions', function ()
 {
-  var testSubject = new opencadcJS._test.ArrayUtil();
+  var testSubject = new opencadcJS.ArrayUtil();
 
   it('Array subtract', function ()
   {
@@ -171,7 +171,7 @@ describe('Array Util subtractions', function ()
 // Array value subtractions
 describe('Array value subtractions', function ()
 {
-  var testSubject = new opencadcJS._test.ArrayUtil();
+  var testSubject = new opencadcJS.ArrayUtil();
 
   it('Should only be missing [3, 4]', function ()
   {
@@ -182,7 +182,7 @@ describe('Array value subtractions', function ()
 
 describe('Array value subtractions 2', function ()
 {
-  var testSubject = new opencadcJS._test.ArrayUtil();
+  var testSubject = new opencadcJS.ArrayUtil();
 
   it('Should be full array returned', function ()
   {
@@ -194,7 +194,7 @@ describe('Array value subtractions 2', function ()
 
 describe('Array object subtractions', function ()
 {
-  var testSubject = new opencadcJS._test.ArrayUtil();
+  var testSubject = new opencadcJS.ArrayUtil();
   var testSource = [
     {
       id: 4,
@@ -254,7 +254,7 @@ describe('Array object subtractions', function ()
 
 describe('Array sort', function ()
 {
-  var testSubject = new opencadcJS._test.ArrayUtil();
+  var testSubject = new opencadcJS.ArrayUtil();
 
   it('Sort values', function ()
   {
@@ -279,7 +279,7 @@ describe('Array sort', function ()
 
 describe('Array sort objects', function ()
 {
-  var testSubject = new opencadcJS._test.ArrayUtil();
+  var testSubject = new opencadcJS.ArrayUtil();
   var testSource = [
     {
       id: 4,

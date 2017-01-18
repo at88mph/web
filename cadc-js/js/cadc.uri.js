@@ -395,7 +395,6 @@ function URI(_uri)
   _init();
 }
 
-exports._test = {
-  "URI": URI,
-  "currentURI": currentURI
-};
+// Let require() find this.
+exports.URI = URI;
+exports.currentURI = currentURI();

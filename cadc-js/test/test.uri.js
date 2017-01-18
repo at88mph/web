@@ -7,7 +7,7 @@ var opencadcJS = require('../js/cadc.uri');
 
 describe('Test URI components from full URL.', function ()
 {
-  var testSubject = new opencadcJS._test.URI(
+  var testSubject = new opencadcJS.URI(
     'http://www.mysite.com/path/1/2/item.txt');
 
   it('URI.getPath', function ()
@@ -18,7 +18,7 @@ describe('Test URI components from full URL.', function ()
 
 describe('Test URI components from full URL 2.', function()
 {
-  var testSubject = new opencadcJS._test.URI(
+  var testSubject = new opencadcJS.URI(
     'http://www.mysite.com/path/item.txt?a=b&c=d');
 
   it ('Path should be /path/item.txt', function ()
@@ -52,7 +52,7 @@ describe('Test URI components from full URL 2.', function()
 
 describe('Test empty query.', function()
 {
-  var testSubject = new opencadcJS._test.URI(
+  var testSubject = new opencadcJS.URI(
     'http://www.mysite.com/path/');
 
   it('Query object should be empty', function ()
@@ -65,7 +65,7 @@ describe('Test empty query.', function()
 
 describe('Test URI components from URI.', function()
 {
-  var testSubject = new opencadcJS._test.URI('caom2:path/a/b/item.fits');
+  var testSubject = new opencadcJS.URI('caom2:path/a/b/item.fits');
 
   it ('getPath calculation', function ()
   {
@@ -75,7 +75,7 @@ describe('Test URI components from URI.', function()
 
 describe('Test parse out full relative URI.', function()
 {
-  var testSubject = new opencadcJS._test.URI(
+  var testSubject = new opencadcJS.URI(
     'http://www.mysite.com/path/item.txt?a=b&c=d');
 
   it ('Relative URI', function ()
@@ -87,13 +87,13 @@ describe('Test parse out full relative URI.', function()
 describe('Test parse out path only relative URI.', function()
 {
   var testSubject =
-      new opencadcJS._test.URI('http://www.mysite.com/path/item.txt');
+      new opencadcJS.URI('http://www.mysite.com/path/item.txt');
 
   assert.equal(testSubject.getRelativeURI(), '/path/item.txt',
         'Relative URI should be: /path/item.txt');
 
   // Test for encoded query parameters.
-  testSubject = new opencadcJS._test.URI(
+  testSubject = new opencadcJS.URI(
       'http://www.mysite.com/my/path?A=B%20C.D%20AS%20%22E%22');
 
   assert.equal(testSubject.getRelativeURI(), '/my/path?A=B%20C.D%20AS%20%22E%22',
@@ -103,7 +103,7 @@ describe('Test parse out path only relative URI.', function()
 describe('Handle multiple values for single key.', function()
 {
   var testSubject =
-      new opencadcJS._test.URI('http://www.mysite.com/path/item.txt?A=Eh&A=S');
+      new opencadcJS.URI('http://www.mysite.com/path/item.txt?A=Eh&A=S');
 
   it('Query values', function ()
   {
@@ -113,7 +113,7 @@ describe('Handle multiple values for single key.', function()
 
 describe('Encoded relative URI.', function()
 {
-  var testSubject = new opencadcJS._test.URI(
+  var testSubject = new opencadcJS.URI(
     'http://www.mysite.com/path/item.txt?A=Eh&A=S#/go/here');
 
   it ('encodeRelativeURI', function()
@@ -126,7 +126,7 @@ describe('Encoded relative URI.', function()
 
 describe('Set query parameters.', function()
 {
-  var testSubject = new opencadcJS._test.URI(
+  var testSubject = new opencadcJS.URI(
     'http://www.mysite.com/path/item.txt?param1=val1&param2=val2&param2=val3&param3=val4');
 
   it('setQueryValue', function ()
@@ -150,7 +150,7 @@ describe('Set query parameters.', function()
 
 describe('Remove query parameters.', function()
 {
-  var testSubject = new opencadcJS._test.URI(
+  var testSubject = new opencadcJS.URI(
         'http://www.mysite.com/path/item.txt?param1=val1&param2=val2&param2=val3&param3=val4');
 
   it('removeQueryValues', function ()
@@ -171,7 +171,7 @@ describe('Remove query parameters.', function()
 describe('Convert back to string.', function()
 {
   var testSubject =
-      new opencadcJS._test.URI(
+      new opencadcJS.URI(
         'http://www.mysite.com/path/item.txt?param1=val1&param2=val2&param2=val3&param3=val4#hash=42');
 
   it('toString 1', function ()
@@ -193,7 +193,7 @@ describe('Convert back to string.', function()
 describe('Back to string again', function ()
 {
   var testSubject =
-    new opencadcJS._test.URI('http://www.mysite.com:4080/aq/');
+    new opencadcJS.URI('http://www.mysite.com:4080/aq/');
 
   it('Bare toString', function ()
   {
@@ -203,7 +203,7 @@ describe('Back to string again', function ()
 
 describe('Back to string 2', function ()
 {
-  var testSubject = new opencadcJS._test.URI(
+  var testSubject = new opencadcJS.URI(
     '?param1=val1&param2=val2&param2=val3&param3=val4');
 
   it('Bare query param toString', function ()
@@ -216,7 +216,7 @@ describe('Back to string 2', function ()
 describe('Back to string with params', function ()
 {
   var testSubject =
-    new opencadcJS._test.URI('http://www.mysite.com/path/item.txt?param1=val1&param2=val%26%202&param2=val3&param3=val%26#hash=42');
+    new opencadcJS.URI('http://www.mysite.com/path/item.txt?param1=val1&param2=val%26%202&param2=val3&param3=val%26#hash=42');
 
   it('Bare query param toString', function ()
   {
@@ -228,7 +228,7 @@ describe('Back to string with params', function ()
 describe('Test toString with encoded query string', function()
 {
   var testSubject =
-    new opencadcJS._test.URI('http://www.mysite.com/path/item.txt?param1=val1&param2=val3#hash=42');
+    new opencadcJS.URI('http://www.mysite.com/path/item.txt?param1=val1&param2=val3#hash=42');
 
   it('With hash', function ()
   {

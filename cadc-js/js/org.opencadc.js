@@ -1,3 +1,32 @@
+'use strict';
+
+/**
+ * This function succinctly implements the parasitic combination inheritance
+ * for us. We pass in the parent object (or Super Class) and the child object
+ * (or Sub Class), and the function does the parasitic combination inheritance:
+ * makes the child object inherits from the parent object
+ *
+ * @param childObject     The 'sub class' object.
+ * @param parentObject    The 'super class' object.
+ */
+function inheritPrototype(childObject, parentObject)
+{
+  // As discussed above, we use the Crockford's method to copy the properties
+  // and methods from the parentObject onto the childObject
+  // So the copyOfParent object now has everything the parentObject has
+  var copyOfParent = Object.create(parentObject.prototype);
+
+  //Then we set the constructor of this new object to point to the childObject.
+// Why do we manually set the copyOfParent constructor here, see the
+  // explanation immediately following this code block.
+  copyOfParent.constructor = childObject;
+
+  // Then we set the childObject prototype to copyOfParent, so that the
+  // childObject can in turn inherit everything from copyOfParent (from
+  // parentObject)
+  childObject.prototype = copyOfParent;
+}
+
 /**
  * Basic String utility class.
  *
@@ -297,7 +326,7 @@ function ArrayUtil(_comparer)
                             && o2.hasOwnProperty(_propertyName))
                         {
                           score = _innerComparer.compare(o1[_propertyName],
-                                                   o2[_propertyName]);
+                                                         o2[_propertyName]);
                         }
                         else
                         {
@@ -337,10 +366,10 @@ function GUID()
   };
 }
 
-exports._test = {
-  "StringUtil": StringUtil,
-  "ArrayUtil": ArrayUtil,
-  "NumberFormat": NumberFormat,
-  "GUID": GUID,
-  "Comparer": Comparer
-};
+// Make findable.
+exports.StringUtil = StringUtil;
+exports.ArrayUtil = ArrayUtil;
+exports.NumberFormat = NumberFormat;
+exports.GUID = GUID;
+exports.Comparer = Comparer;
+exports.inheritPrototype = inheritPrototype;
