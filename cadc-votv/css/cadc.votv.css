@@ -66,19 +66,22 @@
 .slick-header-column.slick-header-column-checkboxsel span
 {
   font-size: 0.9em;
+  text-align: center;
+  width: 100%;
 }
 
-.slick-header-column.slick-header-column-checkboxsel span.slick-column-name input
-{
-  margin-left: 3px;
-  margin-bottom: 5px;
-  vertical-align: middle;
-}
+/*.slick-header-column.slick-header-column-checkboxsel span.slick-column-name input*/
+/*{*/
+  /*margin-left: 3px;*/
+  /*margin-bottom: 5px;*/
+  /*vertical-align: middle;*/
+/*}*/
 
 .slick-header-column.slick-header-column-checkboxsel
 {
   text-align: center;
 }
+
 
 /* Start */
 #inlineFilterPanel
@@ -95,12 +98,12 @@
 
 .grid-container
 {
-    width: 100%;
+    width: 100% !important;
 }
 
 .pager
 {
-    width: 100%;
+    width: 100% !important;
     height: 20px;
 }
 
@@ -111,7 +114,7 @@
 
 .grid-header
 {
-  width: auto;
+  width: auto !important;
   font-family: Arial, serif;
   font-size: 8pt;
   border: 1px solid gray;
@@ -207,7 +210,7 @@ select.slick-header-unit-pulldown
   white-space: nowrap;
 
   /* Be generous with spacing. */
-  font-size: 1.2em;
+  font-size: 1.0em;
 }
 
 /* End */

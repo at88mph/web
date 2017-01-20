@@ -1,11 +1,12 @@
 {
   "name": "cadc-votv",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "OpenCADC JavaScript libraries to display a VOTable",
   "dependencies": {
     "jquery": "^1.12.4",
     "jsdom": "^9.9.1",
-    "cadc-js": "^1.0.1"
+    "opencadc-js": "^2.0.0",
+    "browserify": "^13.3.0"
   },
   "devDependencies": {
     "jsdom-global": "^2.1.1",

@@ -63,7 +63,7 @@ var assert = require('assert');
 var DOMParser = require('xmldom').DOMParser;
 
 // Make jQuery available everywhere.
-global.jQuery = require('jquery');
+global.$ = require('jquery');
 
 // Create a DOM to pass in.
 var xmlDOM = new DOMParser().parseFromString(xmlData, 'text/xml');
