@@ -3,7 +3,7 @@ var assert = require('assert');
 // Make jQuery available all over.
 global.$ = require('jquery');
 
-var opencadcJS = require('../js/org.opencadc');
+var opencadcJS = require('../lib/org.opencadc');
 
 describe('StringUtil.sanitize', function ()
 {

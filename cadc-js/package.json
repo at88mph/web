@@ -1,6 +1,6 @@
 {
   "name": "opencadc-js",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "OpenCADC JavaScript libraries.",
   "dependencies": {
     "jquery": "^3.1.0",
@@ -14,6 +14,7 @@
   "scripts": {
     "test": "mocha -r jsdom-global/register"
   },
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git@github.com/opencadc/web"

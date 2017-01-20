@@ -3,7 +3,7 @@ var assert = require('assert');
 // Make jQuery available everywhere.
 global.$ = require('jquery');
 
-var opencadcJS = require('../js/cadc.uri');
+var opencadcJS = require('../lib/cadc.uri');
 
 describe('Test URI components from full URL.', function ()
 {

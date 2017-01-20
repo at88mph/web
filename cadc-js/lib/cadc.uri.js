@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Obtain the current URI object of the location in context.
  *
@@ -397,4 +399,4 @@ function URI(_uri)
 
 // Let require() find this.
 exports.URI = URI;
-exports.currentURI = currentURI();
+exports.currentURI = currentURI;
