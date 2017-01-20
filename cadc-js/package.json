@@ -3,7 +3,7 @@
   "version": "2.0.3",
   "description": "OpenCADC JavaScript libraries.",
   "dependencies": {
-    "jquery": "^1.12.4",
+    "jquery": "^3.1.0",
     "jsdom": "^9.9.1",
     "uglify-js": "^2.7.5"
   },
