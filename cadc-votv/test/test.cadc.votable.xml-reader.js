@@ -1,54 +1,56 @@
 'use strict';
 
 var xmlData_1_2 =
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        + "<VOTABLE xmlns=\"http://www.ivoa.net/xml/VOTable/v1.2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"1.2\">\n"
-        + "  <RESOURCE>\n"
-        + "    <TABLE>\n"
-        + "      <FIELD name=\"Job ID\" datatype=\"char\" arraysize=\"*\" />\n"
-        + "      <FIELD name=\"User\" datatype=\"char\" arraysize=\"*\" />\n"
-        + "      <FIELD name=\"Started\" datatype=\"char\" arraysize=\"*\" />\n"
-        + "      <FIELD name=\"Status\" datatype=\"char\" arraysize=\"*\" />\n"
-        + "      <FIELD name=\"Command\" datatype=\"char\" arraysize=\"*\" />\n"
-        + "      <FIELD name=\"VM Type\" datatype=\"char\" arraysize=\"*\" />\n"
-        + "      <FIELD name=\"CPUs\" datatype=\"int\" />\n"
-        + "      <FIELD name=\"Memory\" datatype=\"long\" />\n"
-        + "      <FIELD name=\"Job Starts\" datatype=\"int\" />\n"
-        + "      <DATA>\n"
-        + "        <TABLEDATA>\n"
-        + "          <TR>\n"
-        + "            <TD>735.0</TD>\n"
-        + "            <TD>jenkinsd</TD>\n"
-        + "            <TD />\n"
-        + "            <TD>Idle</TD>\n"
-        + "            <TD>sleep</TD>\n"
-        + "            <TD>Tomcat</TD>\n"
-        + "            <TD>1</TD>\n"
-        + "            <TD>3072</TD>\n"
-        + "            <TD>0</TD>\n"
-        + "          </TR>\n"
-        + "          <TR>\n"
-        + "            <TD>734.0</TD>\n"
-        + "            <TD>jenkinsd</TD>\n"
-        + "            <TD />\n"
-        + "            <TD>Idle</TD>\n"
-        + "            <TD>sleep</TD>\n"
-        + "            <TD>Tomcat</TD>\n"
-        + "            <TD>1</TD>\n"
-        + "            <TD>3072</TD>\n"
-        + "            <TD>0</TD>\n"
-        + "          </TR>\n"
-        + "        </TABLEDATA>\n"
-        + "      </DATA>\n"
-        + "    </TABLE>\n"
-        + "    <INFO name=\"STUFF\" value=\"INFO_TEXT\" />\n"
-        + "  </RESOURCE>\n"
-        + "</VOTABLE>";
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+  +
+  "<VOTABLE xmlns=\"http://www.ivoa.net/xml/VOTable/v1.2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"1.2\">\n"
+  + "  <RESOURCE type=\"results\">\n"
+  + "    <TABLE>\n"
+  + "      <FIELD name=\"Job ID\" datatype=\"char\" arraysize=\"*\" />\n"
+  + "      <FIELD name=\"User\" datatype=\"char\" arraysize=\"*\" />\n"
+  + "      <FIELD name=\"Started\" datatype=\"char\" arraysize=\"*\" />\n"
+  + "      <FIELD name=\"Status\" datatype=\"char\" arraysize=\"*\" />\n"
+  + "      <FIELD name=\"Command\" datatype=\"char\" arraysize=\"*\" />\n"
+  + "      <FIELD name=\"VM Type\" datatype=\"char\" arraysize=\"*\" />\n"
+  + "      <FIELD name=\"CPUs\" datatype=\"int\" />\n"
+  + "      <FIELD name=\"Memory\" datatype=\"long\" />\n"
+  + "      <FIELD name=\"Job Starts\" datatype=\"int\" />\n"
+  + "      <DATA>\n"
+  + "        <TABLEDATA>\n"
+  + "          <TR>\n"
+  + "            <TD>735.0</TD>\n"
+  + "            <TD>jenkinsd</TD>\n"
+  + "            <TD />\n"
+  + "            <TD>Idle</TD>\n"
+  + "            <TD>sleep</TD>\n"
+  + "            <TD>Tomcat</TD>\n"
+  + "            <TD>1</TD>\n"
+  + "            <TD>3072</TD>\n"
+  + "            <TD>0</TD>\n"
+  + "          </TR>\n"
+  + "          <TR>\n"
+  + "            <TD>734.0</TD>\n"
+  + "            <TD>jenkinsd</TD>\n"
+  + "            <TD />\n"
+  + "            <TD>Idle</TD>\n"
+  + "            <TD>sleep</TD>\n"
+  + "            <TD>Tomcat</TD>\n"
+  + "            <TD>1</TD>\n"
+  + "            <TD>3072</TD>\n"
+  + "            <TD>0</TD>\n"
+  + "          </TR>\n"
+  + "        </TABLEDATA>\n"
+  + "      </DATA>\n"
+  + "    </TABLE>\n"
+  + "    <INFO name=\"STUFF\" value=\"INFO_TEXT\" />\n"
+  + "  </RESOURCE>\n"
+  + "</VOTABLE>";
 
 var xmlData_1_3 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-  + "<VOTABLE xmlns=\"http://www.ivoa.net/xml/VOTable/v1.3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"1.3\">\n"
-  + "  <RESOURCE>\n"
+  +
+  "<VOTABLE xmlns=\"http://www.ivoa.net/xml/VOTable/v1.3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"1.3\">\n"
+  + "  <RESOURCE type=\"results\">\n"
   + "    <TABLE>\n"
   + "      <FIELD name=\"Job ID\" datatype=\"char\" arraysize=\"*\" />\n"
   + "      <FIELD name=\"User\" datatype=\"char\" arraysize=\"*\" />\n"
@@ -95,15 +97,14 @@ global.$ = global.jQuery;
 
 var xmldom = require('xmldom');
 var assert = require('assert');
-// var opencadcVOTable = require('../js/cadc.votable');
-var opencadcVOTableReader = require('../js/cadc.votable-reader');
+var opencadcVOBuilder = require('../js/opencadc.votv-builder');
 
-describe ('XPath resolution', function()
+describe('XPath resolution', function ()
 {
   // VOTABLE 1.3
   var xmlDOM13 = (new xmldom.DOMParser()).parseFromString(xmlData_1_3, "text/xml");
 
-  var testSubject13 = new opencadcVOTableReader._test.XPathEvaluator(xmlDOM13,
+  var testSubject13 = new opencadcVOBuilder._test.XPathEvaluator(xmlDOM13,
     "votable", "http://www.ivoa.net/xml/VOTable/v1.3");
 
   it('Check 1.3 resolution.', function ()
@@ -121,7 +122,7 @@ describe ('XPath resolution', function()
 
   it('Check 1.2 resolution.', function ()
   {
-    var testSubject12 = new opencadcVOTableReader._test.XPathEvaluator(xmlDOM_1_2,
+    var testSubject12 = new opencadcVOBuilder._test.XPathEvaluator(xmlDOM_1_2,
       "votable", "http://www.ivoa.net/xml/VOTable/v1.2");
 
     var result2 = testSubject12.evaluate("/VOTABLE/RESOURCE[1]/INFO");
@@ -137,42 +138,45 @@ describe("Read in simple VOTable.", function ()
   var xmlDOM = (new xmldom.DOMParser()).parseFromString(xmlData_1_2,
                                                         "text/xml");
 
-  try
+  // Create a DOM to pass in.
+  var voTableBuilder =
+    new opencadcVOBuilder._test.VOTableXMLBuilder(
+      {data: xmlDOM, defaultNamespace: "http://www.ivoa.net/xml/VOTable/v1.2"});
+
+  var _testComplete = function(e, args)
   {
-    // Create a DOM to pass in.
-    var voTableBuilder =
-      new opencadcVOTableReader._test.VOTableXMLBuilder(
-        {data: xmlDOM, defaultNamespace: "http://www.ivoa.net/xml/VOTable/v1.2"});
-
-    voTableBuilder.build();
-
-    it('Should be one resource.', function ()
+    it('Check Metadata.', function ()
     {
-      assert.equal(1, voTableBuilder.getVOTable().getResources().length);
+      assert.equal(args.tableMetaData.getFields().length, 9);
     });
+  };
 
-    it ('Check first table.', function ()
-    {
-      var firstTableObject =
-        voTableBuilder.getVOTable().getResources()[0].getTables()[0];
-      assert.equal(9, firstTableObject.getFields().length);
-      assert.equal(2, firstTableObject.getTableData().getRows().length);
-    });
-
-    it('Check first row.', function ()
-    {
-      var firstTableObject =
-        voTableBuilder.getVOTable().getResources()[0].getTables()[0];
-      var firstRow = firstTableObject.getTableData().getRows()[0];
-      assert.equal('jenkinsd', firstRow.getCells()[1].getValue());
-      assert.ok(!isNaN(firstRow.getCells()[6].getValue())
-                && (firstRow.getCells()[6].getValue() == Number(1)));
-      assert.ok(!isNaN(firstRow.getCells()[7].getValue())
-                && (firstRow.getCells()[7].getValue() == Number(3072)));
-    });
-  }
-  catch (error)
+  var _testRowAdd = function(e, args)
   {
-    console.log(error.stack);
-  }
+    it('Check row ' + args.rowData.getID(), function ()
+    {
+      var row = args.rowData;
+
+      if (row.getID() === 'vov_0')
+      {
+        assert.equal(row.getCells()[0].getValue(), Number(735.0));
+      }
+      else if (row.getID() === 'vov_1')
+      {
+        assert.equal(row.getCells()[0].getValue(), Number(734.0));
+      }
+
+      assert.equal('jenkinsd', row.getCells()[1].getValue());
+      assert.ok(!isNaN(row.getCells()[6].getValue()));
+      assert.equal(row.getCells()[6].getValue(), Number(1));
+      assert.ok(!isNaN(row.getCells()[7].getValue()));
+      assert.equal(row.getCells()[7].getValue(), Number(3072));
+    });
+  };
+
+  voTableBuilder.subscribe(opencadcVOBuilder.events.onDataLoadComplete,
+                           _testComplete);
+  voTableBuilder.subscribe(opencadcVOBuilder.events.onRowAdd, _testRowAdd);
+
+  voTableBuilder.build();
 });

@@ -2,8 +2,8 @@ var assert = require('assert');
 var $ = jQuery = global.$ = require('jquery');
 require('jquery-csv');
 
-var opencadcVOTable = require('../js/cadc.votable');
-var opencadcVOTableReader = require('../js/cadc.votable-reader');
+var opencadcVOTable = require('../js/opencadc.votable');
+var opencadcVOTableReader = require('../js/opencadc.votv-builder');
 
 describe("Read in simple CSV VOTable.", function ()
 {

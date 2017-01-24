@@ -875,7 +875,7 @@ if (typeof Slick === "undefined")
                            if (sortColumns[i].columnId == column.id)
                            {
                              sortOpts = sortColumns[i];
-                             sortOpts.sortAsc = !sortOpts.sortAsc;
+                             sortOpts.isSortAscending = !sortOpts.isSortAscending;
                              break;
                            }
                          }
@@ -899,7 +899,7 @@ if (typeof Slick === "undefined")
                            {
                              sortOpts = {
                                columnId: column.id,
-                               sortAsc: column.defaultSortAsc
+                               isSortAscending: column.defaultSortAsc
                              };
                              sortColumns.push(sortOpts);
                            }
@@ -916,7 +916,7 @@ if (typeof Slick === "undefined")
                            trigger(self.onSort, {
                              multiColumnSort: false,
                              sortCol: column,
-                             sortAsc: sortOpts.sortAsc,
+                             isSortAscending: sortOpts.isSortAscending,
                              grid: self
                            }, e);
                          }
@@ -928,7 +928,7 @@ if (typeof Slick === "undefined")
                              {
                                return {
                                  sortCol: columns[getColumnIndex(col.columnId)],
-                                 sortAsc: col.sortAsc
+                                 isSortAscending: col.isSortAscending
                                };
                              }),
                              grid: self
@@ -1586,7 +1586,7 @@ if (typeof Slick === "undefined")
 
     function setSortColumn(columnId, ascending)
     {
-      setSortColumns([{columnId: columnId, sortAsc: ascending}]);
+      setSortColumns([{columnId: columnId, isSortAscending: ascending}]);
     }
 
     function setSortColumns(cols)
@@ -1601,9 +1601,9 @@ if (typeof Slick === "undefined")
 
       $.each(sortColumns, function (i, col)
       {
-        if (col.sortAsc == null)
+        if (col.isSortAscending == null)
         {
-          col.sortAsc = true;
+          col.isSortAscending = true;
         }
         var columnIndex = getColumnIndex(col.columnId);
         if (columnIndex != null)
@@ -1611,7 +1611,7 @@ if (typeof Slick === "undefined")
           headerColumnEls.eq(columnIndex)
             .addClass("slick-header-column-sorted")
             .find(".slick-sort-indicator")
-            .addClass(col.sortAsc ? "slick-sort-indicator-asc" :
+            .addClass(col.isSortAscending ? "slick-sort-indicator-asc" :
                       "slick-sort-indicator-desc");
         }
       });
