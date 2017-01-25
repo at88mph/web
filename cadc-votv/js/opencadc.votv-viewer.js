@@ -5,7 +5,6 @@ global.window = w;
 
 var $ = require('jquery');
 var jQuery = $;
-var _ = require('underscore');
 var StringUtil = require('opencadc-js').util.StringUtil;
 
 require('slickgrid/lib/jquery.event.drag-2.3.0');
@@ -19,6 +18,7 @@ require('slickgrid/slick.grid');
 
 var opencadcVOBuilder = require('../js/opencadc.votv-builder');
 var opencadcVOComparer = require('../js/cadc.votv.comparer');
+var opencadcVOFilter = require('../js/opencadc.votv-filter');
 var applicationEvents = {
   onDataLoaded: new jQuery.Event('opencadc-votv:onDataLoaded'),
   onRowAdded: new jQuery.Event('opencadc-votv:onRowAdded'),
@@ -27,14 +27,6 @@ var applicationEvents = {
   onFilterData: new jQuery.Event('opencadc-votv:onFilterData'),
   onRowsChanged: new jQuery.Event('opencadc-votv:onRowsChanged'),
   onColumnOrderReset: new jQuery.Event('opencadc-votv:onColumnOrderReset')
-};
-
-var _FILTERS_ = {
-  '>': 'gt',
-  '<': 'lt',
-  '<=': 'le',
-  '>=': 'ge',
-  '..': 'range'
 };
 
 // var _DEFAULT_CELL_PADDING_PX_ = 8;
@@ -752,181 +744,6 @@ Viewer.prototype.getDefaultColumns = function ()
   }
 
   return cols;
-};
-
-/**
- * TODO - There are a lot of return points in this method.  Let's try to
- * TODO - reduce them.
- * TODO - jenkinsd 2014.12.04
- *
- * @param filter             The filter value as entered by the user.
- * @param value              The value to be filtered or not
- * @returns {Boolean} true if value is filtered-out by filter.
- */
-Viewer.prototype.valueFilters = function (filter, value)
-{
-  filter = $.trim(filter);
-  var dotIndex = filter.indexOf('..');
-
-  if (dotIndex > 0)
-  {
-    // filter on the range and return
-    var left = filter.substring(0, dotIndex);
-    if ((dotIndex + 2) < filter.length)
-    {
-      var right = filter.substring(dotIndex + 2);
-
-      if (this.areNumbers(value, left, right))
-      {
-        return ((parseFloat(value) < parseFloat(left))
-                || (parseFloat(value) > parseFloat(right)));
-      }
-      else
-      {
-        return ((value < left) || (value > right));
-      }
-    }
-  }
-  else
-  {
-    var filterRegexStartsWith = /^\s?(>=|<=|=|>|<)?\s?(.*)/;
-    var matches = filterRegexStartsWith.exec(filter);
-    var match = ((matches != null) && (matches.length > 1))
-      ? $.trim(matches[1]) : null;
-
-    var operator = (match == null) ? '' : _FILTERS_[match];
-
-    if (operator)
-    {
-      filter = filter.substring(match.length);
-    }
-
-    var exactMatch = (match === '=');
-
-    // act on the operator and value
-    value = $.trim(value);
-
-    var isFilterNumber = this.isNumber(filter);
-
-    // Special case for those number filter expectations where the data is
-    // absent.
-    if (isFilterNumber
-        && ((value == '') || (value == 'NaN') || (value == Number.NaN)))
-    {
-      return true;
-    }
-    else if (operator && !filter)
-    {
-      return false;
-    }
-    else if (operator === 'gt')
-    {
-      // greater than operator
-      if (this.areNumbers(value, filter))
-      {
-        return parseFloat(value) <= parseFloat(filter);
-      }
-      else if (this.areStrings(value, filter))
-      {
-        return value.toUpperCase() <= filter.toUpperCase();
-      }
-      else
-      {
-        return value <= filter;
-      }
-    }
-    else if (operator == 'lt')
-    {
-      // less-than operator
-      if (this.areNumbers(value, filter))
-      {
-        return parseFloat(value) >= parseFloat(filter);
-      }
-      else if (this.areStrings(value, filter))
-      {
-        return value.toUpperCase() >= filter.toUpperCase();
-      }
-      else
-      {
-        return value >= filter;
-      }
-    }
-    else if (operator == 'ge')
-    {
-      // greater-than or equals operator
-      if (this.areNumbers(value, filter))
-      {
-        return parseFloat(value) < parseFloat(filter);
-      }
-      else if (this.areStrings(value, filter))
-      {
-        return value.toUpperCase() < filter.toUpperCase();
-      }
-      else
-      {
-        return value < filter;
-      }
-    }
-    else if (operator == 'le')
-    {
-      // less-than or equals operator
-      if (this.areNumbers(value, filter))
-      {
-        return parseFloat(value) > parseFloat(filter);
-      }
-      else if (this.areStrings(value, filter))
-      {
-        return value.toUpperCase() > filter.toUpperCase();
-      }
-      else
-      {
-        return value > filter;
-      }
-    }
-    else if (exactMatch === true)
-    {
-      return (value.toString().toUpperCase()
-              !== filter.toString().toUpperCase());
-    }
-    else
-    {
-      filter = $.ui.autocomplete.escapeRegex(filter);
-
-      var regex = new RegExp(filter, 'gi');
-      var result = value.match(regex);
-
-      return (!result || result.length == 0);
-    }
-  }
-};
-
-Viewer.prototype.isNumber = function (val)
-{
-  return !isNaN(parseFloat(val)) && isFinite(val);
-};
-
-Viewer.prototype.areNumbers = function ()
-{
-  for (var i = 0; i < arguments.length; i++)
-  {
-    if (!this.isNumber(arguments[i]))
-    {
-      return false;
-    }
-  }
-  return true;
-};
-
-Viewer.prototype.areStrings = function ()
-{
-  for (var i = 0; i < arguments.length; i++)
-  {
-    if (!(arguments[i].substring))
-    {
-      return false;
-    }
-  }
-  return true;
 };
 
 /**
@@ -1738,8 +1555,7 @@ Viewer.prototype.formatCellValue = function (rowItem, grid, columnID)
 
 /**
  * Function for the search filter to run.  This is meant to be in the
- * context of the dataView, so 'this' will refer to the current instance of
- * the data view.
+ * context of the dataView, so don't forget to bind the function to 'this'.
  *
  * @param item      Filter item.
  * @param args      columnFilters - columnFilter object.
@@ -1762,15 +1578,19 @@ Viewer.prototype.searchFilter = function (item, args)
         var cellValue = args.formatCellValue(item, grid, colID);
 
         filterValue = $.trim(filterValue);
-        var negate = filterValue.indexOf('!') == 0;
+        var negate = (filterValue.indexOf('!') === 0);
 
         if (negate)
         {
           filterValue = filterValue.substring(1);
         }
 
+        console.log('Filter value ' + filterValue + ' for ' + cellValue);
+
         // The args.doFilter method is in the Grid's DataView object.
         var filterOut = args.doFilter(filterValue, cellValue);
+
+        console.log('Filtering? ' + filterOut);
 
         if ((!negate && filterOut) || (!filterOut && negate))
         {
@@ -1787,6 +1607,7 @@ Viewer.prototype.render = function ()
 {
   var g = this.grid;
   var dataView = g.getData();
+  var filter = new opencadcVOFilter.Filter();
 
   // initialize the model after all the events have been hooked up
   dataView.beginUpdate();
@@ -1794,7 +1615,7 @@ Viewer.prototype.render = function ()
                            columnFilters: this.getColumnFilters(),
                            grid: g,
                            formatCellValue: this.formatCellValue,
-                           doFilter: this.valueFilters.bind(this)
+                           doFilter: filter.valueFilters
                          });
 
   dataView.setFilter(this.searchFilter.bind(this));

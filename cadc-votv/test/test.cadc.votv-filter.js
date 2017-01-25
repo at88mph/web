@@ -90,6 +90,7 @@ global.window = window;
 var xmldom = require('xmldom');
 var assert = require('assert');
 var opencadcVOViewer = require('../js/opencadc.votv-viewer');
+var opencadcVOFilter = require('../js/opencadc.votv-filter');
 
 // Create a DOM to pass in.
 var xmlDOM = (new xmldom.DOMParser()).parseFromString(xmlData, 'text/xml');
@@ -133,15 +134,16 @@ describe('Filter number columns.', function ()
    */
   var doTestJobIDMatch = function (viewer, columnValue)
   {
+    var filter = new opencadcVOFilter.Filter();
     var match = viewer.searchFilter({'Job ID': columnValue},
                                     {
                                       grid: viewer.getGrid(),
                                       columnFilters: viewer.getColumnFilters(),
-                                      formatCellValue: function (item, grid, colID)
+                                      formatCellValue: function ()
                                       {
-                                        return columnValue;
+                                        return Number(columnValue);
                                       },
-                                      doFilter: viewer.valueFilters
+                                      doFilter: filter.valueFilters.bind(filter)
                                     });
     assert.equal(match, true, 'Should match on [Job ID]=[' + columnValue
                               + '].');
@@ -155,11 +157,16 @@ describe('Filter number columns.', function ()
    */
   var doTestJobIDNotMatch = function (viewer, columnValue)
   {
+    var filter = new opencadcVOFilter.Filter();
     var match = viewer.searchFilter({'Job ID': columnValue},
                                     {
                                       grid: viewer.getGrid(),
                                       columnFilters: viewer.getColumnFilters(),
-                                      doFilter: viewer.valueFilters
+                                      formatCellValue: function ()
+                                      {
+                                        return Number(columnValue);
+                                      },
+                                      doFilter: filter.valueFilters.bind(filter)
                                     });
     assert.equal(match, false, 'Should not match on [Job ID]=[' + columnValue
                                + '].');
@@ -169,22 +176,12 @@ describe('Filter number columns.', function ()
 
   viewer.subscribe(opencadcVOViewer.events.onDataLoaded, function ()
   {
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '735';
-      return colFilters;
-    };
+    viewer.getColumnFilters()['Job ID'] = '735';
     doTestJobIDMatch(viewer, '735.0');
     doTestJobIDMatch(viewer, '735');
     doTestJobIDNotMatch(viewer, '736.0');
 
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '735.0';
-      return colFilters;
-    };
+    viewer.getColumnFilters()['Job ID'] = '735.0';
     doTestJobIDMatch(viewer, '735.0');
     doTestJobIDMatch(viewer, '735');
     doTestJobIDNotMatch(viewer, '736.0');
