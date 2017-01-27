@@ -1585,12 +1585,8 @@ Viewer.prototype.searchFilter = function (item, args)
           filterValue = filterValue.substring(1);
         }
 
-        console.log('Filter value ' + filterValue + ' for ' + cellValue);
-
         // The args.doFilter method is in the Grid's DataView object.
         var filterOut = args.doFilter(filterValue, cellValue);
-
-        console.log('Filtering? ' + filterOut);
 
         if ((!negate && filterOut) || (!filterOut && negate))
         {

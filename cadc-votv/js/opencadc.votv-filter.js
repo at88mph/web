@@ -2,23 +2,19 @@
 
 function Filter()
 {
-  var _filters = {
-    '>': 'gt',
-    '<': 'lt',
-    '<=': 'le',
-    '>=': 'ge',
-    '..': 'range',
-    '=': 'eq'
-  };
+  var _filters = [
+    '>', '<', '<=', '>=', '..', '='
+  ];
+
+  var filterRegexStartsWith = /^\s?(>=|<=|=|>|<)?\s?(.*)/;
 
   this.getFilterOperator = function(_value)
   {
-    var filterRegexStartsWith = /^\s?(>=|<=|=|>|<)?\s?(.*)/;
     var matches = filterRegexStartsWith.exec(_value);
     var match = ((matches != null) && (matches.length > 1))
       ? $.trim(matches[1]) : null;
 
-    return (match == null) ? '' : _filters[match];
+    return (match == null) ? '' : match;
   }
 }
 
@@ -60,10 +56,8 @@ Filter.prototype.valueFilters = function (filter, value)
     var operator = this.getFilterOperator(filter);
     if (operator)
     {
-      filter = filter.substring(match.length);
+      filter = $.trim($.trim(filter).substring(operator.length));
     }
-
-    var exactMatch = (operator === 'eq');
 
     // act on the operator and value
     value = $.trim(value);
@@ -81,7 +75,7 @@ Filter.prototype.valueFilters = function (filter, value)
     {
       return false;
     }
-    else if (operator === 'gt')
+    else if (operator === '>')
     {
       // greater than operator
       if (this.areNumbers(value, filter))
@@ -97,7 +91,7 @@ Filter.prototype.valueFilters = function (filter, value)
         return value <= filter;
       }
     }
-    else if (operator === 'lt')
+    else if (operator === '<')
     {
       // less-than operator
       if (this.areNumbers(value, filter))
@@ -110,10 +104,10 @@ Filter.prototype.valueFilters = function (filter, value)
       }
       else
       {
-        return value >= filter;
+        return (value >= filter);
       }
     }
-    else if (operator === 'ge')
+    else if (operator === '>=')
     {
       // greater-than or equals operator
       if (this.areNumbers(value, filter))
@@ -126,10 +120,10 @@ Filter.prototype.valueFilters = function (filter, value)
       }
       else
       {
-        return value < filter;
+        return (value < filter);
       }
     }
-    else if (operator === 'le')
+    else if (operator === '<=')
     {
       // less-than or equals operator
       if (this.areNumbers(value, filter))
@@ -142,31 +136,30 @@ Filter.prototype.valueFilters = function (filter, value)
       }
       else
       {
-        return value > filter;
+        return (value > filter);
       }
     }
-    else if (exactMatch === true)
+    // Equals '=' is EXACT match.
+    else if (operator === '=')
     {
       return (value.toString().toUpperCase()
               !== filter.toString().toUpperCase());
     }
     else
     {
-      //filter = $.ui.autocomplete.escapeRegex(filter);
-
       if (this.areNumbers(value, filter))
       {
         return (parseFloat(value) != parseFloat(filter));
       }
-      else if (this.areStrings(value, filter))
-      {
-        return (value.toUpperCase() != filter.toUpperCase());
-      }
       else
       {
-        // return (value == filter);
+        // filter = $.ui.autocomplete.escapeRegex(filter);
+        filter = (filter.indexOf('^') < 0) ? ('^' + filter) : filter;
+        filter = (filter.indexOf('$') !== (filter.length - 1)) ? (filter + '$') : filter;
+        filter = filter.replace(/([a-zA-Z0-9\s]*)\*/gi, '$1.*');
+
         var regex = new RegExp(filter, 'gi');
-        var result = value.match(regex);
+        var result = regex.test(value);
 
         return (!result || (result.length == 0));
       }
@@ -183,7 +176,6 @@ Filter.prototype.areNumbers = function ()
 {
   for (var i = 0; i < arguments.length; i++)
   {
-    console.log('Checking ' + arguments[i]);
     if (!this.isNumber(arguments[i]))
     {
       return false;

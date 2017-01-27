@@ -126,236 +126,239 @@ var options = {
 
 describe('Filter number columns.', function ()
 {
-  /**
-   * The function to test for equality.
-   *
-   * @param viewer    The test subject.
-   * @param columnValue The value of the filter
-   */
-  var doTestJobIDMatch = function (viewer, columnValue)
+  it ('All number filters.', function ()
   {
-    var filter = new opencadcVOFilter.Filter();
-    var match = viewer.searchFilter({'Job ID': columnValue},
-                                    {
-                                      grid: viewer.getGrid(),
-                                      columnFilters: viewer.getColumnFilters(),
-                                      formatCellValue: function ()
+    /**
+     * The function to test for equality.
+     *
+     * @param viewer    The test subject.
+     * @param columnValue The value of the filter
+     */
+    var doTestJobIDMatch = function (viewer, columnValue)
+    {
+      var filter = new opencadcVOFilter.Filter();
+      var match = viewer.searchFilter({'Job ID': columnValue},
                                       {
-                                        return Number(columnValue);
-                                      },
-                                      doFilter: filter.valueFilters.bind(filter)
-                                    });
-    assert.equal(match, true, 'Should match on [Job ID]=[' + columnValue
-                              + '].');
-  };
+                                        grid: viewer.getGrid(),
+                                        columnFilters: viewer.getColumnFilters(),
+                                        formatCellValue: function ()
+                                        {
+                                          return columnValue;
+                                        },
+                                        doFilter: filter.valueFilters.bind(filter)
+                                      });
+      assert.equal(match, true, 'Should match on [Job ID]=[' + columnValue
+                                + '].');
+    };
 
-  /**
-   * The function to test for inequality.
-   *
-   * @param viewer    The test subject.
-   * @param columnValue The value of the filter
-   */
-  var doTestJobIDNotMatch = function (viewer, columnValue)
-  {
-    var filter = new opencadcVOFilter.Filter();
-    var match = viewer.searchFilter({'Job ID': columnValue},
-                                    {
-                                      grid: viewer.getGrid(),
-                                      columnFilters: viewer.getColumnFilters(),
-                                      formatCellValue: function ()
+    /**
+     * The function to test for inequality.
+     *
+     * @param viewer    The test subject.
+     * @param columnValue The value of the filter
+     */
+    var doTestJobIDNotMatch = function (viewer, columnValue)
+    {
+      var filter = new opencadcVOFilter.Filter();
+      var match = viewer.searchFilter({'Job ID': columnValue},
                                       {
-                                        return Number(columnValue);
-                                      },
-                                      doFilter: filter.valueFilters.bind(filter)
-                                    });
-    assert.equal(match, false, 'Should not match on [Job ID]=[' + columnValue
-                               + '].');
-  };
-
-  var viewer = new opencadcVOViewer.Viewer('#myGrid', options);
-
-  viewer.subscribe(opencadcVOViewer.events.onDataLoaded, function ()
-  {
-    viewer.getColumnFilters()['Job ID'] = '735';
-    doTestJobIDMatch(viewer, '735.0');
-    doTestJobIDMatch(viewer, '735');
-    doTestJobIDNotMatch(viewer, '736.0');
-
-    viewer.getColumnFilters()['Job ID'] = '735.0';
-    doTestJobIDMatch(viewer, '735.0');
-    doTestJobIDMatch(viewer, '735');
-    doTestJobIDNotMatch(viewer, '736.0');
-
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '=735';
-      return colFilters;
+                                        grid: viewer.getGrid(),
+                                        columnFilters: viewer.getColumnFilters(),
+                                        formatCellValue: function ()
+                                        {
+                                          return columnValue;
+                                        },
+                                        doFilter: filter.valueFilters.bind(filter)
+                                      });
+      assert.equal(match, false, 'Should not match on [Job ID]=[' + columnValue
+                                 + '].');
     };
-    doTestJobIDMatch(viewer, '735.0');
-    doTestJobIDMatch(viewer, '735');
-    doTestJobIDNotMatch(viewer, '736.0');
 
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '=735.0';
-      return colFilters;
-    };
-    doTestJobIDMatch(viewer, '735.0');
-    doTestJobIDMatch(viewer, '735');
-    doTestJobIDNotMatch(viewer, '736.0');
+    var viewer = new opencadcVOViewer.Viewer('#myGrid', options);
 
-    viewer.getColumnFilters = function ()
+    viewer.subscribe(opencadcVOViewer.events.onDataLoaded, function ()
     {
-      var colFilters = {};
-      colFilters['Job ID'] = '= 735.0';
-      return colFilters;
-    };
-    doTestJobIDMatch(viewer, '735.0');
-    doTestJobIDMatch(viewer, '735');
-    doTestJobIDNotMatch(viewer, '736.0');
+      viewer.getColumnFilters()['Job ID'] = '735';
+      doTestJobIDMatch(viewer, '735.0');
+      doTestJobIDMatch(viewer, '735');
+      doTestJobIDNotMatch(viewer, '736.0');
 
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = ' = 735.0 ';
-      return colFilters;
-    };
-    doTestJobIDMatch(viewer, '735.0');
-    doTestJobIDNotMatch(viewer, '736.0');
+      viewer.getColumnFilters()['Job ID'] = '735.0';
+      doTestJobIDMatch(viewer, '735.0');
+      doTestJobIDMatch(viewer, '735');
+      doTestJobIDNotMatch(viewer, '736.0');
 
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '>735.0 ';
-      return colFilters;
-    };
-    doTestJobIDMatch(viewer, '736.0');
-    doTestJobIDMatch(viewer, '737.2');
-    doTestJobIDMatch(viewer, '740');
-    doTestJobIDNotMatch(viewer, '735.0');
-    doTestJobIDNotMatch(viewer, '734.5');
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = '=735';
+        return colFilters;
+      };
+      doTestJobIDNotMatch(viewer, '735.0');
+      doTestJobIDMatch(viewer, '735');
+      doTestJobIDNotMatch(viewer, '736.0');
 
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '> 735.0 ';
-      return colFilters;
-    };
-    doTestJobIDMatch(viewer, '736.0');
-    doTestJobIDMatch(viewer, '737.2');
-    doTestJobIDMatch(viewer, '740');
-    doTestJobIDNotMatch(viewer, '735.0');
-    doTestJobIDNotMatch(viewer, '734.5');
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = '=735.0';
+        return colFilters;
+      };
+      doTestJobIDMatch(viewer, '735.0');
+      doTestJobIDNotMatch(viewer, '735');
+      doTestJobIDNotMatch(viewer, '736.0');
 
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '<735.0 ';
-      return colFilters;
-    };
-    doTestJobIDMatch(viewer, '732.8');
-    doTestJobIDMatch(viewer, '734.0');
-    doTestJobIDNotMatch(viewer, '735.0');
-    doTestJobIDNotMatch(viewer, '736.5');
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = '= 735.0';
+        return colFilters;
+      };
+      doTestJobIDMatch(viewer, '735.0');
+      doTestJobIDNotMatch(viewer, '735');
+      doTestJobIDNotMatch(viewer, '736.0');
 
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '< 735.0 ';
-      return colFilters;
-    };
-    doTestJobIDMatch(viewer, '732.8');
-    doTestJobIDMatch(viewer, '734.0');
-    doTestJobIDMatch(viewer, '730');
-    doTestJobIDNotMatch(viewer, '735.0');
-    doTestJobIDNotMatch(viewer, '736.5');
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = ' = 735.0 ';
+        return colFilters;
+      };
+      doTestJobIDMatch(viewer, '735.0');
+      doTestJobIDNotMatch(viewer, '736.0');
 
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '>=735.0 ';
-      return colFilters;
-    };
-    doTestJobIDMatch(viewer, '736.0');
-    doTestJobIDMatch(viewer, '737.2');
-    doTestJobIDMatch(viewer, '735.0');
-    doTestJobIDMatch(viewer, '740');
-    doTestJobIDNotMatch(viewer, '734.5');
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = '>735.0 ';
+        return colFilters;
+      };
+      doTestJobIDMatch(viewer, '736.0');
+      doTestJobIDMatch(viewer, '737.2');
+      doTestJobIDMatch(viewer, '740');
+      doTestJobIDNotMatch(viewer, '735.0');
+      doTestJobIDNotMatch(viewer, '734.5');
 
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '>= 735.0 ';
-      return colFilters;
-    };
-    doTestJobIDMatch(viewer, '736.0');
-    doTestJobIDMatch(viewer, '737.2');
-    doTestJobIDMatch(viewer, '738');
-    doTestJobIDMatch(viewer, '735.0');
-    doTestJobIDNotMatch(viewer, '734.5');
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = '> 735.0 ';
+        return colFilters;
+      };
+      doTestJobIDMatch(viewer, '736.0');
+      doTestJobIDMatch(viewer, '737.2');
+      doTestJobIDMatch(viewer, '740');
+      doTestJobIDNotMatch(viewer, '735.0');
+      doTestJobIDNotMatch(viewer, '734.5');
 
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '<=735.0 ';
-      return colFilters;
-    };
-    doTestJobIDMatch(viewer, '732.8');
-    doTestJobIDMatch(viewer, '734');
-    doTestJobIDMatch(viewer, '735.0');
-    doTestJobIDNotMatch(viewer, '736.5');
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = '<735.0 ';
+        return colFilters;
+      };
+      doTestJobIDMatch(viewer, '732.8');
+      doTestJobIDMatch(viewer, '734.0');
+      doTestJobIDNotMatch(viewer, '735.0');
+      doTestJobIDNotMatch(viewer, '736.5');
 
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '<= 735.0 ';
-      return colFilters;
-    };
-    doTestJobIDMatch(viewer, '732.8');
-    doTestJobIDMatch(viewer, '734');
-    doTestJobIDMatch(viewer, '735.0');
-    doTestJobIDNotMatch(viewer, '736.5');
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = '< 735.0 ';
+        return colFilters;
+      };
+      doTestJobIDMatch(viewer, '732.8');
+      doTestJobIDMatch(viewer, '734.0');
+      doTestJobIDMatch(viewer, '730');
+      doTestJobIDNotMatch(viewer, '735.0');
+      doTestJobIDNotMatch(viewer, '736.5');
 
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '732.0..733.5';
-      return colFilters;
-    };
-    doTestJobIDMatch(viewer, '732.0');
-    doTestJobIDMatch(viewer, '732.7');
-    doTestJobIDMatch(viewer, '733');
-    doTestJobIDMatch(viewer, '733.5');
-    doTestJobIDNotMatch(viewer, '7');
-    doTestJobIDNotMatch(viewer, '731');
-    doTestJobIDNotMatch(viewer, '736.5');
-    doTestJobIDNotMatch(viewer, '736');
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = '>=735.0 ';
+        return colFilters;
+      };
+      doTestJobIDMatch(viewer, '736.0');
+      doTestJobIDMatch(viewer, '737.2');
+      doTestJobIDMatch(viewer, '735.0');
+      doTestJobIDMatch(viewer, '740');
+      doTestJobIDNotMatch(viewer, '734.5');
 
-    viewer.getColumnFilters = function ()
-    {
-      var colFilters = {};
-      colFilters['Job ID'] = '0..1';
-      return colFilters;
-    };
-    doTestJobIDMatch(viewer, '0.0');
-    doTestJobIDMatch(viewer, '0');
-    doTestJobIDMatch(viewer, '0.3');
-    doTestJobIDMatch(viewer, '0.33');
-    doTestJobIDMatch(viewer, '1');
-    doTestJobIDMatch(viewer, '1.0');
-    doTestJobIDNotMatch(viewer, '-1.2');
-    doTestJobIDNotMatch(viewer, '-0.1');
-    doTestJobIDNotMatch(viewer, '3');
-    doTestJobIDNotMatch(viewer, '3.3');
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = '>= 735.0 ';
+        return colFilters;
+      };
+      doTestJobIDMatch(viewer, '736.0');
+      doTestJobIDMatch(viewer, '737.2');
+      doTestJobIDMatch(viewer, '738');
+      doTestJobIDMatch(viewer, '735.0');
+      doTestJobIDNotMatch(viewer, '734.5');
+
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = '<=735.0 ';
+        return colFilters;
+      };
+      doTestJobIDMatch(viewer, '732.8');
+      doTestJobIDMatch(viewer, '734');
+      doTestJobIDMatch(viewer, '735.0');
+      doTestJobIDNotMatch(viewer, '736.5');
+
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = '<= 735.0 ';
+        return colFilters;
+      };
+      doTestJobIDMatch(viewer, '732.8');
+      doTestJobIDMatch(viewer, '734');
+      doTestJobIDMatch(viewer, '735.0');
+      doTestJobIDNotMatch(viewer, '736.5');
+
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = '732.0..733.5';
+        return colFilters;
+      };
+      doTestJobIDMatch(viewer, '732.0');
+      doTestJobIDMatch(viewer, '732.7');
+      doTestJobIDMatch(viewer, '733');
+      doTestJobIDMatch(viewer, '733.5');
+      doTestJobIDNotMatch(viewer, '7');
+      doTestJobIDNotMatch(viewer, '731');
+      doTestJobIDNotMatch(viewer, '736.5');
+      doTestJobIDNotMatch(viewer, '736');
+
+      viewer.getColumnFilters = function ()
+      {
+        var colFilters = {};
+        colFilters['Job ID'] = '0..1';
+        return colFilters;
+      };
+      doTestJobIDMatch(viewer, '0.0');
+      doTestJobIDMatch(viewer, '0');
+      doTestJobIDMatch(viewer, '0.3');
+      doTestJobIDMatch(viewer, '0.33');
+      doTestJobIDMatch(viewer, '1');
+      doTestJobIDMatch(viewer, '1.0');
+      doTestJobIDNotMatch(viewer, '-1.2');
+      doTestJobIDNotMatch(viewer, '-0.1');
+      doTestJobIDNotMatch(viewer, '3');
+      doTestJobIDNotMatch(viewer, '3.3');
+    });
+
+    viewer.build({
+                   type: 'xml',
+                   data: xmlDOM,
+                   defaultNamespace: 'http://www.ivoa.net/xml/VOTable/v1.2'
+                 });
   });
-
-  viewer.build({
-                 type: 'xml',
-                 data: xmlDOM,
-                 defaultNamespace: 'http://www.ivoa.net/xml/VOTable/v1.2'
-               });
 });
 
 describe('Performance.', function ()
@@ -378,30 +381,310 @@ describe('Performance.', function ()
                });
 });
 
-// describe('Filter string columns.', function ()
-// {
-//
-//   try
-//   {
-//     /**
-//      * The function to test for equality.
-//      *
-//      * @param viewer    The test subject.
-//      * @param columnValue The value of the filter
-//      */
-//     var doTestUserMatch = function (viewer, columnValue)
-//     {
-//       var match = viewer.searchFilter({'User': columnValue},
-//                                       {
-//                                         grid: viewer.getGrid(),
-//                                         columnFilters:
-// viewer.getColumnFilters(), doFilter: viewer.valueFilters }); equal(match,
-// true, 'Should match for [User]=[' + columnValue + '].'); };  var
-// doTestProjectMatch = function (viewer, columnValue) { var match =
-// viewer.searchFilter({'Project': columnValue}, { grid: viewer.getGrid(),
-// columnFilters: viewer.getColumnFilters(), doFilter: viewer.valueFilters });
-// equal(match, true, 'Should match for [Project]=[' + columnValue + '].'); };
-// var doTestProjectNotMatch = function (viewer, columnValue) { var match =
-// viewer.searchFilter({'Project': columnValue}, { grid: viewer.getGrid(),
-// columnFilters: viewer.getColumnFilters(), doFilter: viewer.valueFilters });
-// equal(match, false, 'Should not match for [Project]=[' + columnValue + '].'); };  /** * The function to test for inequality. * * @param viewer    The test subject. * @param columnValue The value of the filter */ var doTestUserNotMatch = function (viewer, columnValue) { var match = viewer.searchFilter({'User': columnValue}, { grid: viewer.getGrid(), columnFilters: viewer.getColumnFilters(), doFilter: viewer.valueFilters }); equal(match, false, 'Should not match for [User]=[' + columnValue + '].'); };  var viewer = new cadc.vot.Viewer('#myGrid', options); viewer.build({ xmlDOM: xmlDOM }, function () {  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = 'm'; return colFilters; }; doTestUserMatch(viewer, 'm'); doTestUserMatch(viewer, 'M'); doTestUserMatch(viewer, ' m '); doTestUserNotMatch(viewer, 'p');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = 'hello'; return colFilters; }; doTestUserMatch(viewer, 'hello'); doTestUserMatch(viewer, 'HEllo'); doTestUserMatch(viewer, ' hellO '); doTestUserNotMatch(viewer, 'hi');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '=m'; return colFilters; }; doTestUserMatch(viewer, 'm'); doTestUserMatch(viewer, 'M'); doTestUserMatch(viewer, ' m '); doTestUserNotMatch(viewer, 'p');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '=hello'; return colFilters; }; doTestUserMatch(viewer, 'hello'); doTestUserMatch(viewer, 'HEllo'); doTestUserMatch(viewer, ' hellO '); doTestUserNotMatch(viewer, 'hi');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '= m'; return colFilters; }; doTestUserMatch(viewer, 'm'); doTestUserMatch(viewer, 'M'); doTestUserMatch(viewer, ' m '); doTestUserNotMatch(viewer, 'p');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '= hello'; return colFilters; }; doTestUserMatch(viewer, 'hello'); doTestUserMatch(viewer, 'HEllo'); doTestUserMatch(viewer, ' hellO '); doTestUserNotMatch(viewer, 'hi');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '>m'; return colFilters; }; doTestUserMatch(viewer, 'n'); doTestUserMatch(viewer, 'P'); doTestUserNotMatch(viewer, 'a'); doTestUserNotMatch(viewer, 'B');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '> m'; return colFilters; }; doTestUserMatch(viewer, 'n'); doTestUserMatch(viewer, 'P'); doTestUserNotMatch(viewer, 'a'); doTestUserNotMatch(viewer, 'B');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '>=m'; return colFilters; }; doTestUserMatch(viewer, 'n'); doTestUserMatch(viewer, 'P'); doTestUserMatch(viewer, 'm'); doTestUserMatch(viewer, 'M'); doTestUserNotMatch(viewer, 'a'); doTestUserNotMatch(viewer, 'B');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '>= m'; return colFilters; }; doTestUserMatch(viewer, 'n'); doTestUserMatch(viewer, 'P'); doTestUserMatch(viewer, 'm'); doTestUserMatch(viewer, 'M'); doTestUserNotMatch(viewer, 'a'); doTestUserNotMatch(viewer, 'B');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '<m'; return colFilters; }; doTestUserMatch(viewer, 'a'); doTestUserMatch(viewer, 'B'); doTestUserNotMatch(viewer, 'n'); doTestUserNotMatch(viewer, 'P');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '< m'; return colFilters; }; doTestUserMatch(viewer, 'a'); doTestUserMatch(viewer, 'B'); doTestUserNotMatch(viewer, 'n'); doTestUserNotMatch(viewer, 'P');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '<=m'; return colFilters; }; doTestUserMatch(viewer, 'a'); doTestUserMatch(viewer, 'B'); doTestUserMatch(viewer, 'm'); doTestUserMatch(viewer, 'M'); doTestUserNotMatch(viewer, 'n'); doTestUserNotMatch(viewer, 'P');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '<= m'; return colFilters; }; doTestUserMatch(viewer, 'a'); doTestUserMatch(viewer, 'B'); doTestUserMatch(viewer, 'm'); doTestUserMatch(viewer, 'M'); doTestUserNotMatch(viewer, 'n'); doTestUserNotMatch(viewer, 'P');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = 'a*z'; return colFilters; }; doTestUserMatch(viewer, 'acz'); doTestUserMatch(viewer, 'aBz'); doTestUserMatch(viewer, 'abbbbbCCCCCdddddz'); doTestUserNotMatch(viewer, 'azb'); doTestUserNotMatch(viewer, 'ba');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = 'a*z*'; return colFilters; }; doTestUserMatch(viewer, 'abz'); doTestUserMatch(viewer, 'aBz'); doTestUserMatch(viewer, 'abbbbbCCCCCdddddz'); doTestUserMatch(viewer, 'azb'); doTestUserNotMatch(viewer, 'ba');  viewer.getColumnFilters = function () { var colFilters = {}; colFilters['Project'] = '*10*'; return colFilters; } doTestProjectNotMatch(viewer, '2011.03.66.8.N'); doTestProjectMatch(viewer, '2011.03.66.10.N'); doTestProjectMatch(viewer, '2010.03.66.99.N');  // Check negated value(s) viewer.getColumnFilters = function () { var colFilters = {}; colFilters['Project'] = '!*10*'; return colFilters; }; doTestProjectMatch(viewer, '2011.03.66.8.N'); doTestProjectNotMatch(viewer, '2011.03.66.10.N'); doTestProjectNotMatch(viewer, '2010.03.66.99.N'); }, function (jqXHR, status, message) { console.log('Error while building.'); }); } catch (error) { console.log(error.stack); } });   describe('Are numbers.', function () { try { var viewer = new cadc.vot.Viewer('#myGrid', options); viewer.build( { xmlDOM: xmlDOM }, function () { equal(viewer.areNumbers('1'), true, 'Should be numbers.'); equal(viewer.areNumbers('-4'), true, 'Should be numbers.'); equal(viewer.areNumbers('-2.3'), true, 'Should be numbers.'); equal(viewer.areNumbers('1', '3', '733.0'), true, 'Should be numbers.'); equal(viewer.areNumbers('z'), false, 'Should not be numbers.'); equal(viewer.areNumbers('1', 'a', '3'), false, 'Should not be numbers.'); }, function (jqXHR, status, message) { console.log('Error while building.'); }); } catch (error) { console.log(error.stack); } });  describe('Numeric filter.', function () { try { var viewer = new cadc.vot.Viewer('#myGrid', options); viewer.build( { xmlDOM: xmlDOM }, function () { var match = viewer.searchFilter({'Calibration Level': '>= 2'}, { grid: viewer.getGrid(), columnFilters: viewer.getColumnFilters(), doFilter: viewer.valueFilters }); equal(match, true, 'Should match for [Calibration Level]=[>= 2].');  var match2 = viewer.searchFilter({'Calibration Level': '< 0'}, { grid: viewer.getGrid(), columnFilters: viewer.getColumnFilters(), doFilter: viewer.valueFilters }); equal(match2, true, 'Should not match for [Calibration Level]=[< 0].'); }, function (jqXHR, status, message) { console.log('Error while building.'); }); } catch (error) { console.log(error.stack); } });  describe('Are strings.', function () { try { var viewer = new cadc.vot.Viewer('#myGrid', options);  viewer.build({ xmlDOM: xmlDOM }, function () { equal(viewer.areStrings('a'), true, 'Should be strings.'); equal(viewer.areStrings('a'), true, 'Should be strings.'); equal(viewer.areStrings('a', String('b')), true, 'Should be strings.'); equal(viewer.areStrings(String('a')), true, 'Should be strings.'); equal(viewer.areStrings(1), false, 'Should not be strings.'); equal(viewer.areStrings('a', 1), false, 'Should not be strings.'); }, function (jqXHR, status, message) { console.log('Error while building.'); }); } catch (error) { console.log(error.stack); }  });
+describe('Filter string columns.', function ()
+{
+  it ('All string filters.', function ()
+  {
+    /**
+     * The function to test for equality.
+     *
+     * @param viewer    The test subject.
+     * @param columnValue The value of the filter
+     */
+    var doTestUserMatch = function (viewer, columnValue)
+    {
+      var filter = new opencadcVOFilter.Filter();
+      var match = viewer.searchFilter({'User': columnValue},
+                                      {
+                                        grid: viewer.getGrid(),
+                                        columnFilters: viewer.getColumnFilters(),
+                                        formatCellValue: function ()
+                                        {
+                                          return columnValue;
+                                        },
+                                        doFilter: filter.valueFilters.bind(filter)
+                                      });
+
+      assert.equal(match, true,
+        'Should match for [User]=[' + columnValue + '].');
+    };
+
+    var doTestProjectMatch =
+      function (viewer, columnValue)
+      {
+        var filter = new opencadcVOFilter.Filter();
+        var match = viewer.searchFilter({'Project': columnValue},
+        {
+          grid: viewer.getGrid(),
+          columnFilters: viewer.getColumnFilters(),
+          formatCellValue: function ()
+          {
+            return columnValue;
+          },
+          doFilter: filter.valueFilters.bind(filter)
+        });
+
+        assert.equal(match, true, 'Should match for [Project]=[' + columnValue + '].');
+      };
+
+      var doTestProjectNotMatch = function (viewer, columnValue)
+      {
+        var filter = new opencadcVOFilter.Filter();
+        var match = viewer.searchFilter({'Project': columnValue},
+        {
+          grid: viewer.getGrid(),
+          columnFilters: viewer.getColumnFilters(),
+          formatCellValue: function ()
+          {
+            return columnValue;
+          },
+          doFilter: filter.valueFilters.bind(filter)
+        });
+
+        assert.equal(match, false, 'Should not match for [Project]=[' + columnValue + '].');
+      };
+
+      /**
+        * The function to test for inequality.
+        *
+        * @param viewer    The test subject.
+        * @param columnValue The value of the filter
+        */
+      var doTestUserNotMatch = function (viewer, columnValue)
+      {
+        var filter = new opencadcVOFilter.Filter();
+        var match = viewer.searchFilter({'User': columnValue},
+        {
+          grid: viewer.getGrid(),
+          columnFilters: viewer.getColumnFilters(),
+          formatCellValue: function ()
+          {
+            return columnValue;
+          },
+          doFilter: filter.valueFilters.bind(filter)
+        });
+        assert.equal(match, false, 'Should not match for [User]=[' + columnValue + '].');
+      };
+
+      var viewer = new opencadcVOViewer.Viewer('#myGrid', options);
+
+      viewer.subscribe(opencadcVOViewer.events.onDataLoaded, function ()
+      {
+        viewer.getColumnFilters = function () {
+          var colFilters = {};
+          colFilters['User'] = 'm';
+          return colFilters;
+        };
+        doTestUserMatch(viewer, 'm');
+        doTestUserMatch(viewer, 'M');
+        doTestUserMatch(viewer, ' m ');
+        doTestUserNotMatch(viewer, 'p');
+
+        viewer.getColumnFilters = function () {
+          var colFilters = {};
+          colFilters['User'] = 'hello';
+          return colFilters;
+        };
+
+        doTestUserMatch(viewer, 'hello');
+        doTestUserMatch(viewer, 'HEllo');
+        doTestUserMatch(viewer, ' hellO ');
+        doTestUserNotMatch(viewer, 'hi');
+
+        viewer.getColumnFilters = function () {
+          var colFilters = {};
+          colFilters['User'] = '=m';
+          return colFilters;
+        };
+
+        doTestUserMatch(viewer, 'm');
+        doTestUserMatch(viewer, 'M');
+        doTestUserMatch(viewer, ' m ');
+        doTestUserNotMatch(viewer, 'p');
+
+        viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '=hello'; return colFilters; };
+        doTestUserMatch(viewer, 'hello');
+        doTestUserMatch(viewer, 'HEllo');
+        doTestUserMatch(viewer, ' hellO ');
+        doTestUserNotMatch(viewer, 'hi');
+
+        viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '= m'; return colFilters; };
+        doTestUserMatch(viewer, 'm');
+        doTestUserMatch(viewer, 'M');
+        doTestUserMatch(viewer, ' m ');
+        doTestUserNotMatch(viewer, 'p');
+
+        viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '= hello'; return colFilters; };
+        doTestUserMatch(viewer, 'hello');
+        doTestUserMatch(viewer, 'HEllo');
+        doTestUserMatch(viewer, ' hellO ');
+        doTestUserNotMatch(viewer, 'hi');
+
+        viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '>m'; return colFilters; };
+        doTestUserMatch(viewer, 'n');
+        doTestUserMatch(viewer, 'P');
+        doTestUserNotMatch(viewer, 'a');
+        doTestUserNotMatch(viewer, 'B');
+
+        viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '> m'; return colFilters; };
+        doTestUserMatch(viewer, 'n');
+        doTestUserMatch(viewer, 'P');
+        doTestUserNotMatch(viewer, 'a');
+        doTestUserNotMatch(viewer, 'B');
+
+        viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '>=m'; return colFilters; };
+        doTestUserMatch(viewer, 'n');
+        doTestUserMatch(viewer, 'P');
+        doTestUserMatch(viewer, 'm');
+        doTestUserMatch(viewer, 'M');
+        doTestUserNotMatch(viewer, 'a');
+        doTestUserNotMatch(viewer, 'B');
+
+        viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '>= m'; return colFilters; };
+        doTestUserMatch(viewer, 'n');
+        doTestUserMatch(viewer, 'P');
+        doTestUserMatch(viewer, 'm');
+        doTestUserMatch(viewer, 'M');
+        doTestUserNotMatch(viewer, 'a');
+        doTestUserNotMatch(viewer, 'B');
+
+        viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '<m'; return colFilters; };
+        doTestUserMatch(viewer, 'a');
+        doTestUserMatch(viewer, 'B');
+        doTestUserNotMatch(viewer, 'n');
+        doTestUserNotMatch(viewer, 'P');
+
+        viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '< m'; return colFilters; };
+        doTestUserMatch(viewer, 'a');
+        doTestUserMatch(viewer, 'B');
+        doTestUserNotMatch(viewer, 'n');
+        doTestUserNotMatch(viewer, 'P');
+
+        viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '<=m'; return colFilters; };
+        doTestUserMatch(viewer, 'a');
+        doTestUserMatch(viewer, 'B');
+        doTestUserMatch(viewer, 'm');
+        doTestUserMatch(viewer, 'M');
+        doTestUserNotMatch(viewer, 'n');
+        doTestUserNotMatch(viewer, 'P');
+
+        viewer.getColumnFilters = function () { var colFilters = {}; colFilters['User'] = '<= m'; return colFilters; };
+        doTestUserMatch(viewer, 'a');
+        doTestUserMatch(viewer, 'B');
+        doTestUserMatch(viewer, 'm');
+        doTestUserMatch(viewer, 'M');
+        doTestUserNotMatch(viewer, 'n');
+        doTestUserNotMatch(viewer, 'P');
+
+        viewer.getColumnFilters = function ()
+        {
+          var colFilters = {};
+          colFilters['User'] = 'a*z';
+          return colFilters;
+        };
+        doTestUserMatch(viewer, 'acz');
+        doTestUserMatch(viewer, 'aBz');
+        doTestUserMatch(viewer, 'abbbbbCCCCCdddddz');
+        doTestUserNotMatch(viewer, 'azb');
+        doTestUserNotMatch(viewer, 'ba');
+
+        viewer.getColumnFilters = function ()
+        {
+          var colFilters = {};
+          colFilters['User'] = 'a*z*';
+          return colFilters;
+        };
+        doTestUserMatch(viewer, 'abz');
+        doTestUserMatch(viewer, 'aBz');
+        doTestUserMatch(viewer, 'abbbbbCCCCCdddddz');
+        doTestUserMatch(viewer, 'azb');
+        doTestUserNotMatch(viewer, 'ba');
+
+        viewer.getColumnFilters = function ()
+        {
+          var colFilters = {};
+          colFilters['Project'] = '*10*';
+          return colFilters;
+        };
+        doTestProjectNotMatch(viewer, '2011.03.66.8.N');
+        doTestProjectMatch(viewer, '2011.03.66.10.N');
+        doTestProjectMatch(viewer, '2010.03.66.99.N');
+
+        // Check negated value(s)
+        viewer.getColumnFilters = function ()
+        {
+          var colFilters = {};
+          colFilters['Project'] = '!*10*';
+          return colFilters;
+        };
+        doTestProjectMatch(viewer, '2011.03.66.8.N');
+        doTestProjectNotMatch(viewer, '2011.03.66.10.N');
+        doTestProjectNotMatch(viewer, '2010.03.66.99.N');
+      });
+
+    viewer.build({
+                   data: xmlDOM,
+                   defaultNamespace: 'http://www.ivoa.net/xml/VOTable/v1.2'
+                 });
+  });
+});
+
+describe('Are numbers.', function ()
+{
+  var filter = new opencadcVOFilter.Filter();
+
+  it ('Filter are numbers', function ()
+  {
+    assert.equal(filter.areNumbers('1'), true, 'Should be numbers.');
+    assert.equal(filter.areNumbers('-4'), true, 'Should be numbers.');
+    assert.equal(filter.areNumbers('-2.3'), true, 'Should be numbers.');
+    assert.equal(filter.areNumbers('1', '3', '733.0'), true, 'Should be numbers.');
+    assert.equal(filter.areNumbers('z'), false, 'Should not be numbers.');
+    assert.equal(filter.areNumbers('1', 'a', '3'), false, 'Should not be numbers.');
+  });
+});
+
+describe('Numeric filter.', function ()
+{
+  var viewer = new opencadcVOViewer.Viewer('#myGrid', options);
+
+  viewer.subscribe(opencadcVOViewer.events.onDataLoaded, function ()
+  {
+    var match = viewer.searchFilter({'Calibration Level': '>= 2'},
+    {
+      grid: viewer.getGrid(),
+      columnFilters: viewer.getColumnFilters(),
+      doFilter: viewer.valueFilters
+    });
+
+    assert.equal(match, true, 'Should match for [Calibration Level]=[>= 2].');
+    var match2 = viewer.searchFilter({'Calibration Level': '< 0'},
+    {
+      grid: viewer.getGrid(),
+      columnFilters: viewer.getColumnFilters(),
+      doFilter: viewer.valueFilters
+    });
+
+    assert.equal(match2, true, 'Should not match for [Calibration Level]=[< 0].');
+  });
+
+  viewer.build({
+                 data: xmlDOM,
+                 defaultNamespace: 'http://www.ivoa.net/xml/VOTable/v1.2'
+               });
+});
+
+describe('Are strings.', function ()
+{
+  var filter = new opencadcVOFilter.Filter();
+
+  it ('Filter are strings', function ()
+  {
+    assert.equal(filter.areStrings('a'), true, 'Should be strings.');
+    assert.equal(filter.areStrings('a'), true, 'Should be strings.');
+    assert.equal(filter.areStrings('a', String('b')), true, 'Should be strings.');
+    assert.equal(filter.areStrings(String('a')), true, 'Should be strings.');
+    assert.equal(filter.areStrings(1), false, 'Should not be strings.');
+    assert.equal(filter.areStrings('a', 1), false, 'Should not be strings.');
+  });
+});
