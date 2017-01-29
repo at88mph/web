@@ -2,15 +2,11 @@
 
 function Filter()
 {
-  var _filters = [
-    '>', '<', '<=', '>=', '..', '='
-  ];
+  var _FILTER_OPERATOR_CAPTURE_ = /^\s?(>=|<=|=|>|<)?\s?(.*)/;
 
-  var filterRegexStartsWith = /^\s?(>=|<=|=|>|<)?\s?(.*)/;
-
-  this.getFilterOperator = function(_value)
+  this.getFilterOperator = function (_value)
   {
-    var matches = filterRegexStartsWith.exec(_value);
+    var matches = _FILTER_OPERATOR_CAPTURE_.exec(_value);
     var match = ((matches != null) && (matches.length > 1))
       ? $.trim(matches[1]) : null;
 
@@ -154,14 +150,26 @@ Filter.prototype.valueFilters = function (filter, value)
       else
       {
         // filter = $.ui.autocomplete.escapeRegex(filter);
-        filter = (filter.indexOf('^') < 0) ? ('^' + filter) : filter;
-        filter = (filter.indexOf('$') !== (filter.length - 1)) ? (filter + '$') : filter;
-        filter = filter.replace(/([a-zA-Z0-9\s]*)\*/gi, '$1.*');
+
+        // Any asterisks should be converted to (dot)(asterisk) in regex.
+        filter = filter.replace(/\./gi, '\\.');
+        filter = filter.replace(/([\w\s]*)\*/gi, '$1.*');
+
+        // Constrain the given filter to start and end where it specified.
+        if (filter.indexOf('*') > 0)
+        {
+          filter = (filter.indexOf('^') < 0) ? ('^' + filter) : filter;
+          filter =
+            (filter.indexOf('$') !== (filter.length - 1)) ? (filter + '$') :
+            filter;
+        }
 
         var regex = new RegExp(filter, 'gi');
-        var result = regex.test(value);
 
-        return (!result || (result.length == 0));
+        // If the test is true, then it must be kept, but this method checks
+        // for those entries that are to be OMITTED from the results, so check
+        // for a false test here.
+        return (regex.test(value) === false);
       }
     }
   }
