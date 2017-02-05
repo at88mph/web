@@ -313,3 +313,50 @@ describe('Array sort objects', function ()
                      ], testSubject.sort(testSource, 'name'));
   });
 });
+
+describe('BooleanUtil values.', function ()
+{
+  var testSubject = new opencadcJS.BooleanUtil();
+
+  it ('Check base primitive.', function ()
+  {
+    assert.ok(testSubject.truthiness(true));
+    assert.ok(testSubject.truthiness(1), 'Check value of 1.');
+  });
+
+  it ('Check for "y"', function ()
+  {
+    assert.ok(testSubject.truthiness('y'), 'Check for "y"');
+  });
+
+  it ('Check for "Y"', function ()
+  {
+    assert.ok(testSubject.truthiness('Y'), 'Check for "Y"');
+  });
+
+  it ('Check for "yes"', function ()
+  {
+    assert.ok(testSubject.truthiness('Yes'), 'Check for "Yes"');
+    assert.ok(testSubject.truthiness('yEs'), 'Check for "yEs"');
+  });
+
+  it ('Check string "true"', function ()
+  {
+    assert.ok(testSubject.truthiness('true'));
+  });
+
+  it ('Check string "false"', function ()
+  {
+    assert.ok(testSubject.truthiness('false') === false);
+  });
+
+  it ('Check string "no"', function ()
+  {
+    assert.ok(testSubject.truthiness('no') === false);
+  });
+
+  it ('Check string "n"', function ()
+  {
+    assert.ok(testSubject.truthiness('n') === false);
+  });
+});

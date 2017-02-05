@@ -128,6 +128,29 @@ function StringUtil()
 }
 
 /**
+ * Utility class to check for proper true or false values.
+ *
+ * @constructor
+ */
+function BooleanUtil()
+{
+  var _TRUTH_REGEX_ =
+    new RegExp('^' + '\\s*' + '\\b' + 'y[es]?|true' + '\\b' + '\\s*' + '$','i');
+
+  /**
+   * Return whether the given value is true, or 'positive'.  This will test for
+   * things like 'true', true, 1, 'yes', 'y'.
+   *
+   * @param {*} _val
+   */
+  this.truthiness = function(_val)
+  {
+    return (_val == true)
+           || ((typeof _val === 'string') && _TRUTH_REGEX_.test(_val));
+  };
+}
+
+/**
  * Format numeric values for output.
  *
  * @constructor
@@ -368,6 +391,7 @@ function GUID()
 
 // Make findable.
 exports.StringUtil = StringUtil;
+exports.BooleanUtil = BooleanUtil;
 exports.ArrayUtil = ArrayUtil;
 exports.NumberFormat = NumberFormat;
 exports.GUID = GUID;
