@@ -136,6 +136,9 @@ function BooleanUtil()
 {
   var _TRUTH_REGEX_ =
     new RegExp('^' + '\\s*' + '\\b' + 'y[es]?|true' + '\\b' + '\\s*' + '$','i');
+  var _FALSE_REGEX_ =
+    new RegExp('^' + '\\s*' + '\\b' + 'n[o]?|false' + '\\b' + '\\s*' + '$','i');
+
 
   /**
    * Return whether the given value is true, or 'positive'.  This will test for
@@ -143,10 +146,22 @@ function BooleanUtil()
    *
    * @param {*} _val
    */
-  this.truthiness = function(_val)
+  this.isTrueValue = function(_val)
   {
     return (_val == true)
            || ((typeof _val === 'string') && _TRUTH_REGEX_.test(_val));
+  };
+
+  /**
+   * Return whether the given value is false, or 'negative'.  This will test for
+   * things like 'false', false, 0, 'no', 'n'.
+   *
+   * @param {*} _val
+   */
+  this.isFalseValue = function(_val)
+  {
+    return (_val == false)
+           || ((typeof _val === 'string') && _FALSE_REGEX_.test(_val));
   };
 }
 
