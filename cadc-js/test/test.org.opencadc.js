@@ -365,6 +365,24 @@ describe('BooleanUtil false values.', function ()
 {
   var testSubject = new opencadcJS.BooleanUtil();
 
+  it ('Check for empty string', function()
+  {
+    assert.ok(testSubject.isTrueValue('') === false);
+    assert.ok(testSubject.isFalseValue(''));
+  });
+
+  it ('Check for undefined', function()
+  {
+    assert.ok(testSubject.isTrueValue(undefined) === false);
+    assert.ok(testSubject.isFalseValue(undefined) === false);
+  });
+
+  it ('Check for null', function()
+  {
+    assert.ok(testSubject.isTrueValue(null) === false);
+    assert.ok(testSubject.isFalseValue(null) === false);
+  });
+
   it ('Check base primitive.', function ()
   {
     assert.ok(testSubject.isFalseValue(false));
