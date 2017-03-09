@@ -97,7 +97,7 @@ global.$ = global.jQuery;
 
 var xmldom = require('xmldom');
 var assert = require('assert');
-var opencadcVOBuilder = require('../js/opencadc.votv-builder');
+var opencadcVOBuilder = require('../lib/opencadc.votv-builder');
 
 describe('XPath resolution', function ()
 {

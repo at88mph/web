@@ -4,8 +4,8 @@ var assert = require('assert');
 global.$ = require('jquery');
 require('jquery-csv');
 
-var opencadcVOTable = require('../js/opencadc.votable');
-var opencadcVOViewer = require('../js/opencadc.votv-viewer');
+var opencadcVOTable = require('../lib/opencadc.votable');
+var opencadcVOViewer = require('../lib/opencadc.votv-viewer');
 
 describe('Add rows to Viewer.', function ()
 {

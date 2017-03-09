@@ -4,13 +4,15 @@
   "description": "OpenCADC JavaScript libraries to display a VOTable",
   "dependencies": {
     "browserify": "^13.3.0",
+    "uglify-js": "^2.7.5",
     "jquery": "2.2.4",
     "jsdom": "^9.9.1",
     "jquery-csv": "^0.8.0",
-    "opencadc-js": "^2.0.6",
+    "opencadc-js": "^2.1.0",
     "slickgrid": "^2.3.0",
     "xpath": "^0.0.23"
   },
+  "main": "./index.js",
   "devDependencies": {
     "jsdom-global": "^2.1.1",
     "xmldom": "^0.1.27",
@@ -26,6 +28,7 @@
   "author": "OpenCADC - Dustin Jenkins",
   "license": "GPL-3.0",
   "directories": {
-    "test": "test"
+    "lib": "./lib",
+    "test": "./test"
   }
 }

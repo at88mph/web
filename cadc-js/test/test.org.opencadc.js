@@ -45,6 +45,12 @@ describe('StringUtil.format', function ()
                                     ["ONE", "TWO"]),
                  "Val ONE is TWO but not {3}");
   });
+
+  it ('Formatted number inserts should match.', function ()
+  {
+    assert.equal(testSubject.format("Zero {1} and one {2}", [0, 1]),
+                 "Zero 0 and one 1");
+  });
 });
 
 describe('StringUtil.matches', function ()

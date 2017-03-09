@@ -81,7 +81,8 @@ function StringUtil()
     return _str.replace(/{(\d+)}/g, function (match, number)
     {
       var index = (number - 1);
-      return _values[index] ? _values[index] : match;
+
+      return (_values[index] == null) ? match : _values[index];
     });
   };
 

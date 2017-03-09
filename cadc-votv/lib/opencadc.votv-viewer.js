@@ -1,11 +1,14 @@
 'use strict';
 
 var w = (!window) ? this : window;
-global.window = w;
+if (!global.window)
+{
+  global.window = w;
+}
 
 var $ = require('jquery');
 var jQuery = $;
-var StringUtil = require('opencadc-js').util.StringUtil;
+var opencadcJSUtil = require('opencadc-js').util;
 
 require('slickgrid/lib/jquery.event.drag-2.3.0');
 require('slickgrid/lib/jquery-ui-1.11.3');
@@ -16,9 +19,9 @@ global.Slick = global.window.Slick;
 require('slickgrid/slick.dataview');
 require('slickgrid/slick.grid');
 
-var opencadcVOBuilder = require('../js/opencadc.votv-builder');
-var opencadcVOComparer = require('../js/cadc.votv.comparer');
-var opencadcVOFilter = require('../js/opencadc.votv-filter');
+var opencadcVOBuilder = require('../lib/opencadc.votv-builder');
+var opencadcVOComparer = require('../lib/opencadc.votv.comparer');
+var opencadcVOFilter = require('../lib/opencadc.votv-filter');
 var applicationEvents = {
   onDataLoaded: new jQuery.Event('opencadc-votv:onDataLoaded'),
   onRowAdded: new jQuery.Event('opencadc-votv:onRowAdded'),
@@ -37,6 +40,20 @@ var _PAGER_NODE_SELECTOR_ = '#pager';
 var _HEADER_NODE_SELECTOR_ = 'div.grid-header';
 var _DEFAULT_ROW_COUNT_MESSAGE_FORMAT_ =
   'Showing {1} rows ({2} before filtering).';
+
+var _DEFAULT_ROW_COUNT_MESSAGE_FN_ = function (_totalRowCount,
+                                               _currentRowCount)
+{
+  var stringUtil = new opencadcJSUtil.StringUtil();
+  return stringUtil.format(_DEFAULT_ROW_COUNT_MESSAGE_FORMAT_,
+                           [_totalRowCount, _currentRowCount]);
+};
+
+var PROPERTY_KEYS = {
+  filterable: 'filterable',
+  sortable: 'sortable',
+  resizable: 'resizable'
+};
 
 /**
  * Create a VOView object.  This is here to package everything together.
@@ -73,20 +90,11 @@ function Viewer(_targetNodeSelector, _opts)
   this.options = _opts;
   this.columns = [];
   this.plugins = [];
-  this.displayColumns = this.options.displayColumns || [];
+  this.displayColumns = this.options.displayColumns || this.columns;
   this.resizedColumns = {};  // Columns the user has resized.
   this.columnFilters = this.options.columnFilters || {};
   this.updatedColumnSelects = {};
   this.targetNodeSelector = _targetNodeSelector;
-
-  // displayColumns: columns that are actually in the Grid.
-  // var _columnFilterPluginName = options.columnFilterPluginName || 'default';
-  // var _columnOptions = options.columnOptions ? options.columnOptions : {};
-
-  // this.options.forceFitColumns = options.columnManager
-  //   ? options.columnManager.forceFitColumns
-  //   : false;
-  // this.options.asyncPostRenderDelay = options.asyncPostRenderDelay || 0;
 
   // This is the TableData for a VOTable.  Will be set on load.
   this.longestValues = {};
@@ -105,10 +113,8 @@ function Viewer(_targetNodeSelector, _opts)
   this._defaultDataLoadComplete = function (_totalRowCount, _currentRowCount,
                                             _headerLabel)
   {
-    var stringUtil = new StringUtil();
-    var message = stringUtil.format(_DEFAULT_ROW_COUNT_MESSAGE_FORMAT_,
-                                    [_totalRowCount, _currentRowCount]);
-
+    var message = _DEFAULT_ROW_COUNT_MESSAGE_FN_(_totalRowCount,
+                                                 _currentRowCount);
     if (this.options.maxRowLimit <= _totalRowCount)
     {
       // and display warning message if maximum row limit is reached
@@ -119,6 +125,8 @@ function Viewer(_targetNodeSelector, _opts)
     _headerLabel.text(message);
   };
 
+  this.rowCountMessage = this.options.rowCountMessage ||
+                         _DEFAULT_ROW_COUNT_MESSAGE_FN_;
   this.dataLoadComplete = this.options.atDataLoadComplete
                           || this._defaultDataLoadComplete;
   this.pageInfoChanged = this.options.atPageInfoChanged
@@ -163,8 +171,7 @@ Viewer.prototype.build = function (input)
     // streaming has begun
     if ($gridHeaderIcon)
     {
-      $gridHeaderIcon.attr('src',
-                           'cadcVOTV/images/PleaseWait-small.gif');
+      $gridHeaderIcon.attr('src', 'cadcVOTV/images/PleaseWait-small.gif');
     }
   }
 
@@ -244,7 +251,7 @@ Viewer.prototype.build = function (input)
    */
   var pageAddStartFn = function (e, args)
   {
-    var data = args.dataView;
+    var data = this.grid.getData();
 
     data.beginUpdate();
 
@@ -275,7 +282,7 @@ Viewer.prototype.build = function (input)
   builder.subscribe(opencadcVOBuilder.events.onPageAddEnd,
                     function (e, args)
                     {
-                      args.dataView.endUpdate();
+                      this.grid.getData().endUpdate();
 
                       // Sorting as data
                       // loads.  Not sure
@@ -285,7 +292,7 @@ Viewer.prototype.build = function (input)
                       // 2014.05.09 WebRT
                       // 53730
                       //sort();
-                    });
+                    }.bind(this));
 
   builder.subscribe(opencadcVOBuilder.events.onRowAdd,
                     rowAddFn.bind(this));
@@ -377,12 +384,26 @@ Viewer.prototype.setUpdatedColumnSelects = function (_updatedSelects)
   this.updatedColumnSelects = _updatedSelects;
 };
 
-Viewer.prototype.isFilterable = function (column)
+Viewer.prototype.isPropertyFlagSet = function (columnName, propertyName)
 {
-  var globallyFilterable = this.getColumnManager().filterable || false;
-  var columnFilterable = column.filterable || globallyFilterable;
+  var colManager = this.getColumnManager();
+  var booleanUtil = new opencadcJSUtil.BooleanUtil();
+  var flagSet = booleanUtil.isTrueValue(colManager[propertyName]);
+  var colOpts = this.getOptionsForColumn(columnName);
 
-  return (columnFilterable === true);
+  if (colOpts)
+  {
+    if (booleanUtil.isTrueValue(colOpts[propertyName]))
+    {
+      flagSet = true;
+    }
+    else if (booleanUtil.isFalseValue(colOpts[propertyName]))
+    {
+      flagSet = false;
+    }
+  }
+
+  return flagSet;
 };
 
 /**
@@ -393,16 +414,17 @@ Viewer.prototype.isFilterable = function (column)
  */
 Viewer.prototype.isFitMax = function (columnID)
 {
+  var booleanUtil = new opencadcJSUtil.BooleanUtil();
   var columnOptions = this.getOptionsForColumn(columnID);
-  var fitMaxEnabled = (this.options.fitMax === true);
+  var fitMaxEnabled = booleanUtil.isTrueValue(this.options.fitMax);
 
   if (columnOptions)
   {
-    if (columnOptions.fitMax === true)
+    if (booleanUtil.isTrueValue(columnOptions.fitMax))
     {
       fitMaxEnabled = true;
     }
-    else if (columnOptions.fitMax === false)
+    else if (booleanUtil.isFalseValue(columnOptions.fitMax))
     {
       fitMaxEnabled = false;
     }
@@ -885,7 +907,7 @@ Viewer.prototype.setupHeader = function (checkboxSelector, args)
       'title="Enter values into the boxes to further filter results.">Filter:</div>').appendTo(args.node);
   }
   // Do not display for the checkbox column.
-  else if (this.isFilterable(args.column))
+  else if (this.isPropertyFlagSet(args.column.name, PROPERTY_KEYS.filterable))
   {
     var datatype = args.column.datatype;
     var tooltipTitle;
@@ -1037,7 +1059,7 @@ Viewer.prototype.init = function ()
 
   var dataView = new Slick.Data.DataView({inlineFilters: true});
   this.grid = new Slick.Grid(this.targetNodeSelector, dataView,
-    this.getDisplayColumns(), this.options);
+    this.columns, this.options);
   var rowSelectionModel;
 
   if (checkboxSelector)
@@ -1083,21 +1105,33 @@ Viewer.prototype.init = function ()
   else
   {
     dataView.onPagingInfoChanged.subscribe((function (e, args)
-                                           {
-                                             var dataView = args.dataView;
+    {
+      var dataView = args.dataView;
 
-                                             this.dataLoadComplete(
-                                               dataView.getLength(),
-                                               dataView.getItems().length,
-                                               this.getHeaderLabel());
-                                           }).bind(this));
+      this.dataLoadComplete(
+        dataView.getLength(),
+        dataView.getItems().length,
+        this.getHeaderLabel());
+    }).bind(this));
   }
 
-  dataView.onRowCountChanged.subscribe((function (e, args)
+  dataView.onRowCountChanged.subscribe(function (e, args)
                                        {
-                                         this.trigger(applicationEvents.onRowsChanged,
-                                                      args);
-                                       }).bind(this));
+                                         this.grid.updateRowCount();
+                                         this.grid.render();
+                                         this.trigger(applicationEvents.onRowsChanged, args);
+                                       }.bind(this));
+
+  dataView.onRowsChanged.subscribe(function (e, args)
+                                   {
+                                     this.grid.invalidateRows(args.rows);
+                                     this.grid.render();
+                                   }.bind(this));
+
+  dataView.onPagingInfoChanged.subscribe(function (e, pagingInfo)
+                                         {
+                                           this.grid.updatePagingStatusFromView(pagingInfo);
+                                         }.bind(this));
 
   var columnPickerConfig = colManager.picker;
 
@@ -1467,28 +1501,17 @@ Viewer.prototype.refreshColumns = function (_fields)
   {
     var field = _fields[fi];
     var fieldKey = field.getID();
+    var fieldName = field.getName();
     var colOpts = this.getOptionsForColumn(fieldKey);
     var cssClass = colOpts.cssClass;
     var datatype = field.getDatatype();
-    var filterable = (colManager.filterable === true);
 
-    if (colOpts)
-    {
-      if (colOpts.filterable === true)
-      {
-        filterable = true;
-      }
-      else if (colOpts.filterable === false)
-      {
-        filterable = false;
-      }
-    }
-
-    // We're extending the column properties a little here.
+    // We're extending the column properties a little here.  The 'id' and
+    // 'field' attributes are used by SlickGrid.
     var columnObject =
       {
         id: fieldKey,
-        name: field.getName(),
+        name: fieldName,
         field: fieldKey,
         formatter: colOpts.formatter,
         valueFormatter: colOpts.valueFormatter
@@ -1499,21 +1522,16 @@ Viewer.prototype.refreshColumns = function (_fields)
         asyncPostRender: colOpts.asyncFormatter,
         cssClass: cssClass,
         description: field.getDescription(),
-        resizable: colManager.resizable,
-        sortable: colOpts.sortable ? colOpts.sortable : true,
+        resizable: this.isPropertyFlagSet(fieldName,
+                                          PROPERTY_KEYS.resizable),
+        sortable: this.isPropertyFlagSet(fieldName, PROPERTY_KEYS.sortable),
 
         // VOTable attributes.
         unit: field.getUnit(),
         utype: field.getUType(),
-        filterable: filterable,
         comparer: colOpts.comparer ? colOpts.comparer :
                   new opencadcVOComparer.Comparer()
       };
-
-    // Default is to be sortable.
-    columnObject.sortable =
-      ((colOpts.sortable != null) && (colOpts.sortable != undefined))
-        ? colOpts.sortable : true;
 
     if (datatype)
     {
@@ -1632,7 +1650,7 @@ Viewer.prototype.render = function ()
     gridContainer.resizable();
   }
 
-  g.init();
+  // g.init();
 };
 
 /**
@@ -1737,5 +1755,8 @@ Viewer.prototype.getDefaultColumnIDs = function ()
   return this.options.defaultColumnIDs;
 };
 
-module.exports.Viewer = Viewer;
-module.exports.events = applicationEvents;
+if (typeof module !== 'undefined' && module.exports)
+{
+  module.exports.Viewer = Viewer;
+  module.exports.events = applicationEvents;
+}
