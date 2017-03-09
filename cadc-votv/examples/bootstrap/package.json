@@ -1,0 +1,23 @@
+{
+  "name": "opencadc-votv",
+  "version": "1.1.0",
+  "description": "OpenCADC JavaScript libraries to display a VOTable",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "browserify": "^13.3.0",
+    "uglify": "^2.7.5",
+    "opencadc-votv": "file:../../opencadc.votv.js"
+  },
+  "scripts": {
+    "test": "mocha -r jsdom-global/register"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/opencadc/web"
+  },
+  "author": "OpenCADC - Dustin Jenkins",
+  "license": "GPL-3.0",
+  "directories": {
+    "test": "test"
+  }
+}

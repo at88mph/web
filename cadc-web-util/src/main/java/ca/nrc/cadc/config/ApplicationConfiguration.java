@@ -20,19 +20,22 @@ public class ApplicationConfiguration
 {
     private static final Logger LOGGER = Logger
             .getLogger(ApplicationConfiguration.class);
-    private final CombinedConfiguration configuration;
+    final CombinedConfiguration configuration;
 
-    public ApplicationConfiguration(String filePath)
+    public ApplicationConfiguration(final String filePath)
     {
-        this();
+        configuration = new CombinedConfiguration();
+
         final Parameters parameters = new Parameters();
         final FileBasedConfigurationBuilder builder =
-                new FileBasedConfigurationBuilder(
+                new FileBasedConfigurationBuilder<>(
                         PropertiesConfiguration.class)
-                .configure(parameters.properties().setFileName(filePath));
+                        .configure(parameters.properties()
+                                           .setFileName(filePath));
 
         try
         {
+            configuration.addConfiguration(new SystemConfiguration());
             configuration.addConfiguration((Configuration) builder
                     .getConfiguration());
         }
@@ -43,12 +46,6 @@ public class ApplicationConfiguration
                     filePath));
         }
 
-    }
-
-    public ApplicationConfiguration()
-    {
-        configuration = new CombinedConfiguration();
-        configuration.addConfiguration(new SystemConfiguration());
     }
 
     public URI lookupServiceURI(String key, URI defaultValue)
