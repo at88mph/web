@@ -2747,6 +2747,7 @@ Viewer.prototype.init = function ()
   }
 
   this.sort();
+  this.grid.init();
 };
 
 /**

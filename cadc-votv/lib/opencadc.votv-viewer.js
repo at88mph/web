@@ -1456,6 +1456,7 @@ Viewer.prototype.init = function ()
     this.resetColumnWidths();
   }
 
+  this.grid.init();
   this.sort();
 };
 
@@ -1649,8 +1650,6 @@ Viewer.prototype.render = function ()
   {
     gridContainer.resizable();
   }
-
-  // g.init();
 };
 
 /**
