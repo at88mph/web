@@ -17,9 +17,6 @@
     }
   });
 
-
-
-
   /**
    * AladinLite footprint viewer.  This is incorporated as a Plugin to allow
    *

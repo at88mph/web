@@ -79,15 +79,6 @@ function Viewer(_targetNodeSelector, _opts)
   this.updatedColumnSelects = {};
   this.targetNodeSelector = _targetNodeSelector;
 
-  // displayColumns: columns that are actually in the Grid.
-  // var _columnFilterPluginName = options.columnFilterPluginName || 'default';
-  // var _columnOptions = options.columnOptions ? options.columnOptions : {};
-
-  // this.options.forceFitColumns = options.columnManager
-  //   ? options.columnManager.forceFitColumns
-  //   : false;
-  // this.options.asyncPostRenderDelay = options.asyncPostRenderDelay || 0;
-
   // This is the TableData for a VOTable.  Will be set on load.
   this.longestValues = {};
 
@@ -163,8 +154,7 @@ Viewer.prototype.build = function (input)
     // streaming has begun
     if ($gridHeaderIcon)
     {
-      $gridHeaderIcon.attr('src',
-                           'cadcVOTV/images/PleaseWait-small.gif');
+      $gridHeaderIcon.attr('src', 'cadcVOTV/images/PleaseWait-small.gif');
     }
   }
 
@@ -878,34 +868,26 @@ Viewer.prototype.setupHeader = function (checkboxSelector, args)
 
   // Display the label for the checkbox column filter row.
   if (checkboxSelector
-      && (args.column.id == checkboxSelector.getColumnDefinition().id))
+      && (args.column.id === checkboxSelector.getColumnDefinition().id))
   {
     $('<div class="filter-boxes-label" '
-      +
-      'title="Enter values into the boxes to further filter results.">Filter:</div>').appendTo(args.node);
+      +'title="Enter values into the boxes to further filter results.">Filter:</div>')
+      .appendTo(args.node);
   }
   // Do not display for the checkbox column.
   else if (this.isFilterable(args.column))
   {
-    var datatype = args.column.datatype;
-    var tooltipTitle;
-
-    if (datatype.isNumeric())
-    {
-      tooltipTitle =
-        'Number: 10 or >=10 or 10..20 for a range , ! to negate';
-    }
-    else
-    {
-      tooltipTitle = 'String: Substring match , ! to negate matches';
-    }
+    var col = args.column;
+    var tooltipTitle = col.datatype.isNumeric()
+      ? 'Number: 10 or >=10 or 10..20 for a range , ! to negate'
+      : 'String: Substring match , ! to negate matches';
 
     var $filterInput =
       $('<input type="text">')
-        .data('columnId', args.column.id)
-        .val(this.getColumnFilters()[args.column.id])
+        .data('columnId', col.id)
+        .val(this.getColumnFilters()[col.id])
         .attr('title', tooltipTitle)
-        .attr('id', args.column.id + '_filter')
+        .attr('id', col.id + '_filter')
         .addClass('form-control').addClass('cadcvotv-filter-input')
         .appendTo(args.node);
 

@@ -1,207 +1,194 @@
+'use strict';
+
 /**
  * CADC VOTable viewer plugin to hook into the filter input boxes to suggest
  * data from the grid as the user types.
  *
- * @param _viewer     The cadc.vot.Viewer object containing data.
- *
- * jenkinsd 2014.12.01
+ * @param {Object} _inputs  Object to hold the following optional items:
+ *   {returnCount      The optional maximum number of items to return.}
+ * @constructor
  */
-(function ($)
+function SuggestFilter(_inputs)
 {
-  // register namespace
-  $.extend(true, $.fn, {
-    "cadcVOTV_filter_suggest": cadcVOTV_filter_suggest
-  });
+  var $inputField = $(this);
+  var suggestionKeys = [];
+  var columnID = $inputField.data("columnId");
+
+  function filter(val, closeAutocompleteFlag)
+  {
+    if (closeAutocompleteFlag)
+    {
+      $inputField.autocomplete("close");
+    }
+
+    _viewer.doFilter(val, columnID);
+
+    var grid = _viewer.getGrid();
+    grid.invalidateAllRows();
+    grid.resizeCanvas();
+  }
 
   /**
-   * Make use of autocomplete suggestions on filtering.
+   * Verify whether to match against all of the data, or only the current
+   * subset (already filtered by another column).
    *
-   * @param _viewer           The VOTable viewer object.
-   * @param _returnCount      The optional maximum number of items to return.
-   * @constructor
+   * The logic is to check the current column filters in the Viewer, and if
+   * there is just one (the driver filter), and it is this current column
+   * filter, then match against the entire data set.
+   *
+   * @returns {boolean|*}
    */
-  function cadcVOTV_filter_suggest(_viewer, _returnCount)
+  function matchAgainstFullData()
   {
-    var $inputField = $(this);
-    var suggestionKeys = [];
-    var columnID = $inputField.data("columnId");
+    // Existing column filters.  We need this to
+    // check if we should match against what is
+    // in the Grid only, or to go back and match
+    // against the full set of data.
+    //
+    // This is done by checking if there is a
+    // single column filter in play, and if it
+    // matches this one.
+    //
+    // jenkinsd 2014.12.15
+    var existingColumnFilters = _viewer.getColumnFilters();
 
+    var keyCount = 0;
 
-    function filter(val, closeAutocompleteFlag)
+    for (var k in existingColumnFilters)
     {
-      if (closeAutocompleteFlag)
+      if (existingColumnFilters.hasOwnProperty(k)
+          && existingColumnFilters[k])
       {
-        $inputField.autocomplete("close");
+        keyCount++;
       }
-
-      _viewer.doFilter(val, columnID);
-
-      var grid = _viewer.getGrid();
-      grid.invalidateAllRows();
-      grid.resizeCanvas();
     }
 
-    /**
-     * Verify whether to match against all of the data, or only the current
-     * subset (already filtered by another column).
-     *
-     * The logic is to check the current column filters in the Viewer, and if
-     * there is just one (the driver filter), and it is this current column
-     * filter, then match against the entire data set.
-     *
-     * @returns {boolean|*}
-     */
-    function matchAgainstFullData()
+    return ((keyCount === 0)
+            || ((keyCount === 1) && existingColumnFilters[columnID]));
+  }
+
+  $inputField.on("change keyup", function (event)
+  {
+    var trimmedVal = $.trim($inputField.val());
+
+    // Clear it if the input is cleared.
+    if (!trimmedVal || (trimmedVal === ''))
     {
-      // Existing column filters.  We need this to
-      // check if we should match against what is
-      // in the Grid only, or to go back and match
-      // against the full set of data.
-      //
-      // This is done by checking if there is a
-      // single column filter in play, and if it
-      // matches this one.
-      //
-      // jenkinsd 2014.12.15
-      var existingColumnFilters =
-          _viewer.getColumnFilters();
-
-      var keyCount = 0;
-
-      for (var k in existingColumnFilters)
-      {
-        if (existingColumnFilters.hasOwnProperty(k)
-            && existingColumnFilters[k])
-        {
-          keyCount++;
-        }
-      }
-
-      return ((keyCount === 0)
-              || ((keyCount === 1) && existingColumnFilters[columnID]));
+      _viewer.getColumnFilters()[columnID] = '';
+      filter("", true);
     }
+  });
 
-    $inputField.on("change keyup", function (event)
-    {
-      var trimmedVal = $.trim($inputField.val());
+  // Autocomplete the items from the Grid's data.
+  $inputField.autocomplete({
+                             // Define the minimum search string length
+                             // before the suggested values are shown.
+                             minLength: 1,
 
-      // Clear it if the input is cleared.
-      if (!trimmedVal || (trimmedVal === ''))
-      {
-        _viewer.getColumnFilters()[columnID] = '';
-        filter("", true);
-      }
-    });
+                             // Define callback to format results
+                             source: function (req, callback)
+                             {
+                               var enteredValue = req.term;
 
-    // Autocomplete the items from the Grid's data.
-    $inputField.autocomplete({
-                               // Define the minimum search string length
-                               // before the suggested values are shown.
-                               minLength: 1,
+                               // Reset each time as they type.
+                               suggestionKeys = [];
 
-                               // Define callback to format results
-                               source: function (req, callback)
+                               // Conditional logic to not use autocomplete, such as range searches.
+                               var trimmedVal = $.trim(enteredValue);
+                               var space = " ";
+                               var numericRangeSearchRegex = /^(>|<|=)/i;
+                               var rangeSearchString = "..";
+                               var endsWithSpace =
+                                   (enteredValue.indexOf(space,
+                                                         (enteredValue.length - space.length)) !== -1);
+
+                               // Ends with space, so exact match.
+                               if (endsWithSpace
+                                   || trimmedVal.match(numericRangeSearchRegex)
+                                   || (trimmedVal.indexOf(rangeSearchString) !== -1))
                                {
-                                 var enteredValue = req.term;
+                                 // Exact match on space at end.
+                                 filter(trimmedVal, true);
+                               }
+                               // Clear it if the input is cleared.
+                               else if (!trimmedVal || (trimmedVal === ''))
+                               {
+                                 filter("", true);
+                               }
+                               else
+                               {
+                                 var grid = _viewer.getGrid();
+                                 var dataView = grid.getData();
+                                 var uniqueItems = [];
+                                 var columnFilterObject = {};
+                                 var fullDataMatch =
+                                     matchAgainstFullData();
 
-                                 // Reset each time as they type.
-                                 suggestionKeys = [];
+                                 var l = fullDataMatch ?
+                                         dataView.getItems().length :
+                                         dataView.getLength();
 
-                                 // Conditional logic to not use autocomplete, such as range searches.
-                                 var trimmedVal = $.trim(enteredValue);
-                                 var space = " ";
-                                 var numericRangeSearchRegex = /^(>|<|=)/i;
-                                 var rangeSearchString = "..";
-                                 var endsWithSpace =
-                                     (enteredValue.indexOf(space,
-                                                           (enteredValue.length - space.length)) !== -1);
+                                 columnFilterObject[columnID] = enteredValue;
 
-                                 // Ends with space, so exact match.
-                                 if (endsWithSpace
-                                     || trimmedVal.match(numericRangeSearchRegex)
-                                     || (trimmedVal.indexOf(rangeSearchString) !== -1))
+                                 for (var ii = 0; ((ii < l)
+                                               && (!_returnCount
+                                                   || (suggestionKeys.length <= _returnCount))); ii++)
                                  {
-                                   // Exact match on space at end.
-                                   filter(trimmedVal, true);
-                                 }
-                                 // Clear it if the input is cleared.
-                                 else if (!trimmedVal || (trimmedVal === ''))
-                                 {
-                                   filter("", true);
-                                 }
-                                 else
-                                 {
-                                   var grid = _viewer.getGrid();
-                                   var dataView = grid.getData();
-                                   var uniqueItems = [];
-                                   var columnFilterObject = {};
-                                   var fullDataMatch =
-                                       matchAgainstFullData();
+                                   var item = fullDataMatch
+                                       ? dataView.getItemByIdx(ii)
+                                       : dataView.getItem(ii);
+                                   var nextItem =
+                                       _viewer.formatCellValue(item, grid,
+                                                               columnID);
 
-                                   var l = fullDataMatch ?
-                                           dataView.getItems().length :
-                                           dataView.getLength();
-
-                                   columnFilterObject[columnID] = enteredValue;
-
-                                   for (var ii = 0; ((ii < l)
-                                                 && (!_returnCount
-                                                     || (suggestionKeys.length <= _returnCount))); ii++)
+                                   if (!uniqueItems[nextItem]
+                                       && _viewer.searchFilter(
+                                           item,
+                                           {
+                                             columnFilters: columnFilterObject,
+                                             grid: grid,
+                                             doFilter: _viewer.valueFilters,
+                                             formatCellValue: _viewer.formatCellValue
+                                           }))
                                    {
-                                     var item = fullDataMatch
-                                         ? dataView.getItemByIdx(ii)
-                                         : dataView.getItem(ii);
-                                     var nextItem =
-                                         _viewer.formatCellValue(item, grid,
-                                                                 columnID);
-
-                                     if (!uniqueItems[nextItem]
-                                         && _viewer.searchFilter(
-                                             item,
-                                             {
-                                               columnFilters: columnFilterObject,
-                                               grid: grid,
-                                               doFilter: _viewer.valueFilters,
-                                               formatCellValue: _viewer.formatCellValue
-                                             }))
-                                     {
-                                       uniqueItems[nextItem] = true;
-                                       suggestionKeys.push(nextItem);
-                                     }
+                                     uniqueItems[nextItem] = true;
+                                     suggestionKeys.push(nextItem);
                                    }
                                  }
-
-                                 //var uniqueKeys = suggestionKeys.filter(onlyUnique);
-
-                                 // For a single available value, pre select it.
-                                 if (suggestionKeys.length == 1)
-                                 {
-                                   filter(suggestionKeys[0], false);
-                                 }
-
-                                 callback(suggestionKeys);
-                               },
-                               select: function (event, ui)
-                               {
-                                 filter(($.trim(ui.item.value) || ""), true);
                                }
-                             }).blur(function(e)
+
+                               //var uniqueKeys = suggestionKeys.filter(onlyUnique);
+
+                               // For a single available value, pre select it.
+                               if (suggestionKeys.length == 1)
+                               {
+                                 filter(suggestionKeys[0], false);
+                               }
+
+                               callback(suggestionKeys);
+                             },
+                             select: function (event, ui)
+                             {
+                               filter(($.trim(ui.item.value) || ""), true);
+                             }
+                           }).blur(function(e)
+                                       {
+                                         var enteredValue =
+                                             $.trim($inputField.val());
+
+                                         if (enteredValue)
                                          {
-                                           var enteredValue =
-                                               $.trim($inputField.val());
+                                           // Exact match on blur.
+                                           filter(enteredValue, true);
+                                         }
+                                         else
+                                         {
+                                           filter("", true);
+                                         }
+                                       });
+}
 
-                                           if (enteredValue)
-                                           {
-                                             // Exact match on blur.
-                                             filter(enteredValue, true);
-                                           }
-                                           else
-                                           {
-                                             filter("", true);
-                                           }
-                                         });
-
-    return this;
-  }
-})(jQuery);
-
+module.exports {
+  'SuggestFilter': SuggestFilter,
+  'suggest': SuggestFilter
+};
