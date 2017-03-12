@@ -45,6 +45,12 @@ describe('StringUtil.format', function ()
                                     ["ONE", "TWO"]),
                  "Val ONE is TWO but not {3}");
   });
+
+  it ('Formatted number inserts should match.', function ()
+  {
+    assert.equal(testSubject.format("Zero {1} and one {2}", [0, 1]),
+                 "Zero 0 and one 1");
+  });
 });
 
 describe('StringUtil.matches', function ()
@@ -311,5 +317,117 @@ describe('Array sort objects', function ()
                          name: 'four'
                        }
                      ], testSubject.sort(testSource, 'name'));
+  });
+});
+
+describe('BooleanUtil true values.', function ()
+{
+  var testSubject = new opencadcJS.BooleanUtil();
+
+  it ('Check base primitive.', function ()
+  {
+    assert.ok(testSubject.isTrueValue(true));
+    assert.ok(testSubject.isTrueValue(1), 'Check value of 1.');
+  });
+
+  it ('Check for "y"', function ()
+  {
+    assert.ok(testSubject.isTrueValue('y'), 'Check for "y"');
+  });
+
+  it ('Check for "Y"', function ()
+  {
+    assert.ok(testSubject.isTrueValue('Y'), 'Check for "Y"');
+  });
+
+  it ('Check for "yes"', function ()
+  {
+    assert.ok(testSubject.isTrueValue('Yes'), 'Check for "Yes"');
+    assert.ok(testSubject.isTrueValue('yEs'), 'Check for "yEs"');
+  });
+
+  it ('Check string "true"', function ()
+  {
+    assert.ok(testSubject.isTrueValue('true'));
+  });
+
+  it ('Check string "false"', function ()
+  {
+    assert.ok(testSubject.isTrueValue('false') === false);
+  });
+
+  it ('Check string "no"', function ()
+  {
+    assert.ok(testSubject.isTrueValue('no') === false);
+  });
+
+  it ('Check string "n"', function ()
+  {
+    assert.ok(testSubject.isTrueValue('n') === false);
+  });
+});
+
+describe('BooleanUtil false values.', function ()
+{
+  var testSubject = new opencadcJS.BooleanUtil();
+
+  it ('Check for empty string', function()
+  {
+    assert.ok(testSubject.isTrueValue('') === false);
+    assert.ok(testSubject.isFalseValue(''));
+  });
+
+  it ('Check for undefined', function()
+  {
+    assert.ok(testSubject.isTrueValue(undefined) === false);
+    assert.ok(testSubject.isFalseValue(undefined) === false);
+  });
+
+  it ('Check for null', function()
+  {
+    assert.ok(testSubject.isTrueValue(null) === false);
+    assert.ok(testSubject.isFalseValue(null) === false);
+  });
+
+  it ('Check base primitive.', function ()
+  {
+    assert.ok(testSubject.isFalseValue(false));
+    assert.ok(testSubject.isFalseValue(0), 'Check value of 0.');
+  });
+
+  it ('Check for "n"', function ()
+  {
+    assert.ok(testSubject.isFalseValue('n'), 'Check for "n"');
+  });
+
+  it ('Check for "Y"', function ()
+  {
+    assert.ok(testSubject.isFalseValue('N'), 'Check for "N"');
+  });
+
+  it ('Check for "no"', function ()
+  {
+    assert.ok(testSubject.isFalseValue('No'), 'Check for "No"');
+    assert.ok(testSubject.isFalseValue('nO'), 'Check for "nO"');
+  });
+
+  it ('Check string "false"', function ()
+  {
+    assert.ok(testSubject.isFalseValue('false'));
+  });
+
+  it ('Check string "true"', function ()
+  {
+    assert.ok(testSubject.isFalseValue('true') === false);
+  });
+
+  it ('Check string "yes"', function ()
+  {
+    assert.ok(testSubject.isFalseValue('yes') === false);
+  });
+
+  it ('Check string "y"', function ()
+  {
+    assert.ok(testSubject.isFalseValue('y') === false);
   });
 });

@@ -81,7 +81,8 @@ function StringUtil()
     return _str.replace(/{(\d+)}/g, function (match, number)
     {
       var index = (number - 1);
-      return _values[index] ? _values[index] : match;
+
+      return (_values[index] == null) ? match : _values[index];
     });
   };
 
@@ -124,6 +125,44 @@ function StringUtil()
       : new RegExp(expression, "gi");
 
     return regExp.test(_string);
+  };
+}
+
+/**
+ * Utility class to check for proper true or false values.
+ *
+ * @constructor
+ */
+function BooleanUtil()
+{
+  var _TRUTH_REGEX_ =
+    new RegExp('^' + '\\s*' + '\\b' + 'y[es]?|true' + '\\b' + '\\s*' + '$','i');
+  var _FALSE_REGEX_ =
+    new RegExp('^' + '\\s*' + '\\b' + 'n[o]?|false' + '\\b' + '\\s*' + '$','i');
+
+
+  /**
+   * Return whether the given value is true, or 'positive'.  This will test for
+   * things like 'true', true, 1, 'yes', 'y'.
+   *
+   * @param {*} _val
+   */
+  this.isTrueValue = function(_val)
+  {
+    return (_val == true)
+           || ((typeof _val === 'string') && _TRUTH_REGEX_.test(_val));
+  };
+
+  /**
+   * Return whether the given value is false, or 'negative'.  This will test for
+   * things like 'false', false, 0, 'no', 'n'.
+   *
+   * @param {*} _val
+   */
+  this.isFalseValue = function(_val)
+  {
+    return (_val == false)
+           || ((typeof _val === 'string') && _FALSE_REGEX_.test(_val));
   };
 }
 
@@ -368,6 +407,7 @@ function GUID()
 
 // Make findable.
 exports.StringUtil = StringUtil;
+exports.BooleanUtil = BooleanUtil;
 exports.ArrayUtil = ArrayUtil;
 exports.NumberFormat = NumberFormat;
 exports.GUID = GUID;

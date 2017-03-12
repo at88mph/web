@@ -1,8 +1,10 @@
 'use strict';
 
 var opencadcJSUtil = require('opencadc-js').util;
-var opencadcVOTable = require('../js/opencadc.votable');
+var opencadcVOTable = require('../lib/opencadc.votable');
 var xpath = require('xpath');
+
+require('jquery-csv');
 
 var readerEvents = {
   onDataLoadComplete: new jQuery.Event('opencadc-votv:onDataLoadComplete'),
@@ -12,6 +14,8 @@ var readerEvents = {
   onPageAddStart: new jQuery.Event('opencadc-votv:onPageAddStart'),
   onPageAddEnd: new jQuery.Event('opencadc-votv:onPageAddEnd')
 };
+
+var _DEFAULT_PAGE_SIZE_ = 50;
 
 /**
  * Object to handle creation of Row objects.
@@ -39,6 +43,24 @@ function RowBuilder()
     {
       longestValues[cellID] = stringLength;
     }
+  };
+
+  this.handleRowAddEvents = function (rowData, rowCount, pageSize)
+  {
+    // Used to calculate the page start and end based on the current row
+    // count.
+    var moduloPage = (rowCount % pageSize);
+
+    if (moduloPage === 1)
+    {
+      this.fireEvent(readerEvents.onPageAddStart);
+    }
+    else if (moduloPage === 0)
+    {
+      this.fireEvent(readerEvents.onPageAddEnd);
+    }
+
+    this.fireEvent(readerEvents.onRowAdd, {'rowData': rowData});
   };
 }
 
@@ -361,8 +383,8 @@ function VOTableXMLBuilder(input)
         }
 
         // var tableDataRows = [];
-        var rowDataDOMs = _getElements(nextTablePath
-                                       + '/DATA/TABLEDATA/TR');
+        var rowDataDOMs = _getElements(nextTablePath + '/DATA/TABLEDATA/TR');
+        var rowCount = 0;
 
         for (var rowIndex = 0, rowDataDOMLength = rowDataDOMs.length;
              rowIndex < rowDataDOMLength; rowIndex++)
@@ -381,9 +403,9 @@ function VOTableXMLBuilder(input)
           var rowData = this.buildRowData(tableFields, rowID, rowCellsDOM,
                                           longestValues, getCellData);
 
-          this.fireEvent(readerEvents.onRowAdd, {
-            rowData: rowData
-          });
+          rowCount++;
+
+          this.handleRowAddEvents(rowData, rowCount, _DEFAULT_PAGE_SIZE_);
         }
       }
     }
@@ -425,7 +447,7 @@ function CSVBuilder(input)
 
   var _longestValues = {};
   var _chunk = {lastMatch: 0, rowCount: 0};
-  var _pageSize = input.pageSize || null;
+  var _pageSize = input.pageSize || _DEFAULT_PAGE_SIZE_;
 
   this.init = function ()
   {
@@ -500,23 +522,7 @@ function CSVBuilder(input)
                                       return rowData[index].trim();
                                     });
 
-    if (_pageSize)
-    {
-      // Used to calculate the page start and end based on the current row
-      // count.
-      var moduloPage = (_chunk.rowCount % _pageSize);
-
-      if (moduloPage === 1)
-      {
-        this.fireEvent(readerEvents.onPageAddStart);
-      }
-      else if (moduloPage === 0)
-      {
-        this.fireEvent(readerEvents.onPageAddEnd);
-      }
-    }
-
-    this.fireEvent(readerEvents.onRowAdd, rowData);
+    this.handleRowAddEvents(rowData, _chunk.rowCount, _pageSize);
   };
 
   this.loadEnd = function ()
@@ -693,15 +699,18 @@ BuilderFactory.prototype.createBuilder = function (input)
   return new this.builderClass(input);
 };
 
-// Exposed for testing.
-exports._test = {
-  RowBuilder: RowBuilder,
-  VOTableXMLBuilder: VOTableXMLBuilder,
-  CSVBuilder: CSVBuilder,
-  XPathEvaluator: XPathEvaluator
-};
+if (typeof module !== 'undefined' && module.exports)
+{
+  // Exposed for testing.
+  module.exports._test = {
+    RowBuilder: RowBuilder,
+    VOTableXMLBuilder: VOTableXMLBuilder,
+    CSVBuilder: CSVBuilder,
+    XPathEvaluator: XPathEvaluator
+  };
 
-exports.BuilderFactory = BuilderFactory;
+  module.exports.BuilderFactory = BuilderFactory;
 
-// Use the jQuery.Event API as it simplifies things.
-exports.events = readerEvents;
+  // Use the jQuery.Event API as it simplifies things.
+  module.exports.events = readerEvents;
+}

@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var opencadcVO = require('../js/opencadc.votable');
+var opencadcVO = require('../lib/opencadc.votable');
 
 describe('Metadata functions.', function ()
 {

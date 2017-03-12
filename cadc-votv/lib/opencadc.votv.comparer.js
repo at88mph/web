@@ -94,4 +94,7 @@ function Comparer(__sortColumn, __isNumeric)
   };
 }
 
-exports.Comparer = Comparer;
+if (typeof module !== 'undefined' && module.exports)
+{
+  module.exports.Comparer = Comparer;
+}

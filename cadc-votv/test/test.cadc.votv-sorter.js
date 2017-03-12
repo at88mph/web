@@ -141,8 +141,8 @@ global.window = window;
 var xmldom = require('xmldom');
 var assert = require('assert');
 
-var opencadcVOComparer = require('../js/cadc.votv.comparer');
-var opencadcVOViewer = require('../js/opencadc.votv-viewer');
+var opencadcVOComparer = require('../lib/opencadc.votv.comparer');
+var opencadcVOViewer = require('../lib/opencadc.votv-viewer');
 
 // Create a DOM to pass in.
 var xmlDOM = (new xmldom.DOMParser()).parseFromString(xmlData, 'text/xml');

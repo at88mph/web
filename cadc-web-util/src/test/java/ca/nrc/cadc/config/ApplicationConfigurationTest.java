@@ -62,144 +62,97 @@
  *  <http://www.gnu.org/licenses/>.      pas le cas, consultez :
  *                                       <http://www.gnu.org/licenses/>.
  *
- *  $Revision: 4 $
  *
  ************************************************************************
  */
-(function ($)
+
+package ca.nrc.cadc.config;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.junit.After;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+
+public class ApplicationConfigurationTest
 {
-  // register namespace
-  $.extend(true, window, {
-    "org": {
-      "opencadc": {
-        "StringUtil": StringUtil
-      }
-    }
-  });
-
-
-  /**
-   * Basic String utility class.
-   *
-   * @constructor
-   */
-  function StringUtil()
-  {
-    /**
-     * Obtain whether the given string has any length (i.e. > 0).
-     * @param _str          The string to check.
-     * @returns {boolean}
-     */
-    function hasLength(_str)
+    @After
+    public void reset() throws Exception
     {
-      return ((_str != null) && (_str.length > 0));
+        System.clearProperty(ApplicationConfiguration.class.getCanonicalName()
+                             + ".PROP1");
     }
 
-    /**
-     * Obtain whether the given string has any text (i.e. !== '').
-     * @param _str          The string to check.
-     * @returns {boolean}
-     */
-    function hasText(_str)
+    @Test
+    public void pullSystemProperty() throws Exception
     {
-      var wrapper = String(_str);
-      return hasLength(wrapper) && (wrapper.trim() !== "");
+        final File tmpConfigFile = File.createTempFile("config-",
+                                                       ".properties");
+        final FileOutputStream fos = new FileOutputStream(tmpConfigFile);
+
+        fos.write("PROP2=VAL2\n".getBytes("UTF-8"));
+        fos.write((ApplicationConfiguration.class.getCanonicalName()
+                   + ".PROP1=VAL21").getBytes("UTF-8"));
+
+        fos.flush();
+        fos.close();
+
+        System.setProperty(ApplicationConfiguration.class.getCanonicalName()
+                           + ".PROP1", "VAL1");
+
+        final ApplicationConfiguration testSubject =
+                new ApplicationConfiguration(tmpConfigFile.getPath());
+
+        final Parameters parameters = new Parameters();
+
+        final FileBasedConfigurationBuilder<PropertiesConfiguration> builder =
+                new FileBasedConfigurationBuilder<>(
+                        PropertiesConfiguration.class).configure(
+                        parameters.fileBased().setFile(tmpConfigFile));
+
+        final List<String> results = testSubject.lookup(
+                ApplicationConfiguration.class.getCanonicalName()
+                + ".PROP1");
+        final List<String> expected = new ArrayList<>();
+
+        expected.add("VAL1");
+        expected.add("VAL21");
+
+        assertEquals("Wrong value.", expected, results);
     }
 
-    /**
-     * Format the given string.
-     *
-     * Given the string:
-     *
-     * {code}
-     * var str = 'My name is {1} and I am {2} years old';
-     * new org.opencadc.StringUtil().format(str, 'George', 39);
-     * {code}
-     *
-     * would return:
-     *
-     * My name is George and I am 39 years old
-     *
-     * Indexes begin at 1, NOT 0.
-     *
-     * @param _str                The string to check.
-     * @param _values {Array}     The values to replace.
-     * @returns {string}
-     */
-    function format(_str, _values)
+    @Test
+    public void pullFileProperty() throws Exception
     {
-      // Create new string to not modify the original.
-      return _str.replace(/{(\d+)}/g, function (match, number)
-      {
-        var index = (number - 1);
-        return _values[index] ? _values[index] : match;
-      });
+        final File tmpConfigFile = File.createTempFile("config-",
+                                                       ".properties");
+        final FileOutputStream fos = new FileOutputStream(tmpConfigFile);
+
+        fos.write("PROP2=VAL2\n".getBytes("UTF-8"));
+        fos.write("PROP1=VAL11".getBytes("UTF-8"));
+
+        fos.flush();
+        fos.close();
+
+        final ApplicationConfiguration testSubject =
+                new ApplicationConfiguration(tmpConfigFile.getPath());
+
+        final Parameters parameters = new Parameters();
+
+        final FileBasedConfigurationBuilder<PropertiesConfiguration> builder =
+                new FileBasedConfigurationBuilder<>(
+                        PropertiesConfiguration.class).configure(
+                        parameters.fileBased().setFile(tmpConfigFile));
+
+        assertEquals("Wrong value.", "VAL11",
+                     testSubject.lookup("PROP1"));
     }
-
-    /**
-     * Sanitize the given string for HTML.
-     *
-     * @param _str        String to sanitize.
-     * @returns {string}
-     */
-    function markupForHTML(_str)
-    {
-      return _str ? _str.toString().replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;").replace(/>/g, "&gt;") : "";
-    }
-
-    /**
-     * Obtain whether the given regex matches the given string.
-     *
-     * @param _regex        The regex to execute.
-     * @param _str          The string to execute against.
-     * @returns {boolean}
-     */
-    function matches(_regex, _str)
-    {
-      return new RegExp(_regex).test(_str);
-    }
-
-    /**
-     * Obtain whether the _string contains the given _str.
-     *
-     * @param _string         The String to check.
-     * @param _match          The string to see if is contained.
-     * @param _matchCase      Optionally match case.
-     * @returns {boolean}
-     */
-    function contains(_string, _match, _matchCase)
-    {
-      var expression = ".*" + _match + ".*";
-      var regExp = (_matchCase === true) ? new RegExp(expression)
-        : new RegExp(expression, "gi");
-
-      return regExp.test(_string);
-    }
-
-    $.extend(this,
-        {
-          "sanitize": markupForHTML,
-          "hasLength": hasLength,
-          "hasText": hasText,
-          "format": format,
-          "matches": matches,
-          "contains": contains
-        });
-  }
-
-  if ((typeof module !== 'undefined')
-      && (typeof module.exports !== 'undefined'))
-  {
-    module.exports._test_opencadc_js = {
-      "StringUtil": StringUtil
-    };
-  }
-  else
-  {
-    window._test_opencadc_js = {
-      "StringUtil": StringUtil
-    }
-  }
-
-})(jQuery);
+}
