@@ -11,7 +11,7 @@ var jQuery = $;
 var opencadcJSUtil = require('opencadc-js').util;
 
 require('slickgrid/lib/jquery.event.drag-2.3.0');
-require('slickgrid/lib/jquery-ui-1.11.3');
+require('slickgrid/lib/jquery-ui-1.11.4');
 require('slickgrid/slick.core');
 
 global.Slick = global.window.Slick;
@@ -32,7 +32,6 @@ var applicationEvents = {
   onColumnOrderReset: new jQuery.Event('opencadc-votv:onColumnOrderReset')
 };
 
-// var _DEFAULT_CELL_PADDING_PX_ = 8;
 var _CHECKBOX_SELECTOR_DEFAULT_WIDTH_ = 50;
 var _CHECKBOX_SELECTOR_COLUMN_ID_ = '_checkbox_selector';
 var _ROW_SELECT_DISABLED_KEY_ = '_ROW_SELECT_DISABLED_';
@@ -923,22 +922,7 @@ Viewer.prototype.setupHeader = function (checkboxSelector, args)
         .addClass('form-control').addClass('cadcvotv-filter-input')
         .appendTo(args.node);
 
-    // Story 1647
-    //
-    // Having a big if/else is really a bad idea, but I don't know how to
-    // dynamically specify a plugin name.
-    //
-    // jenkinsd 2014.12.03
-    //
-    if (this.getColumnFilterPluginName() === 'suggest')
-    {
-      $filterInput.cadcVOTV_filter_suggest(this,
-                                           this.options.suggest_maxRowCount);
-    }
-    else
-    {
-      $filterInput.cadcVOTV_filter_default(this);
-    }
+    $filterInput.quickFilter(this, this.getColumnManager().filterReturnCount);
   }
   else
   {
