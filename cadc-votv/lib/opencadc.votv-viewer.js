@@ -1,23 +1,14 @@
 'use strict';
 
-var w = (!window) ? this : window;
-if (!global.window)
-{
-  global.window = w;
-}
-
 var $ = require('jquery');
 var jQuery = $;
 var opencadcJSUtil = require('opencadc-js').util;
 
-require('slickgrid/lib/jquery.event.drag-2.3.0');
-require('slickgrid/lib/jquery-ui-1.11.4');
-require('slickgrid/slick.core');
+var Slick = require('slickgrid/slick.core-npm');
+global.Slick = Slick;
 
-global.Slick = global.window.Slick;
-
-require('slickgrid/slick.dataview');
-require('slickgrid/slick.grid');
+Slick.Data = require('slickgrid/slick.dataview-npm');
+Slick.Grid = require('slickgrid/slick.grid-npm');
 
 var opencadcVOBuilder = require('../lib/opencadc.votv-builder');
 var opencadcVOComparer = require('../lib/opencadc.votv.comparer');
@@ -982,14 +973,14 @@ Viewer.prototype.init = function ()
       oneClickDownloadURLColumnID: this.options.oneClickDownloadURLColumnID
     });
   }
-  else if (Slick.CheckboxSelectColumn)
-  {
-    checkboxSelector = new Slick.CheckboxSelectColumn({
-      cssClass: 'slick-cell-checkboxsel',
-      width: _CHECKBOX_SELECTOR_DEFAULT_WIDTH_,
-      headerCssClass: 'slick-header-column-checkboxsel'
-    });
-  }
+  // else if (Slick.CheckboxSelectColumn)
+  // {
+  //   checkboxSelector = new Slick.CheckboxSelectColumn({
+  //     cssClass: 'slick-cell-checkboxsel',
+  //     width: _CHECKBOX_SELECTOR_DEFAULT_WIDTH_,
+  //     headerCssClass: 'slick-header-column-checkboxsel'
+  //   });
+  // }
   else
   {
     checkboxSelector = null;

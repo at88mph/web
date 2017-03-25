@@ -9,10 +9,11 @@
     "jsdom": "^9.9.1",
     "jquery-csv": "^0.8.0",
     "opencadc-js": "^2.1.0",
+    "opencadc-votable": "^1.0.0",
     "slickgrid": "^2.3.0",
     "xpath": "^0.0.23"
   },
-  "main": "./index.js",
+  "main": "index.js",
   "devDependencies": {
     "jsdom-global": "^2.1.1",
     "xmldom": "^0.1.27",

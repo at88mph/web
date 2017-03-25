@@ -93,11 +93,10 @@ var xmlData_1_3 =
   + "</VOTABLE>";
 
 global.jQuery = require('jquery');
-global.$ = global.jQuery;
 
 var xmldom = require('xmldom');
 var assert = require('assert');
-var opencadcVOBuilder = require('../lib/opencadc.votv-builder');
+var opencadcVOBuilder = require('../lib/opencadc.votable-row-builder');
 
 describe('XPath resolution', function ()
 {
@@ -140,7 +139,7 @@ describe("Read in simple VOTable.", function ()
 
   // Create a DOM to pass in.
   var voTableBuilder =
-    new opencadcVOBuilder._test.VOTableXMLBuilder(
+    new opencadcVOBuilder._test.VOTableXMLRowBuilder(
       {data: xmlDOM, defaultNamespace: "http://www.ivoa.net/xml/VOTable/v1.2"});
 
   var _testComplete = function(e, args)

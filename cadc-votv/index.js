@@ -1,7 +1,13 @@
 'use strict';
 
-module.exports =
+(function ()
 {
-  viewer: require('./lib/opencadc.votv-viewer'),
-  votable: require('./lib/opencadc.votable')
-};
+  require('opencadc-votable');
+  require('opencadc-votable-row-builder');
+})();
+
+// module.exports =
+// {
+//   require('./lib/opencadc.votv-viewer');
+  // require('./lib/opencadc.votable');
+// };

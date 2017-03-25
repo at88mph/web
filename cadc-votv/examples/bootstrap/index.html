@@ -121,10 +121,10 @@
 <script type="application/javascript">
   $(document).ready(function ()
                     {
-                      var opencadcVOTV = require('opencadc-votv');
-                      var tableMetadata = new opencadcVOTV.votable.Metadata(null, null, null);
+//                      var opencadcVOTV = require('opencadc-votv');
+                      var tableMetadata = new Metadata(null, null, null);
 
-                      var _selector = new opencadcVOTV.votable.Field('_checkbox_selector',
+                      var _selector = new votable.Field('_checkbox_selector',
                         '_checkbox_selector', 'UCD_SELECT', 'UTYPE_SELECT',
                         null, null, null, null, null, '_checkbox_select');
                       var name = new opencadcVOTV.votable.Field('Name', 'Name', 'UCD1', 'UTYPE1', 'UNIT1',

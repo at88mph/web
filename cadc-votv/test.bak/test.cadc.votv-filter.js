@@ -84,8 +84,8 @@ var xmlData =
 
 global.jQuery = require('jquery');
 global.$ = global.jQuery;
-var window = {};
-global.window = window;
+// var window = {};
+// global.window = window;
 
 var xmldom = require('xmldom');
 var assert = require('assert');
@@ -98,7 +98,15 @@ var xmlDOM = (new xmldom.DOMParser()).parseFromString(xmlData, 'text/xml');
 var targetNode = document.createElement('div');
 targetNode.setAttribute('id', 'myGrid');
 
+$("head").append('<link rel="stylesheet" type="text/css" href="../css/slick.grid.css" />');
+
+// var styleSheet = document.createElement('link');
+// styleSheet.setAttribute('rel', 'stylesheet');
+// styleSheet.setAttribute('type', 'text/css');
+// styleSheet.setAttribute('href', '../css/slick.grid.css');
+
 document.body.appendChild(targetNode);
+// document.head.appendChild(styleSheet);
 
 // Create the options for the Grid.
 var options = {

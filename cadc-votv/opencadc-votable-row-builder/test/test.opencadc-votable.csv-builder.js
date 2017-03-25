@@ -1,9 +1,9 @@
 var assert = require('assert');
-var $ = jQuery = global.$ = require('jquery');
+var $ = global.jQuery = require('jquery');
 require('jquery-csv');
 
-var opencadcVOTable = require('../lib/opencadc.votable');
-var opencadcVOTableReader = require('../lib/opencadc.votv-builder');
+var opencadcVOTable = require('opencadc-votable');
+var opencadcVOTableReader = require('../lib/opencadc.votable-row-builder');
 
 describe("Read in simple CSV VOTable.", function ()
 {
@@ -36,7 +36,7 @@ describe("Read in simple CSV VOTable.", function ()
       pageSize: 3
     };
 
-  var testSubject = new opencadcVOTableReader._test.CSVBuilder(input);
+  var testSubject = new opencadcVOTableReader._test.CSVRowBuilder(input);
 
   it('Load data.', function ()
   {

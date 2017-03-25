@@ -1,0 +1,34 @@
+{
+  "name": "opencadc-votable-row-builder",
+  "version": "1.0.0",
+  "description": "Row builder to read in XML or CSV VOTable data and fire events when a row is available.",
+  "main": "lib/opencadc-votable-row-builder.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "opencadc-votable": "^1.0.1"
+  },
+  "scripts": {
+    "test": "mocha -r jsdom-global/register"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opencadc/web.git"
+  },
+  "keywords": [
+    "IVOA",
+    "VOTable"
+  ],
+  "devDependencies": {
+    "jsdom-global": "^2.1.1",
+    "xmldom": "^0.1.27",
+    "mocha": "^3.2.0"
+  },
+  "author": "Dustin N. Jenkins",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/opencadc/web/issues"
+  },
+  "homepage": "https://github.com/opencadc/web#readme"
+}
