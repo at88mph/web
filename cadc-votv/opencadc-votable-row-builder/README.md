@@ -1,23 +1,23 @@
-# OpenCADC Virtual Observatory Table model
+# OpenCADC Virtual Observatory Table Row Builder
 
-Version 1.0
+Version 1.0.1
 March 2017
 
-First built to support Version 1.2 of the specification, but should be adaptable to 1.3.
-
-Simple model for a VOTable.  It contains the most used portions of a VOTable.  Feel Free to extend or provide pull requests for further support of the IVOA specification.
+Row Builder class to stream data and fire events per row to notify a client subscribed to the appropriate events.
 
 ## Installation
 
 ```
-npm install opencadc-votable
+npm install opencadc-votable-row-builder
 ```
 
 ## Usage
 
 ```
-require('opencadc-votable');
+require('opencadc-votable-row-builder');
 
-var metaData = new Metadata(...);
+var rowBuilderFactory = new RowBuilderFactory.createBuilder('csv'|'xml');
+rowBuilderFactory.subscribe(...);
+
 ```
 
