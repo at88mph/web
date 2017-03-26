@@ -2,6 +2,7 @@
 
 var opencadcJSUtil = require('opencadc-js').util;
 var opencadcVOTable = require('opencadc-votable');
+var jQuery = require('jquery');
 var xpath = require('xpath');
 
 require('jquery-csv');
@@ -9,12 +10,12 @@ require('jquery-csv');
 (function ($, opencadcJSUtil, opencadcVOTable)
 {
   var readerEvents = {
-    onDataLoadComplete: new jQuery.Event('opencadc-votv:onDataLoadComplete'),
-    onRowAdd: new jQuery.Event('opencadc-votv:onRowAdd'),
+    onDataLoadComplete: new $.Event('opencadc-votv:onDataLoadComplete'),
+    onRowAdd: new $.Event('opencadc-votv:onRowAdd'),
 
     // For batch row adding.
-    onPageAddStart: new jQuery.Event('opencadc-votv:onPageAddStart'),
-    onPageAddEnd: new jQuery.Event('opencadc-votv:onPageAddEnd')
+    onPageAddStart: new $.Event('opencadc-votv:onPageAddStart'),
+    onPageAddEnd: new $.Event('opencadc-votv:onPageAddEnd')
   };
 
   var _DEFAULT_PAGE_SIZE_ = 50;

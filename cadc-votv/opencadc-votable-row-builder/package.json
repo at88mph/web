@@ -7,7 +7,11 @@
     "test": "test"
   },
   "dependencies": {
-    "opencadc-votable": "^1.0.1"
+    "opencadc-votable": "^1.0.1",
+    "jquery-csv": "^0.8.0",
+    "jquery": "^2.2.4",
+    "xpath": "^0.0.24",
+    "jsdom": "^9.12.0"
   },
   "scripts": {
     "test": "mocha -r jsdom-global/register"

@@ -1,6 +1,6 @@
 {
   "name": "opencadc-votable",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Simple VOTable model.",
   "main": "lib/opencadc.votable.js",
   "scripts": {
@@ -20,8 +20,8 @@
     "IVOA",
     "VOTable"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Dustin N. Jenkins",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/opencadc/web/issues"
   },

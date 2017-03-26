@@ -92,8 +92,6 @@ var xmlData_1_3 =
   + "  </RESOURCE>\n"
   + "</VOTABLE>";
 
-global.jQuery = require('jquery');
-
 var xmldom = require('xmldom');
 var assert = require('assert');
 var opencadcVOBuilder = require('../lib/opencadc.votable-row-builder');
@@ -134,8 +132,7 @@ describe('XPath resolution', function ()
 
 describe("Read in simple VOTable.", function ()
 {
-  var xmlDOM = (new xmldom.DOMParser()).parseFromString(xmlData_1_2,
-                                                        "text/xml");
+  var xmlDOM = (new xmldom.DOMParser()).parseFromString(xmlData_1_2, "text/xml");
 
   // Create a DOM to pass in.
   var voTableBuilder =
