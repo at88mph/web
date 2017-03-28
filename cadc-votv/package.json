@@ -6,12 +6,9 @@
     "browserify": "^13.3.0",
     "uglify-js": "^2.7.5",
     "jquery": "2.2.4",
-    "jsdom": "^9.9.1",
-    "jquery-csv": "^0.8.0",
     "opencadc-js": "^2.1.0",
     "opencadc-votable": "^1.0.0",
-    "slickgrid": "^2.3.0",
-    "xpath": "^0.0.23"
+    "slickgrid": "^2.3.0"
   },
   "main": "index.js",
   "devDependencies": {

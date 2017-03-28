@@ -114,7 +114,7 @@ require('jquery-csv');
       {
         var num;
 
-        if (!stringValue || ($.trim(stringValue) == ''))
+        if (!stringValue || ($.trim(stringValue) === ''))
         {
           num = Number.NaN;
         }
@@ -266,7 +266,7 @@ require('jquery-csv');
      */
     this._init = function ()
     {
-      if (_xmlDOM.documentElement.nodeName == 'parsererror')
+      if (_xmlDOM.documentElement.nodeName === 'parsererror')
       {
         throw new Error('cadcVOTV: XML input is invalid.\n\n');
       }
@@ -355,7 +355,7 @@ require('jquery-csv');
             var xmlFieldID = fieldDOM.getAttribute('id');
             var xmlFieldUType = fieldDOM.getAttribute('utype');
             var xmlFieldName = fieldDOM.getAttribute('name');
-            var fieldID = (xmlFieldID && (xmlFieldID != ''))
+            var fieldID = (xmlFieldID && (xmlFieldID !== ''))
               ? xmlFieldID : xmlFieldName;
 
             longestValues[fieldID] = -1;

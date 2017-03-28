@@ -141,7 +141,7 @@ global.window = window;
 var xmldom = require('xmldom');
 var assert = require('assert');
 
-var opencadcVOComparer = require('../lib/opencadc.votv.comparer');
+var opencadcVOComparer = require('../opencadc-votable-compare-engine/lib/opencadc.votable-compare-engine.js');
 var opencadcVOViewer = require('../lib/opencadc.votv-viewer');
 
 // Create a DOM to pass in.

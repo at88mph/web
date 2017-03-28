@@ -55,7 +55,7 @@ var opencadcJSUtil = require('opencadc-js').util;
 
     this.hasFieldWithID = function (_fieldID)
     {
-      return (this.getField(_fieldID) != null);
+      return (this.getField(_fieldID) !== null);
     };
 
     /**
@@ -83,15 +83,51 @@ var opencadcJSUtil = require('opencadc-js').util;
     };
   }
 
-  function Datatype(_datatypeValue)
+  function DataTypeFactory()
   {
-    var datatypeValue = _datatypeValue || 'VARCHAR';
+    /**
+     * Our Factory method for creating new DataType instances.
+     *
+     * @param input
+     * @returns {CSVRowBuilder|*|VOTableXMLRowBuilder}
+     */
+    DataTypeFactory.prototype.createDataType = function (input)
+    {
+      switch (input.type)
+      {
+        case 'xml':
+        {
+          this.builderClass = VOTableXMLRowBuilder;
+          break;
+        }
 
-    var stringTypes = ["varchar", "char", "adql:VARCHAR", "adql:CLOB",
-                       "adql:REGION"];
-    var integerTypes = ["int", "long", "short"];
-    var floatingPointTypes = ["float", "double", "adql:DOUBLE", "adql:FLOAT"];
-    var timestampTypes = ["timestamp", "adql:TIMESTAMP"];
+        case 'csv':
+        {
+          this.builderClass = CSVRowBuilder;
+          break;
+        }
+
+        // Defaults to RowBuilderFactory.prototype.builderClass (VOTableXMLBuilder)
+        default:
+        {
+          this.builderClass = VOTableXMLRowBuilder;
+          break;
+        }
+      }
+
+      return new this.builderClass(input);
+    };
+
+    module.exports.DataTypeFactory = DataTypeFactory;
+  }
+
+  function DataType(_datatypeValue)
+  {
+    var datatypeValue = _datatypeValue || 'varchar';
+    var stringTypes = ['varchar', 'char', 'adql:VARCHAR', 'adql:CLOB', 'adql:REGION'];
+    var integerTypes = ['int', 'long', 'short'];
+    var floatingPointTypes = ['float', 'double', 'adql:DOUBLE', 'adql:FLOAT'];
+    var timestampTypes = ['timestamp', 'adql:TIMESTAMP'];
 
 
     this.isNumeric = function ()
@@ -113,7 +149,7 @@ var opencadcJSUtil = require('opencadc-js').util;
 
     this.isBoolean = function ()
     {
-      return datatypeValue == "boolean";
+      return datatypeValue === 'boolean';
     };
 
     this.isFloatingPointNumeric = function ()
@@ -145,6 +181,9 @@ var opencadcJSUtil = require('opencadc-js').util;
     }
   }
 
+  // 'Sub-classes' of RowBuilder
+  opencadcJSUtil.inheritPrototype(NumberDataType, DataType);
+
   /**
    *
    * @param _name
@@ -162,7 +201,7 @@ var opencadcJSUtil = require('opencadc-js').util;
   function Field(_name, _id, _ucd, _utype, _unit, _xtype,
                  _datatype, _arraysize, _description, _label)
   {
-    var INTERVAL_XTYPE_KEYWORD = "INTERVAL";
+    var INTERVAL_XTYPE_KEYWORD = 'INTERVAL';
 
     var name = _name;
     var id = _id;
@@ -170,7 +209,7 @@ var opencadcJSUtil = require('opencadc-js').util;
     var utype = _utype;
     var unit = _unit;
     var xtype = _xtype;
-    var datatype = _datatype || new Datatype();
+    var datatype = _datatype || new DataType();
     var arraysize = _arraysize;
     var description = _description;
     var label = _label;
@@ -404,7 +443,7 @@ var opencadcJSUtil = require('opencadc-js').util;
 
   module.exports = {
     Resource: Resource,
-    Datatype: Datatype,
+    Datatype: DataType,
     Row: Row,
     Cell: Cell,
     Info: Info,

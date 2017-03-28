@@ -11,7 +11,7 @@ Slick.Data = require('slickgrid/slick.dataview-npm');
 Slick.Grid = require('slickgrid/slick.grid-npm');
 
 var opencadcVOBuilder = require('../lib/opencadc.votv-builder');
-var opencadcVOComparer = require('../lib/opencadc.votv.comparer');
+var opencadcVOComparer = require('../opencadc-votable-compare-engine/lib/opencadc.votable-compare-engine.js');
 var opencadcVOFilter = require('../lib/opencadc.votv-filter');
 var applicationEvents = {
   onDataLoaded: new jQuery.Event('opencadc-votv:onDataLoaded'),
@@ -1259,7 +1259,7 @@ Viewer.prototype.init = function ()
       {
         var isnumeric = sortColumnObj.datatype.isNumeric();
         sortColumnObj.comparer.setIsNumeric(isnumeric);
-        sortColumnObj.comparer.setSortColumn(sortColumnObj);
+        sortColumnObj.comparer.setSortKey(sortColumnObj);
 
         var data = _grid.getData();
 
