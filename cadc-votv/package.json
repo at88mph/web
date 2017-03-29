@@ -7,7 +7,7 @@
     "uglify-js": "^2.7.5",
     "jquery": "2.2.4",
     "opencadc-js": "^2.1.0",
-    "opencadc-votable": "^1.1.0",
+    "opencadc-votable": "^1.1.1",
     "slickgrid": "^2.3.0"
   },
   "main": "index.js",

@@ -97,23 +97,14 @@ require('jquery-csv');
          cellIndex++)
     {
       var cellField = tableFields[cellIndex];
-      var cellDatatype = cellField.getDatatype();
+      var cellDatatype = cellField.getDataType();
       var stringValue = extract(rowData, cellIndex);
 
       this.setLongest(longestValues, cellField.getID(), stringValue);
 
-      var cellValue;
-
       // Handle the possible array of values. (CADC Story 1750)
       // This is data type agnostic for now.
-      if (cellField.containsInterval())
-      {
-        cellValue = stringValue;
-      }
-      else
-      {
-        cellValue = cellDatatype.sanitize(stringValue);
-      }
+      var cellValue = (cellField.containsInterval()) ? stringValue : cellDatatype.sanitize(stringValue);
 
       rowCells.push(new opencadcVOTable.Cell(cellValue, cellField));
     }
@@ -223,8 +214,8 @@ require('jquery-csv');
     this.build = function ()
     {
       // Work around the default namespace.
-      var xmlVOTableResourceDOMs =
-          _getElements('/VOTABLE/RESOURCE[@type="results"]');
+      var xmlVOTableResourceDOMs = _getElements('/VOTABLE/RESOURCE[@type="results"]');
+      var dataTypeFactory = new opencadcVOTable.DataTypeFactory();
 
       var voTableInfos = [];
       var resourceInfos = [];
@@ -310,7 +301,7 @@ require('jquery-csv');
                 xmlFieldUType,
                 fieldDOM.getAttribute('unit'),
                 fieldDOM.getAttribute('xtype'),
-                new opencadcVOTable.Datatype(fieldDOM.getAttribute('datatype')),
+                dataTypeFactory.createDataType(fieldDOM.getAttribute('datatype')),
                 fieldDOM.getAttribute('arraysize'),
                 fieldDescription,
                 fieldDOM.getAttribute('name'));

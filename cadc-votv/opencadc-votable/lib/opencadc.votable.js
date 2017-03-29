@@ -289,20 +289,20 @@ var opencadcJSUtil = require('opencadc-js').util;
     var floatTest = /^\s*(adql:)?float|double\s*$/i;
 
 
-    this.isBoolean = function (_dataTypeValue)
+    function isBoolean (_dataTypeValue)
     {
       return booleanTest.test(_dataTypeValue);
-    };
+    }
 
-    this.isFloatingPointNumeric = function (_dataTypeValue)
+    function isFloatingPointNumeric (_dataTypeValue)
     {
       return floatTest.test(_dataTypeValue);
-    };
+    }
 
-    this.isIntegerNumeric = function (_dataTypeValue)
+    function isIntegerNumeric (_dataTypeValue)
     {
       return intTest.test(_dataTypeValue);
-    };
+    }
 
     /**
      * Our Factory method for creating new DataType instances.
@@ -312,15 +312,15 @@ var opencadcJSUtil = require('opencadc-js').util;
      */
     this.createDataType = function (_dataTypeValue)
     {
-      if (this.isFloatingPointNumeric(_dataTypeValue))
+      if (isFloatingPointNumeric(_dataTypeValue))
       {
         this.dataTypeClass = FloatingPointDataType;
       }
-      else if (this.isBoolean(_dataTypeValue))
+      else if (isBoolean(_dataTypeValue))
       {
         this.dataTypeClass = BooleanDataType;
       }
-      else if (this.isIntegerNumeric(_dataTypeValue))
+      else if (isIntegerNumeric(_dataTypeValue))
       {
         this.dataTypeClass = IntegerDataType;
       }
