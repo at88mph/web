@@ -92,7 +92,7 @@ require('jquery-csv');
   {
     var rowCells = [];
     for (var cellIndex = 0, rowDataLength = rowData.length,
-           tableFieldLength = tableFields.length;
+             tableFieldLength = tableFields.length;
          (cellIndex < rowDataLength) && (cellIndex < tableFieldLength);
          cellIndex++)
     {
@@ -110,33 +110,9 @@ require('jquery-csv');
       {
         cellValue = stringValue;
       }
-      else if (cellDatatype.isNumeric())
-      {
-        var num;
-
-        if (!stringValue || ($.trim(stringValue) === ''))
-        {
-          num = Number.NaN;
-        }
-        else if (cellDatatype.isFloatingPointNumeric())
-        {
-          num = parseFloat(stringValue);
-          num.toFixed(2);
-        }
-        else
-        {
-          num = parseInt(stringValue);
-        }
-        cellValue = num;
-      }
-      else if (cellDatatype.isBoolean())
-      {
-        cellValue = (stringValue === 'true');
-      }
       else
       {
-        // Assume char or char-like value.
-        cellValue = stringValue;
+        cellValue = cellDatatype.sanitize(stringValue);
       }
 
       rowCells.push(new opencadcVOTable.Cell(cellValue, cellField));
@@ -200,47 +176,6 @@ require('jquery-csv');
 
       var select = xpath.useNamespaces(namespaces);
       return select(expressionPath, _xmlDOM);
-
-      /*
-       var expressionPath = _preparePath(_expression);
-       var xpe = _xmlDOM.ownerDocument || _xmlDOM;
-
-       var localNSResolver = function (prefix)
-       {
-       var localName = xpe.documentElement.namespaceURI;
-       var resolvedName;
-
-       if (localName)
-       {
-       resolvedName = localName;
-       }
-       else
-       {
-       resolvedName = xpe.createNSResolver
-       ? xpe.createNSResolver(xpe.documentElement)(prefix)
-       : null;
-       }
-
-       return resolvedName;
-       };
-
-       if (!xpe.evaluate)
-       {
-       xpe.evaluate = document.evaluate;
-       }
-
-       var result = xpe.evaluate(expressionPath, _xmlDOM, localNSResolver,
-       XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
-       var found = [];
-       var res;
-
-       while (res = result.iterateNext())
-       {
-       found.push(res);
-       }
-
-       return found;
-       */
     }
   }
 
@@ -289,7 +224,7 @@ require('jquery-csv');
     {
       // Work around the default namespace.
       var xmlVOTableResourceDOMs =
-        _getElements('/VOTABLE/RESOURCE[@type="results"]');
+          _getElements('/VOTABLE/RESOURCE[@type="results"]');
 
       var voTableInfos = [];
       var resourceInfos = [];
@@ -316,8 +251,8 @@ require('jquery-csv');
         {
           var nextInfo = resourceInfoDOMs[infoIndex];
           resourceInfos.push(
-            new opencadcVOTable.Info(nextInfo.getAttribute('name'),
-              nextInfo.getAttribute('value')));
+              new opencadcVOTable.Info(nextInfo.getAttribute('name'),
+                                       nextInfo.getAttribute('value')));
         }
 
         var resourceTableDOMs = _getElements(nextResourcePath + '/TABLE');
@@ -326,8 +261,7 @@ require('jquery-csv');
         for (var tableIndex = 0; tableIndex < resourceTableDOMs.length;
              tableIndex++)
         {
-          var nextTablePath = nextResourcePath + '/TABLE[' + (tableIndex + 1) +
-                              ']';
+          var nextTablePath = nextResourcePath + '/TABLE[' + (tableIndex + 1) + ']';
 
           var tableFields = [];
           var resourceTableFieldDOM = _getElements(nextTablePath + '/FIELD');
@@ -343,7 +277,7 @@ require('jquery-csv');
           {
             var cellDataDOM = rowData[index];
             return (cellDataDOM.childNodes && cellDataDOM.childNodes[0]) ?
-                   cellDataDOM.childNodes[0].nodeValue : '';
+                cellDataDOM.childNodes[0].nodeValue : '';
           };
 
           for (var fieldIndex = 0; fieldIndex < resourceTableFieldDOM.length;
@@ -356,7 +290,7 @@ require('jquery-csv');
             var xmlFieldUType = fieldDOM.getAttribute('utype');
             var xmlFieldName = fieldDOM.getAttribute('name');
             var fieldID = (xmlFieldID && (xmlFieldID !== ''))
-              ? xmlFieldID : xmlFieldName;
+                ? xmlFieldID : xmlFieldName;
 
             longestValues[fieldID] = -1;
 
@@ -366,20 +300,20 @@ require('jquery-csv');
             var fieldDescription = ((fieldDescriptionDOM.length > 0)
                                     && fieldDescriptionDOM[0].childNodes
                                     && fieldDescriptionDOM[0].childNodes[0])
-              ? fieldDescriptionDOM[0].childNodes[0].nodeValue
-              : '';
+                ? fieldDescriptionDOM[0].childNodes[0].nodeValue
+                : '';
 
             var field = new opencadcVOTable.Field(
-              xmlFieldName,
-              fieldID,
-              fieldDOM.getAttribute('ucd'),
-              xmlFieldUType,
-              fieldDOM.getAttribute('unit'),
-              fieldDOM.getAttribute('xtype'),
-              new opencadcVOTable.Datatype(fieldDOM.getAttribute('datatype')),
-              fieldDOM.getAttribute('arraysize'),
-              fieldDescription,
-              fieldDOM.getAttribute('name'));
+                xmlFieldName,
+                fieldID,
+                fieldDOM.getAttribute('ucd'),
+                xmlFieldUType,
+                fieldDOM.getAttribute('unit'),
+                fieldDOM.getAttribute('xtype'),
+                new opencadcVOTable.Datatype(fieldDOM.getAttribute('datatype')),
+                fieldDOM.getAttribute('arraysize'),
+                fieldDescription,
+                fieldDOM.getAttribute('name'));
 
             tableFields.push(field);
             voTableFields.push(field);
@@ -415,9 +349,9 @@ require('jquery-csv');
 
       var xmlVOTableDescription = _getElements('/VOTABLE/DESCRIPTION');
       var voTableDescription = (xmlVOTableDescription.length > 0)
-        ? xmlVOTableDescription[0].value : null;
+          ? xmlVOTableDescription[0].value : null;
       var voTableMetadata = new opencadcVOTable.Metadata(
-        voTableInfos, voTableDescription, voTableFields);
+          voTableInfos, voTableDescription, voTableFields);
 
       this.fireEvent(readerEvents.onDataLoadComplete, {
         tableMetaData: voTableMetadata,
@@ -477,7 +411,7 @@ require('jquery-csv');
       else if (input.url)
       {
         this.download(input.useRelativeURL
-                        ? input.url.getRelativeURI() : input.url.getURI());
+                          ? input.url.getRelativeURI() : input.url.getURI());
       }
       else
       {
@@ -560,7 +494,7 @@ require('jquery-csv');
     {
       var req = event.target;
 
-      if (req.readyState == req.HEADERS_RECEIVED)
+      if (req.readyState === req.HEADERS_RECEIVED)
       {
         var contentType = req.getResponseHeader('Content-Type');
 
@@ -575,9 +509,7 @@ require('jquery-csv');
 
     function handleInputError()
     {
-      var message =
-        'opencadc-votv: Unable to obtain CSV VOTable from URL (' + input.url
-        + ').';
+      var message = 'opencadc-votv: Unable to obtain CSV VOTable from URL (' + input.url + ').';
       console.log(message);
 
       throw new Error(message);
@@ -691,7 +623,7 @@ require('jquery-csv');
         break;
       }
 
-      // Defaults to RowBuilderFactory.prototype.builderClass (VOTableXMLBuilder)
+        // Defaults to RowBuilderFactory.prototype.builderClass (VOTableXMLBuilder)
       default:
       {
         this.builderClass = VOTableXMLRowBuilder;

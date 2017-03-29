@@ -83,106 +83,255 @@ var opencadcJSUtil = require('opencadc-js').util;
     };
   }
 
-  function DataTypeFactory()
+
+  /**
+   * Represents a String DataType, but is forgiving for comparing, say, a number to a String.
+   * @constructor
+   */
+  function StringDataType()
   {
     /**
-     * Our Factory method for creating new DataType instances.
+     * Compare the two values, and return 1 for
      *
-     * @param input
-     * @returns {CSVRowBuilder|*|VOTableXMLRowBuilder}
+     * @param _this           Left object containing a valued assigned to the sortKey.
+     * @param _toThis         Right object containing a valued assigned to the sortKey.
+     * @returns {number}      1 means compareThis is greater than toThis, 0 means equality, and -1 means compareThis
+     * is less than toThis.
      */
-    DataTypeFactory.prototype.createDataType = function (input)
+    this.compare = function (_this, _toThis)
     {
-      switch (input.type)
+      // Already equivalent?  Great, proceed.
+      if (_this == _toThis)
       {
-        case 'xml':
-        {
-          this.builderClass = VOTableXMLRowBuilder;
-          break;
-        }
-
-        case 'csv':
-        {
-          this.builderClass = CSVRowBuilder;
-          break;
-        }
-
-        // Defaults to RowBuilderFactory.prototype.builderClass (VOTableXMLBuilder)
-        default:
-        {
-          this.builderClass = VOTableXMLRowBuilder;
-          break;
-        }
+        return 0;
       }
+      else
+      {
+        var left = this.sanitize(_this).trim();
+        var right = this.sanitize(_toThis).trim();
 
-      return new this.builderClass(input);
-    };
-
-    module.exports.DataTypeFactory = DataTypeFactory;
-  }
-
-  function DataType(_datatypeValue)
-  {
-    var datatypeValue = _datatypeValue || 'varchar';
-    var stringTypes = ['varchar', 'char', 'adql:VARCHAR', 'adql:CLOB', 'adql:REGION'];
-    var integerTypes = ['int', 'long', 'short'];
-    var floatingPointTypes = ['float', 'double', 'adql:DOUBLE', 'adql:FLOAT'];
-    var timestampTypes = ['timestamp', 'adql:TIMESTAMP'];
-
-
-    this.isNumeric = function ()
-    {
-      // will accept float, double, long, int, short, real, adql:DOUBLE,
-      // adql:INTEGER, adql:POINT, adql:REAL
-      //
-      return !this.isCharDatatype() && !this.isTimestamp() && !this.isBoolean();
+        return (left === right ? 0 : ((left > right) ? 1 : -1));
+      }
     };
 
     /**
-     * Return whether this datatype is a Timestamp.
-     * @returns {boolean}   True if timestamp, False otherwise.
+     * Return the formatted value.
+     *
+     * @param _val          The value to format.
+     * @returns {string}
      */
-    this.isTimestamp = function ()
+    this.sanitize = function (_val)
     {
-      return datatypeMatches(timestampTypes);
+      return _val ? (_val + '') : '';
     };
 
-    this.isBoolean = function ()
+    /**
+     * Obtain the help text to be shown to users.
+     * @returns {string}
+     */
+    this.tooltipText = function ()
     {
-      return datatypeValue === 'boolean';
-    };
-
-    this.isFloatingPointNumeric = function ()
-    {
-      return datatypeMatches(floatingPointTypes);
-    };
-
-    this.isIntegerNumeric = function ()
-    {
-      return datatypeMatches(integerTypes);
-    };
-
-    this.isCharDatatype = function ()
-    {
-      return datatypeMatches(stringTypes);
-    };
-
-    function datatypeMatches(_datatypes)
-    {
-      var stringUtil = new opencadcJSUtil.StringUtil();
-      for (var stIndex = 0; stIndex < _datatypes.length; stIndex++)
-      {
-        if (stringUtil.contains(datatypeValue, _datatypes[stIndex]))
-        {
-          return true;
-        }
-      }
-      return false;
+      return 'String: Substring match , ! to negate matches';
     }
   }
 
-  // 'Sub-classes' of RowBuilder
-  opencadcJSUtil.inheritPrototype(NumberDataType, DataType);
+  function IntegerDataType()
+  {
+    /**
+     * Compare the two values.
+     *
+     * @param _this           Left object containing a valued assigned to the sortKey.
+     * @param _toThis         Right object containing a valued assigned to the sortKey.
+     * @returns {number}      1 means compareThis is greater than toThis, 0 means equality, and -1 means compareThis
+     * is less than toThis.
+     */
+    this.compare = function (_this, _toThis)
+    {
+      // Already equivalent?  Great, proceed.
+      if (_this == _toThis)
+      {
+        return 0;
+      }
+      else
+      {
+        var left = this.sanitize(_this);
+        var right = this.sanitize(_toThis);
+
+        return (left === right ? 0 : ((left > right) ? 1 : -1));
+      }
+    };
+
+    /**
+     * Return the formatted value.
+     *
+     * @param _val          The value to format.
+     * @returns {Number}
+     */
+    this.sanitize = function (_val)
+    {
+      return _val ? parseInt(_val) : Number.NaN;
+    };
+
+    /**
+     * Obtain the help text to be shown to users.
+     * @returns {string}
+     */
+    this.tooltipText = function ()
+    {
+      return 'Number: 10 or >=10 or 10..20 for a range , ! to negate';
+    }
+  }
+
+  function FloatingPointDataType()
+  {
+    /**
+     * Compare the two values.
+     *
+     * @param _this           Left object containing a valued assigned to the sortKey.
+     * @param _toThis         Right object containing a valued assigned to the sortKey.
+     * @returns {number}      1 means compareThis is greater than toThis, 0 means equality, and -1 means compareThis
+     * is less than toThis.
+     */
+    this.compare = function (_this, _toThis)
+    {
+      // Already equivalent?  Great, proceed.
+      if (_this == _toThis)
+      {
+        return 0;
+      }
+      else
+      {
+        var left = this.sanitize(_this);
+        var right = this.sanitize(_toThis);
+
+        return (left === right ? 0 : ((left > right) ? 1 : -1));
+      }
+    };
+
+    /**
+     * Return the formatted value.
+     *
+     * @param _val          The value to format.
+     * @returns {Number}
+     */
+    this.sanitize = function (_val)
+    {
+      return _val ? parseFloat(_val) : Number.NaN;
+    };
+
+    /**
+     * Obtain the help text to be shown to users.
+     * @returns {string}
+     */
+    this.tooltipText = function ()
+    {
+      return 'Number: 10 or >=10 or 10..20 for a range , ! to negate';
+    }
+  }
+
+  function BooleanDataType()
+  {
+    var trueMatcher = /^\s*true\s*$/i;
+
+    /**
+     * Compare the two values, and return 1 for
+     *
+     * @param _this           Left object containing a valued assigned to the sortKey.
+     * @param _toThis         Right object containing a valued assigned to the sortKey.
+     * @returns {number}      1 means compareThis is greater than toThis, 0 means equality, and -1 means compareThis
+     * is less than toThis.
+     */
+    this.compare = function (_this, _toThis)
+    {
+      // Already equivalent?  Great, proceed.
+      if (_this == _toThis)
+      {
+        return 0;
+      }
+      else
+      {
+        var left = this.sanitize(_this);
+        var right = this.sanitize(_toThis);
+
+        return (left === right ? 0 : ((left > right) ? 1 : -1));
+      }
+    };
+
+    /**
+     * Return the formatted value.
+     *
+     * @param _val          The value to format.
+     * @returns {boolean}
+     */
+    this.sanitize = function (_val)
+    {
+      return _val ? trueMatcher.test(_val) : false;
+    };
+
+    /**
+     * Obtain the help text to be shown to users.
+     * @returns {string}
+     */
+    this.tooltipText = function ()
+    {
+      return 'String: Substring match , ! to negate matches';
+    }
+  }
+
+  /**
+   * Factory to create a DataType object from a provided type.
+   * @constructor
+   */
+  function DataTypeFactory()
+  {
+    var intTest = /^\s*(adql:)?int(eger)?|long|short\s*$/i;
+    var booleanTest = /^\s*(adql:)?bool(ean)?\s*$/i;
+    var floatTest = /^\s*(adql:)?float|double\s*$/i;
+
+
+    this.isBoolean = function (_dataTypeValue)
+    {
+      return booleanTest.test(_dataTypeValue);
+    };
+
+    this.isFloatingPointNumeric = function (_dataTypeValue)
+    {
+      return floatTest.test(_dataTypeValue);
+    };
+
+    this.isIntegerNumeric = function (_dataTypeValue)
+    {
+      return intTest.test(_dataTypeValue);
+    };
+
+    /**
+     * Our Factory method for creating new DataType instances.
+     *
+     * @param _dataTypeValue
+     * @returns {FloatingPointDataType|BooleanDataType|IntegerDataType|StringDataType}
+     */
+    this.createDataType = function (_dataTypeValue)
+    {
+      if (this.isFloatingPointNumeric(_dataTypeValue))
+      {
+        this.dataTypeClass = FloatingPointDataType;
+      }
+      else if (this.isBoolean(_dataTypeValue))
+      {
+        this.dataTypeClass = BooleanDataType;
+      }
+      else if (this.isIntegerNumeric(_dataTypeValue))
+      {
+        this.dataTypeClass = IntegerDataType;
+      }
+      else
+      {
+        this.dataTypeClass = StringDataType;
+      }
+
+      return new this.dataTypeClass();
+    };
+  }
 
   /**
    *
@@ -192,14 +341,14 @@ var opencadcJSUtil = require('opencadc-js').util;
    * @param _utype
    * @param _unit
    * @param _xtype
-   * @param _datatype    Datatype object.
+   * @param _dataType    DataType object.
    * @param _arraysize
    * @param _description
    * @param _label
    * @constructor
    */
   function Field(_name, _id, _ucd, _utype, _unit, _xtype,
-                 _datatype, _arraysize, _description, _label)
+                 _dataType, _arraysize, _description, _label)
   {
     var INTERVAL_XTYPE_KEYWORD = 'INTERVAL';
 
@@ -209,7 +358,7 @@ var opencadcJSUtil = require('opencadc-js').util;
     var utype = _utype;
     var unit = _unit;
     var xtype = _xtype;
-    var datatype = _datatype || new DataType();
+    var dataType = _dataType || new StringDataType();
     var arraysize = _arraysize;
     var description = _description;
     var label = _label;
@@ -255,9 +404,9 @@ var opencadcJSUtil = require('opencadc-js').util;
       return stringUtil.contains(_xtype, INTERVAL_XTYPE_KEYWORD);
     };
 
-    this.getDatatype = function ()
+    this.getDataType = function ()
     {
-      return datatype;
+      return dataType;
     };
 
     this.getDescription = function ()
@@ -407,7 +556,7 @@ var opencadcJSUtil = require('opencadc-js').util;
      * Return
      * @returns {*}
      */
-    this.getDescription = function()
+    this.getDescription = function ()
     {
       return description;
     };
@@ -416,12 +565,12 @@ var opencadcJSUtil = require('opencadc-js').util;
      * Return the array of resources.
      * @returns {*|Array}
      */
-    this.getResources = function()
+    this.getResources = function ()
     {
       return resources;
     };
 
-    this.getResultsResources = function()
+    this.getResultsResources = function ()
     {
       var results = [];
       for (var i = 0, rl = resources.length; i < rl; i++)
@@ -443,12 +592,12 @@ var opencadcJSUtil = require('opencadc-js').util;
 
   module.exports = {
     Resource: Resource,
-    Datatype: DataType,
     Row: Row,
     Cell: Cell,
     Info: Info,
     Field: Field,
     Metadata: Metadata,
-    VOTable: VOTable
+    VOTable: VOTable,
+    DataTypeFactory: DataTypeFactory
   };
 })(opencadcJSUtil);
