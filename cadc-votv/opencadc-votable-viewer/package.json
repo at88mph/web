@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "OpenCADC JavaScript main application to stream a VOTable.",
   "dependencies": {
-    "browserify": "^13.3.0",
-    "uglify-js": "^2.7.5",
     "jquery": "^2.2.4",
-    "opencadc-votable-viewer": "^1.0.0"
+    "opencadc-js": "^2.1.0",
+    "opencadc-votable": "^1.1.1",
+    "opencadc-votable-filter-engine": "^1.0.0",
+    "opencadc-votable-row-builder": "^1.0.1",
+    "slickgrid": "^2.3.0"
   },
   "main": "lib/opencadc.votable-viewer.js",
   "devDependencies": {

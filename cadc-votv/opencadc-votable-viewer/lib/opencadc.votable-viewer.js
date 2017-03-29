@@ -10,9 +10,8 @@ global.Slick = Slick;
 Slick.Data = require('slickgrid/slick.dataview-npm');
 Slick.Grid = require('slickgrid/slick.grid-npm');
 
-var opencadcVOBuilder = require('../lib/opencadc.votv-builder');
-var opencadcVOComparer = require('../opencadc-votable-compare-engine/lib/opencadc.votable-compare-engine.js');
-var opencadcVOFilter = require('../lib/opencadc.votv-filter');
+var opencadcVOBuilder = require('opencadc-votable-row-builder');
+var opencadcVOFilter = require('opencadc-votable-filter-engine');
 var applicationEvents = {
   onDataLoaded: new jQuery.Event('opencadc-votv:onDataLoaded'),
   onRowAdded: new jQuery.Event('opencadc-votv:onRowAdded'),
@@ -1257,16 +1256,12 @@ Viewer.prototype.init = function ()
       // column list.
       if (sortColumnObj)
       {
-        var isnumeric = sortColumnObj.datatype.isNumeric();
-        sortColumnObj.comparer.setIsNumeric(isnumeric);
-        sortColumnObj.comparer.setSortKey(sortColumnObj);
-
         var data = _grid.getData();
 
         // using native sort with comparer
         // preferred method but can be very slow in IE
         // with huge datasets
-        data.sort(sortColumnObj.comparer.compare, this.isSortAscending);
+        data.sort(sortColumnObj.datatype.compare, this.isSortAscending);
         data.refresh();
       }
 
@@ -1497,8 +1492,7 @@ Viewer.prototype.refreshColumns = function (_fields)
         // VOTable attributes.
         unit: field.getUnit(),
         utype: field.getUType(),
-        comparer: colOpts.comparer ? colOpts.comparer :
-                  new opencadcVOComparer.Comparer()
+        comparer: colOpts.comparer ? colOpts.comparer : colOpts.dataType
       };
 
     if (datatype)
