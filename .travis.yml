@@ -1,11 +1,9 @@
-env:
-  DOCKER_COMPOSE_VERSION: 1.11.2
 language: java
 jdk:
 - oraclejdk8
 sudo: required
-services:
-- docker
+# services:
+# - docker
 before_install:
 - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 - sudo apt-get install -y nodejs
