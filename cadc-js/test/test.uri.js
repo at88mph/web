@@ -1,7 +1,9 @@
 var assert = require('assert');
 
-// Make jQuery available everywhere.
-global.$ = require('jquery');
+global.window = {};
+global.window.location = {
+  href: '/my/location.url'
+};
 
 var opencadcJS = require('../lib/cadc.uri');
 
@@ -141,8 +143,8 @@ describe('Set query parameters.', function()
     }
     catch (e)
     {
-      assert.equal('There are multiple parameters with the name \'param2\'.',
-                   e.message);
+      assert.equal(e.message, 'There are multiple parameters with the name "param2".',
+                   'Wrong error message.');
     }
   });
 });
@@ -197,7 +199,7 @@ describe('Back to string again', function ()
 
   it('Bare toString', function ()
   {
-    assert.equal('http://www.mysite.com:4080/aq/', testSubject.toString());
+    assert.equal(testSubject.toString(), 'http://www.mysite.com:4080/aq/', 'Wrong string.');
   });
 });
 

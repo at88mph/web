@@ -1,20 +1,28 @@
 var assert = require('assert');
 
-// Make jQuery available all over.
-global.$ = require('jquery');
-
 var opencadcJS = require('../lib/org.opencadc');
+
+describe('StringUtil.endsWith', function ()
+{
+  var testSubject = new opencadcJS.StringUtil();
+
+  it('Should end with', function ()
+    {
+      assert.equal(testSubject.endsWith('MYTeststr', 'str'), true, 'Wrong answer.');
+    }
+  );
+});
 
 describe('StringUtil.sanitize', function ()
 {
   var testSubject = new opencadcJS.StringUtil();
 
   it('Should sanitize the string and encode characters',
-     function ()
-     {
-       var output = testSubject.sanitize('MY&&<>VAL');
-       assert.equal('MY&amp;&amp;&lt;&gt;VAL', output);
-     }
+    function ()
+    {
+      var output = testSubject.sanitize('MY&&<>VAL');
+      assert.equal('MY&amp;&amp;&lt;&gt;VAL', output);
+    }
   );
 });
 
@@ -41,15 +49,15 @@ describe('StringUtil.format', function ()
 
   it('Formatted output should match.', function ()
   {
-    assert.equal(testSubject.format("Val {1} is {2} but not {3}",
-                                    ["ONE", "TWO"]),
-                 "Val ONE is TWO but not {3}");
+    assert.equal(testSubject.format('Val {1} is {2} but not {3}',
+      ['ONE', 'TWO']),
+      'Val ONE is TWO but not {3}');
   });
 
-  it ('Formatted number inserts should match.', function ()
+  it('Formatted number inserts should match.', function ()
   {
-    assert.equal(testSubject.format("Zero {1} and one {2}", [0, 1]),
-                 "Zero 0 and one 1");
+    assert.equal(testSubject.format('Zero {1} and one {2}', [0, 1]),
+      'Zero 0 and one 1');
   });
 });
 
@@ -125,7 +133,7 @@ describe('NumberFormat format 2', function ()
   it('NumberFormat.formatExponentOrFloat', function ()
   {
     assert.equal('5.4843e+11',
-                 testSubject.formatExponentOrFloat(548428932789.25684, 4));
+      testSubject.formatExponentOrFloat(548428932789.25684, 4));
   });
 });
 
@@ -136,7 +144,7 @@ describe('NumberFormat format 3', function ()
   it('NumberFormat.formatExponentOrFloat', function ()
   {
     assert.equal('548428932789.256835937500',
-                 testSubject.formatExponentOrFloat(548428932789.25684, 12));
+      testSubject.formatExponentOrFloat(548428932789.25684, 12));
   });
 });
 
@@ -159,7 +167,7 @@ describe('Array Util subtractions', function ()
     catch (e)
     {
       assert.equal('Subtract requires an array or a filter function.',
-                   e.message);
+        e.message);
     }
 
     try
@@ -169,7 +177,7 @@ describe('Array Util subtractions', function ()
     catch (e)
     {
       assert.equal('Subtract requires an array or a filter function.',
-                   e.message);
+        e.message);
     }
   });
 });
@@ -182,7 +190,7 @@ describe('Array value subtractions', function ()
   it('Should only be missing [3, 4]', function ()
   {
     assert.deepEqual([1, 2, 5, 6, 7],
-                     testSubject.subtract([1, 2, 3, 4, 5, 6, 7], [3, 4]));
+      testSubject.subtract([1, 2, 3, 4, 5, 6, 7], [3, 4]));
   });
 });
 
@@ -193,8 +201,8 @@ describe('Array value subtractions 2', function ()
   it('Should be full array returned', function ()
   {
     assert.deepEqual([1, 2, 66, 33, null, 't', 4, 5],
-                     testSubject.subtract([1, 2, 66, 33, null, 't', 4, 5],
-                                          [3]));
+      testSubject.subtract([1, 2, 66, 33, null, 't', 4, 5],
+        [3]));
   });
 });
 
@@ -237,7 +245,7 @@ describe('Array object subtractions', function ()
 
       for (var ci = 0; ci < check.length; ci++)
       {
-        if (check[ci].id == element.id)
+        if (check[ci].id === element.id)
         {
           return false;
         }
@@ -246,15 +254,15 @@ describe('Array object subtractions', function ()
       return true;
     });
     assert.deepEqual([
-                       {
-                         id: 4,
-                         name: 'four'
-                       },
-                       {
-                         id: 88,
-                         name: 'eighty-eight'
-                       }
-                     ], result);
+      {
+        id: 4,
+        name: 'four'
+      },
+      {
+        id: 88,
+        name: 'eighty-eight'
+      }
+    ], result);
   });
 });
 
@@ -265,8 +273,8 @@ describe('Array sort', function ()
   it('Sort values', function ()
   {
     assert.deepEqual(['98', 'alpha', 'four', 'one', 'zed'],
-                     testSubject.sort(['one', 'four', 'alpha', 'zed', '98'],
-                                      null));
+      testSubject.sort(['one', 'four', 'alpha', 'zed', '98'],
+        null));
   });
 
   it('Sort on bad value', function ()
@@ -278,7 +286,7 @@ describe('Array sort', function ()
     catch (e)
     {
       assert.equal('Property \'BOGUS\' does not exist in the objects being compared.',
-                   e.message);
+        e.message);
     }
   });
 });
@@ -304,19 +312,19 @@ describe('Array sort objects', function ()
   it('Sorted array with objects', function ()
   {
     assert.deepEqual([
-                       {
-                         id: 88,
-                         name: 'eighty-eight'
-                       },
-                       {
-                         id: 5,
-                         name: 'five'
-                       },
-                       {
-                         id: 4,
-                         name: 'four'
-                       }
-                     ], testSubject.sort(testSource, 'name'));
+      {
+        id: 88,
+        name: 'eighty-eight'
+      },
+      {
+        id: 5,
+        name: 'five'
+      },
+      {
+        id: 4,
+        name: 'four'
+      }
+    ], testSubject.sort(testSource, 'name'));
   });
 });
 
@@ -324,44 +332,44 @@ describe('BooleanUtil true values.', function ()
 {
   var testSubject = new opencadcJS.BooleanUtil();
 
-  it ('Check base primitive.', function ()
+  it('Check base primitive.', function ()
   {
     assert.ok(testSubject.isTrueValue(true));
-    assert.ok(testSubject.isTrueValue(1), 'Check value of 1.');
+    assert.equal(testSubject.isTrueValue(1), true, 'Check value of 1.');
   });
 
-  it ('Check for "y"', function ()
+  it('Check for y', function ()
   {
-    assert.ok(testSubject.isTrueValue('y'), 'Check for "y"');
+    assert.ok(testSubject.isTrueValue('y'), 'Check for y');
   });
 
-  it ('Check for "Y"', function ()
+  it('Check for Y', function ()
   {
-    assert.ok(testSubject.isTrueValue('Y'), 'Check for "Y"');
+    assert.ok(testSubject.isTrueValue('Y'), 'Check for Y');
   });
 
-  it ('Check for "yes"', function ()
+  it('Check for yes', function ()
   {
-    assert.ok(testSubject.isTrueValue('Yes'), 'Check for "Yes"');
-    assert.ok(testSubject.isTrueValue('yEs'), 'Check for "yEs"');
+    assert.ok(testSubject.isTrueValue('Yes'), 'Check for Yes');
+    assert.ok(testSubject.isTrueValue('yEs'), 'Check for yEs');
   });
 
-  it ('Check string "true"', function ()
+  it('Check string true', function ()
   {
     assert.ok(testSubject.isTrueValue('true'));
   });
 
-  it ('Check string "false"', function ()
+  it('Check string false', function ()
   {
-    assert.ok(testSubject.isTrueValue('false') === false);
+    assert.equal(testSubject.isTrueValue('false'), false, 'Should not be true.');
   });
 
-  it ('Check string "no"', function ()
+  it('Check string no', function ()
   {
     assert.ok(testSubject.isTrueValue('no') === false);
   });
 
-  it ('Check string "n"', function ()
+  it('Check string n', function ()
   {
     assert.ok(testSubject.isTrueValue('n') === false);
   });
@@ -371,62 +379,62 @@ describe('BooleanUtil false values.', function ()
 {
   var testSubject = new opencadcJS.BooleanUtil();
 
-  it ('Check for empty string', function()
+  it('Check for empty string', function ()
   {
     assert.ok(testSubject.isTrueValue('') === false);
-    assert.ok(testSubject.isFalseValue(''));
+    assert.equal(testSubject.isFalseValue(''), false, 'Should be false.');
   });
 
-  it ('Check for undefined', function()
+  it('Check for undefined', function ()
   {
-    assert.ok(testSubject.isTrueValue(undefined) === false);
-    assert.ok(testSubject.isFalseValue(undefined) === false);
+    assert.equal(testSubject.isTrueValue(undefined), false, 'Undefined is not true.');
+    assert.equal(testSubject.isFalseValue(undefined), false, 'Undefined is not false.');
   });
 
-  it ('Check for null', function()
+  it('Check for null', function ()
   {
-    assert.ok(testSubject.isTrueValue(null) === false);
-    assert.ok(testSubject.isFalseValue(null) === false);
+    assert.equal(testSubject.isTrueValue(null), false, 'Null is not true.');
+    assert.equal(testSubject.isFalseValue(null), false, 'Null is not false.');
   });
 
-  it ('Check base primitive.', function ()
+  it('Check base primitive.', function ()
   {
     assert.ok(testSubject.isFalseValue(false));
-    assert.ok(testSubject.isFalseValue(0), 'Check value of 0.');
+    assert.equal(testSubject.isFalseValue(0), true, 'Check value of 0.');
   });
 
-  it ('Check for "n"', function ()
+  it('Check for n', function ()
   {
-    assert.ok(testSubject.isFalseValue('n'), 'Check for "n"');
+    assert.ok(testSubject.isFalseValue('n'), 'Check for n');
   });
 
-  it ('Check for "Y"', function ()
+  it('Check for Y', function ()
   {
-    assert.ok(testSubject.isFalseValue('N'), 'Check for "N"');
+    assert.ok(testSubject.isFalseValue('N'), 'Check for N');
   });
 
-  it ('Check for "no"', function ()
+  it('Check for no', function ()
   {
-    assert.ok(testSubject.isFalseValue('No'), 'Check for "No"');
-    assert.ok(testSubject.isFalseValue('nO'), 'Check for "nO"');
+    assert.ok(testSubject.isFalseValue('No'), 'Check for No');
+    assert.ok(testSubject.isFalseValue('nO'), 'Check for nO');
   });
 
-  it ('Check string "false"', function ()
+  it('Check string false', function ()
   {
     assert.ok(testSubject.isFalseValue('false'));
   });
 
-  it ('Check string "true"', function ()
+  it('Check string true', function ()
   {
     assert.ok(testSubject.isFalseValue('true') === false);
   });
 
-  it ('Check string "yes"', function ()
+  it('Check string yes', function ()
   {
     assert.ok(testSubject.isFalseValue('yes') === false);
   });
 
-  it ('Check string "y"', function ()
+  it('Check string y', function ()
   {
     assert.ok(testSubject.isFalseValue('y') === false);
   });
