@@ -1,13 +1,14 @@
 {
   "name": "opencadc-votable-row-builder",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Row builder to read in XML or CSV VOTable data and fire events when a row is available.",
-  "main": "lib/opencadc-votable-row-builder.js",
+  "main": "lib/opencadc.votable-row-builder.js",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "opencadc-votable": "^1.0.1",
+    "opencadc-votable": "^1.1.2",
+    "opencadc-util": "^1.0.0",
     "jquery-csv": "^0.8.0",
     "jquery": "^2.2.4",
     "xpath": "^0.0.24",

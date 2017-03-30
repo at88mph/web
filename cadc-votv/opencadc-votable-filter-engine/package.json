@@ -1,8 +1,8 @@
 {
   "name": "opencadc-votable-filter-engine",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Filtering for the opencadc-votable-viewer application, but can be used elsewhere.",
-  "main": "lib/opencadc.votable-filter.js",
+  "main": "lib/opencadc.votable-filter-engine.js",
   "directories": {
     "test": "test"
   },
@@ -21,6 +21,7 @@
     "IVOA"
   ],
   "author": "Dustin N. Jenkins",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "homepage": "https://www.github.com/opencadc/web/cadc-votv/openadc-votable-filter-engine"
 }
 

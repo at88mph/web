@@ -5,9 +5,9 @@
   "dependencies": {
     "jquery": "^2.2.4",
     "opencadc-util": "^1.0.0",
-    "opencadc-votable": "^1.1.1",
-    "opencadc-votable-filter-engine": "^1.0.0",
-    "opencadc-votable-row-builder": "^1.0.1",
+    "opencadc-votable": "^1.1.2",
+    "opencadc-votable-filter-engine": "^1.0.1",
+    "opencadc-votable-row-builder": "^1.0.2",
     "slickgrid": "^2.3.0"
   },
   "main": "lib/opencadc.votable-viewer.js",

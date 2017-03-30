@@ -1,13 +1,13 @@
 'use strict';
 
-var opencadcJSUtil = require('opencadc-js').util;
+var opencadcUtil = require('opencadc-util');
 var opencadcVOTable = require('opencadc-votable');
 var jQuery = require('jquery');
 var xpath = require('xpath');
 
 require('jquery-csv');
 
-(function ($, opencadcJSUtil, opencadcVOTable)
+(function ($, opencadcUtil, opencadcVOTable)
 {
   var readerEvents = {
     onDataLoadComplete: new $.Event('opencadc-votv:onDataLoadComplete'),
@@ -580,8 +580,8 @@ require('jquery-csv');
   }
 
 // 'Sub-classes' of RowBuilder
-  opencadcJSUtil.inheritPrototype(VOTableXMLRowBuilder, RowBuilder);
-  opencadcJSUtil.inheritPrototype(CSVRowBuilder, RowBuilder);
+  opencadcUtil.inheritPrototype(VOTableXMLRowBuilder, RowBuilder);
+  opencadcUtil.inheritPrototype(CSVRowBuilder, RowBuilder);
 
   /**
    * Factory to create an appropriate Builder instance.
@@ -640,4 +640,4 @@ require('jquery-csv');
     // Use the jQuery.Event API as it simplifies things.
     module.exports.events = readerEvents;
   }
-})(jQuery, opencadcJSUtil, opencadcVOTable);
+})(jQuery, opencadcUtil, opencadcVOTable);
