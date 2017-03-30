@@ -902,6 +902,11 @@ var opencadcVOFilter = require('opencadc-votable-filter-engine');
     // Do not display for the checkbox column.
     else if (this.isPropertyFlagSet(args.column.name, PROPERTY_KEYS.filterable))
     {
+      if (typeof $.fn.quickFilter === 'undefined')
+      {
+        throw 'The filter function requires opencadc.votable-viewer-quick-filter.js to be loaded.';
+      }
+
       var col = args.column;
       var tooltipTitle = col.datatype.tooltipText();
 
@@ -1306,29 +1311,21 @@ var opencadcVOFilter = require('opencadc-votable-filter-engine');
                ii = renderedRange.bottom;
              i <= ii; i++)
         {
-          var $nextRow =
-            args.grid.getData().getItem(i);
-          this.getRowManager()
-              .onRowRendered($nextRow, i);
+          var $nextRow = args.grid.getData().getItem(i);
+          this.getRowManager().onRowRendered($nextRow, i);
         }
       }).bind(this));
     }
 
     dataView.onPagingInfoChanged.subscribe((function (e, pagingInfo)
     {
-      var isLastPage =
-        (pagingInfo.pageNum ==
-        pagingInfo.totalPages - 1);
-      var enableAddRow =
-        (isLastPage ||
-        pagingInfo.pageSize == 0);
-      var options =
-        this.grid.getOptions();
-      if (options.enableAddRow !=
-        enableAddRow)
+      var isLastPage = (pagingInfo.pageNum === (pagingInfo.totalPages - 1));
+      var enableAddRow = (isLastPage || (pagingInfo.pageSize === 0));
+      var options = this.grid.getOptions();
+
+      if (options.enableAddRow !== enableAddRow)
       {
-        this.grid.setOptions(
-          {enableAddRow: enableAddRow});
+        this.grid.setOptions({enableAddRow: enableAddRow});
       }
     }).bind(this));
 
@@ -1351,8 +1348,7 @@ var opencadcVOFilter = require('opencadc-votable-filter-engine');
       this.setupHeader(checkboxSelector, args);
     };
 
-    this.grid.onHeaderRowCellRendered.subscribe(
-      headerRowCellRenderedFn.bind(this));
+    this.grid.onHeaderRowCellRendered.subscribe(headerRowCellRenderedFn.bind(this));
 
     if (Slick.Plugins && Slick.Plugins.UnitSelection)
     {
@@ -1370,8 +1366,7 @@ var opencadcVOFilter = require('opencadc-votable-filter-engine');
         }
 
         // track select changes.
-        this.updatedColumnSelects[args.column.id] =
-          args.unitValue;
+        this.updatedColumnSelects[args.column.id] = args.unitValue;
 
         // Invalidate to force
         // column reformatting.

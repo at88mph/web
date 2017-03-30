@@ -70,7 +70,8 @@ var options = {
   editable: false,
   pager: false,
   maxRowLimitWarning: 'too many',
-  maxRowLimit: -1
+  maxRowLimit: -1,
+  showHeaderRow: true
 };
 
 
@@ -122,10 +123,10 @@ describe('Results page start/end events, over-ridden and default results.', func
 
     $myGrid.trigger(opencadcVOTV.events.onDataLoaded);
 
-    var $result = $myGrid.prev().css('background-color');
+    // var $result = $myGrid.prev().css('background-color');
     //assert.equal($result, 'rgba(0, 0, 0, 0)', 'non-default background color checked');
 
-    $result = $prevMyGrid.find('img').attr('src');
+    var $result = $prevMyGrid.find('img').attr('src');
     assert.ok(stringUtil.endsWith($result, '.png'),
       'non-default file name checked - un-changed from initial');
 
