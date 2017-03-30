@@ -1,6 +1,6 @@
 'use strict';
 
-var opencadcJSUtil = require('opencadc-js').util;
+var opencadcJSUtil = require('opencadc-util');
 
 (function (opencadcJSUtil)
 {

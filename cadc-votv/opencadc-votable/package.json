@@ -7,7 +7,7 @@
     "test": "mocha"
   },
   "dependencies": {
-    "opencadc-js": "^2.1.0"
+    "opencadc-util": "^1.0.0"
   },
   "devDependencies": {
     "mocha": "^3.2.0"
@@ -25,5 +25,5 @@
   "bugs": {
     "url": "https://github.com/opencadc/web/issues"
   },
-  "homepage": "https://github.com/opencadc/web#readme"
+  "homepage": "https://github.com/opencadc/web/cadc-votv/opencadc-votable#readme"
 }
