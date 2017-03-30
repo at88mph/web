@@ -1,6 +1,6 @@
 'use strict';
 
 module.exports = {
-  util: require('./lib/org.opencadc'),
-  uri: require('./lib/cadc.uri')
+  util: require('./opencadc-util/lib/opencadc.util.js'),
+  uri: require('./opencadc-uri/lib/opencadc.uri.js')
 };

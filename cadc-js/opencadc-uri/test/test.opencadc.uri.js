@@ -1,11 +1,6 @@
 var assert = require('assert');
 
-global.window = {};
-global.window.location = {
-  href: '/my/location.url'
-};
-
-var opencadcJS = require('../lib/cadc.uri');
+var opencadcJS = require('../lib/opencadc.uri.js');
 
 describe('Test URI components from full URL.', function ()
 {

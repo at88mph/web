@@ -1,14 +1,14 @@
 'use strict';
 
-(function (window)
+(function ()
 {
-
   /**
    * Obtain the current URI object of the location in context.
    *
+   * @param window    The current window.
    * @return {URI}
    */
-  function currentURI()
+  function currentURI(window)
   {
     return new URI(window.location.href);
   }
@@ -334,9 +334,9 @@
     _init();
   }
 
-// Let require() find this.
+  // Let require() find this.
   module.exports = {
     URI: URI,
-    currentURI: currentURI()
+    currentURI: currentURI
   };
-})(window);
+})();

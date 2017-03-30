@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-var opencadcJS = require('../lib/org.opencadc');
+var opencadcJS = require('../lib/opencadc.util.js');
 
 describe('StringUtil.endsWith', function ()
 {

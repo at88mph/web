@@ -1,0 +1,22 @@
+{
+  "name": "opencadc-util",
+  "version": "1.0.0",
+  "description": "OpenCADC JavaScript utility toolkit.",
+  "devDependencies": {
+    "mocha": "^3.2.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "main": "lib/opencadc.util.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/opencadc/web"
+  },
+  "author": "OpenCADC - Dustin Jenkins",
+  "license": "GPL-3.0",
+  "directories": {
+    "test": "test"
+  },
+  "homepage": "https://github.com/opencadc/web/cadc-js/opencadc-util"
+}
