@@ -1,7 +1,7 @@
 {
   "name": "opencadc-votable-viewer",
   "version": "1.0.0",
-  "description": "OpenCADC JavaScript main application to stream a VOTable.",
+  "description": "OpenCADC JavaScript main application to stream a VOTable and display it in a grid.",
   "dependencies": {
     "jquery": "^2.2.4",
     "opencadc-util": "^1.0.0",
@@ -28,5 +28,6 @@
   "directories": {
     "lib": "./lib",
     "test": "./test"
-  }
+  },
+  "homepage": "https://www.github.com/opencadc/web/cadc-votv/openadc-votable-viewer"
 }
