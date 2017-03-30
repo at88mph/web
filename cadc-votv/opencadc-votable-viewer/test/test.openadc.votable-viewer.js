@@ -35,7 +35,7 @@ var xmlData =
 
 var assert = require('assert');
 var $ = jQuery = require('jquery');
-// $.ui = require('jquery-ui');
+
 var DOMParser = require('xmldom').DOMParser;
 var StringUtil = require('opencadc-util').StringUtil;
 var opencadcVOTV = require('../lib/opencadc.votable-viewer');

@@ -7,40 +7,47 @@ var Slick = require('slickgrid/slick.core-npm');
 Slick.Data = require('slickgrid/slick.dataview-npm');
 Slick.Grid = require('slickgrid/slick.grid-npm');
 
+require('jquery-ui/ui/widget');
+require('jquery-ui/ui/widgets/mouse');
+require('jquery-ui/ui/widgets/autocomplete');
+
+require('./opencadc.votable-viewer-quick-filter');
+
 var opencadcVOBuilder = require('opencadc-votable-row-builder');
 var opencadcVOFilter = require('opencadc-votable-filter-engine');
-var applicationEvents = {
-  onDataLoaded: new jQuery.Event('opencadc-votv:onDataLoaded'),
-  onRowAdded: new jQuery.Event('opencadc-votv:onRowAdded'),
-  onSort: new jQuery.Event('opencadc-votv:onSort'),
-  onUnitChanged: new jQuery.Event('opencadc-votv:onUnitChanged'),
-  onFilterData: new jQuery.Event('opencadc-votv:onFilterData'),
-  onRowsChanged: new jQuery.Event('opencadc-votv:onRowsChanged'),
-  onColumnOrderReset: new jQuery.Event('opencadc-votv:onColumnOrderReset')
-};
-
-var _CHECKBOX_SELECTOR_DEFAULT_WIDTH_ = 50;
-var _CHECKBOX_SELECTOR_COLUMN_ID_ = '_checkbox_selector';
-var _ROW_SELECT_DISABLED_KEY_ = '_ROW_SELECT_DISABLED_';
-var _PAGER_NODE_SELECTOR_ = '#pager';
-var _HEADER_NODE_SELECTOR_ = 'div.grid-header';
-var _DEFAULT_ROW_COUNT_MESSAGE_FORMAT_ =
-  'Showing {1} rows ({2} before filtering).';
-
-var _DEFAULT_ROW_COUNT_MESSAGE_FN_ = function (_totalRowCount, _currentRowCount)
-{
-  var stringUtil = new opencadcJSUtil.StringUtil();
-  return stringUtil.format(_DEFAULT_ROW_COUNT_MESSAGE_FORMAT_, [_totalRowCount, _currentRowCount]);
-};
-
-var PROPERTY_KEYS = {
-  filterable: 'filterable',
-  sortable: 'sortable',
-  resizable: 'resizable'
-};
 
 (function ($, Slick)
 {
+  var applicationEvents = {
+    onDataLoaded: new $.Event('opencadc-votv:onDataLoaded'),
+    onRowAdded: new $.Event('opencadc-votv:onRowAdded'),
+    onSort: new $.Event('opencadc-votv:onSort'),
+    onUnitChanged: new $.Event('opencadc-votv:onUnitChanged'),
+    onFilterData: new $.Event('opencadc-votv:onFilterData'),
+    onRowsChanged: new $.Event('opencadc-votv:onRowsChanged'),
+    onColumnOrderReset: new $.Event('opencadc-votv:onColumnOrderReset')
+  };
+
+  var _CHECKBOX_SELECTOR_DEFAULT_WIDTH_ = 50;
+  var _CHECKBOX_SELECTOR_COLUMN_ID_ = '_checkbox_selector';
+  var _ROW_SELECT_DISABLED_KEY_ = '_ROW_SELECT_DISABLED_';
+  var _PAGER_NODE_SELECTOR_ = '#pager';
+  var _HEADER_NODE_SELECTOR_ = 'div.grid-header';
+  var _DEFAULT_ROW_COUNT_MESSAGE_FORMAT_ =
+      'Showing {1} rows ({2} before filtering).';
+
+  var _DEFAULT_ROW_COUNT_MESSAGE_FN_ = function (_totalRowCount, _currentRowCount)
+  {
+    var stringUtil = new opencadcJSUtil.StringUtil();
+    return stringUtil.format(_DEFAULT_ROW_COUNT_MESSAGE_FORMAT_, [_totalRowCount, _currentRowCount]);
+  };
+
+  var PROPERTY_KEYS = {
+    filterable: 'filterable',
+    sortable: 'sortable',
+    resizable: 'resizable'
+  };
+
   /**
    * Create a VOView object.  This is here to package everything together.
    *
@@ -896,9 +903,7 @@ var PROPERTY_KEYS = {
     else if (this.isPropertyFlagSet(args.column.name, PROPERTY_KEYS.filterable))
     {
       var col = args.column;
-      var tooltipTitle = col.datatype.isNumeric()
-        ? 'Number: 10 or >=10 or 10..20 for a range , ! to negate'
-        : 'String: Substring match , ! to negate matches';
+      var tooltipTitle = col.datatype.tooltipText();
 
       var $filterInput =
         $('<input type="text">')
@@ -1258,7 +1263,7 @@ var PROPERTY_KEYS = {
           // using native sort with comparer
           // preferred method but can be very slow in IE
           // with huge datasets
-          data.sort(sortColumnObj.datatype.compare, this.isSortAscending);
+          data.sort(sortColumnObj.comparer.compare, this.isSortAscending);
           data.refresh();
         }
 
@@ -1464,7 +1469,7 @@ var PROPERTY_KEYS = {
       var fieldName = field.getName();
       var colOpts = this.getOptionsForColumn(fieldKey);
       var cssClass = colOpts.cssClass;
-      var datatype = field.getDatatype();
+      var datatype = field.getDataType();
 
       // We're extending the column properties a little here.  The 'id' and
       // 'field' attributes are used by SlickGrid.
@@ -1489,7 +1494,7 @@ var PROPERTY_KEYS = {
           // VOTable attributes.
           unit: field.getUnit(),
           utype: field.getUType(),
-          comparer: colOpts.comparer ? colOpts.comparer : colOpts.dataType
+          comparer: colOpts.comparer ? colOpts.comparer : datatype
         };
 
       if (datatype)

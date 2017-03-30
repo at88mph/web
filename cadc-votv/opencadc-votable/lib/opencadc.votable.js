@@ -7,9 +7,9 @@ var opencadcJSUtil = require('opencadc-util');
   /**
    * VOTable Metadata class.
    *
-   * @param _infos
-   * @param _description
-   * @param _fields
+   * @param {Array} _infos          An array of INFO elements.
+   * @param {String} _description   String descriptive text.
+   * @param {Array} _fields         An array of Field objects.
    * @constructor
    */
   function Metadata(_infos, _description, _fields)
@@ -18,6 +18,11 @@ var opencadcJSUtil = require('opencadc-util');
     var description = _description;
     var fields = _fields || [];
 
+    /**
+     * Obtain the INFO elements.
+     *
+     * @returns {Array}
+     */
     this.getInfos = function ()
     {
       return infos;
@@ -28,6 +33,11 @@ var opencadcJSUtil = require('opencadc-util');
       return description;
     };
 
+    /**
+     * Obtain the fields for this Metadata.
+     *
+     * @returns {*|Array}
+     */
     this.getFields = function ()
     {
       return fields;
@@ -43,16 +53,33 @@ var opencadcJSUtil = require('opencadc-util');
       fields = _fields;
     };
 
+    /**
+     * Add a new field to this metadata.
+     *
+     * @param {Field} _field    The new field.
+     */
     this.addField = function (_field)
     {
       fields.push(_field);
     };
 
-    this.insertField = function (_fieldIndex, field)
+    /**
+     * Insert a new field at the specified index.
+     *
+     * @param {Number}  _fieldIndex   The index to place it at.
+     * @param {Field} _field          The new field.
+     */
+    this.insertField = function (_fieldIndex, _field)
     {
-      fields[_fieldIndex] = field;
+      fields[_fieldIndex] = _field;
     };
 
+    /**
+     * Obtain whether a field with the given ID exists.
+     *
+     * @param _fieldID      The ID to check.
+     * @returns {boolean}   True it is here, False otherwise.
+     */
     this.hasFieldWithID = function (_fieldID)
     {
       return (this.getField(_fieldID) !== null);
@@ -62,7 +89,7 @@ var opencadcJSUtil = require('opencadc-util');
      * Obtain a Field by its ID.
      * @param _fieldID    The field ID to obtain a field for.
      *
-     * @return {cadc.vot.Field}   Field instance, or null if not found.
+     * @return {Field}   Field instance, or null if not found.
      */
     this.getField = function (_fieldID)
     {
