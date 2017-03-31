@@ -66,21 +66,17 @@
                       {
                         var viewer = new opencadcViewer.Viewer("#myGrid", options);
 
+                        viewer.subscribe(opencadcViewer.events.onDataLoaded, function ()
+                        {
+                          this.render();
+                          this.refreshGrid();
+                        });
+
                         viewer.build({
                                        data: csvData,
                                        type: 'csv',
                                        pageSize: 10,
                                        tableMetadata: tableMetadata
-                                     },
-                                     function ()
-                                     {
-                                       viewer.render();
-                                       viewer.refreshGrid();
-                                     },
-                                     function (jqXHR, status, message)
-                                     {
-                                       console.log("Error in creating VOTable Viewer.\nMessage from server: "
-                                                   + message);
                                      });
                       };
 

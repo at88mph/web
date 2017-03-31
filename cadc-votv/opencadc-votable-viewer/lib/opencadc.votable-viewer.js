@@ -9,12 +9,15 @@ Slick.Grid = require('slickgrid/slick.grid-npm');
 
 require('jquery-ui/ui/widget');
 require('jquery-ui/ui/widgets/mouse');
+require('jquery-ui/ui/unique-id');
+require('jquery-ui/ui/keycode');
+require('jquery-ui/ui/widgets/menu');
 require('jquery-ui/ui/widgets/autocomplete');
-
-require('./opencadc.votable-viewer-quick-filter');
 
 var opencadcVOBuilder = require('opencadc-votable-row-builder');
 var opencadcVOFilter = require('opencadc-votable-filter-engine');
+
+jQuery.fn.quickFilter = require('./opencadc.votable-viewer-quick-filter');
 
 (function ($, Slick)
 {
@@ -1580,7 +1583,7 @@ var opencadcVOFilter = require('opencadc-votable-filter-engine');
   {
     var g = this.grid;
     var dataView = g.getData();
-    var filter = new opencadcVOFilter.Filter();
+    var filterEngine = new opencadcVOFilter.FilterEngine();
 
     // initialize the model after all the events have been hooked up
     dataView.beginUpdate();
@@ -1588,7 +1591,7 @@ var opencadcVOFilter = require('opencadc-votable-filter-engine');
       columnFilters: this.getColumnFilters(),
       grid: g,
       formatCellValue: this.formatCellValue,
-      doFilter: filter.valueFilters
+      doFilter: filterEngine.valueFilters
     });
 
     dataView.setFilter(this.searchFilter.bind(this));

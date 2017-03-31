@@ -99,7 +99,7 @@ describe('Results page start/end events, over-ridden and default results.', func
 
   it('Build a viewer.', function ()
   {
-    this.timeout(5000);
+    this.timeout(10000);
     var viewer = new opencadcVOTV.Viewer('#myGrid', options);
     viewer.build({
         type: 'xml',
@@ -137,7 +137,7 @@ describe('Results page start/end events, over-ridden and default results.', func
 
   it('Second grid.', function ()
   {
-    this.timeout(5000);
+    this.timeout(10000);
 
     // default options
     options.atDataLoadComplete = undefined;

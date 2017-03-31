@@ -5,7 +5,7 @@ var opencadcVOTable = require('opencadc-votable');
 var jQuery = require('jquery');
 var xpath = require('xpath');
 
-require('jquery-csv');
+jQuery.csv = require('jquery-csv');
 
 (function ($, opencadcUtil, opencadcVOTable)
 {
