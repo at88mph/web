@@ -33,6 +33,7 @@
                         editable: false,
                         enableAddRow: false,
                         showHeaderRow: true,
+                        forceFitColumns: true,
                         enableCellNavigation: true,
                         asyncEditorLoading: true,
                         explicitInitialization: true,
@@ -57,7 +58,8 @@
                             cssClass: "text-warning"
                           },
                           "_checkbox_select": {
-                            fitMax: false
+                            fitMax: false,
+                            filterable: false
                           }
                         }
                       };

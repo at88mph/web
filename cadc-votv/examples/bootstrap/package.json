@@ -8,7 +8,7 @@
     "jquery": "^2.2.4",
     "jquery-ui": "^1.12.1",
     "opencadc-votable": "^1.1.3",
-    "opencadc-votable-viewer": "^1.0.9"
+    "opencadc-votable-viewer": "file:../../opencadc-votable-viewer"
   },
   "main": "index.js",
   "devDependencies": {

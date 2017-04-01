@@ -922,7 +922,7 @@ jQuery.fn.quickFilter = require('./opencadc.votable-viewer-quick-filter');
         .addClass('form-control').addClass('cadcvotv-filter-input')
         .appendTo(args.node);
 
-      $filterInput.quickFilter(this, this.getColumnManager().filterReturnCount);
+      $filterInput.quickFilter(this, col.id, this.getColumnManager().filterReturnCount);
     }
     else
     {
@@ -1398,20 +1398,17 @@ jQuery.fn.quickFilter = require('./opencadc.votable-viewer-quick-filter');
     {
       var columns = args.grid.getColumns();
 
-      for (var i = 0, ci = columns.length;
-           i < ci; i++)
+      for (var i = 0, ci = columns.length; i < ci; i++)
       {
         var column = columns[i];
 
-        if (column.width !==
-          column.previousWidth)
+        if (column.width !== column.previousWidth)
         {
-          this.getResizedColumns[column.id] =
-            column.width;
+          this.getResizedColumns()[column.id] = column.width;
           return false;
         }
       }
-    });
+    }.bind(this));
 
     if (forceFitMax)
     {
@@ -1591,10 +1588,10 @@ jQuery.fn.quickFilter = require('./opencadc.votable-viewer-quick-filter');
       columnFilters: this.getColumnFilters(),
       grid: g,
       formatCellValue: this.formatCellValue,
-      doFilter: filterEngine.valueFilters
+      doFilter: filterEngine.valueFilters.bind(filterEngine)
     });
 
-    dataView.setFilter(this.searchFilter.bind(this));
+    dataView.setFilter(this.searchFilter);
     dataView.endUpdate();
 
     if (g.getSelectionModel())

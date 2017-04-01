@@ -6,18 +6,20 @@ if (!jQuery.fn.autocomplete)
   + 'See https://jqueryui.com/autocomplete/.';
 }
 
+var opencadcVOFilter = require('opencadc-votable-filter-engine');
+
 module.exports = (function ($)
 {
-  return function(_viewer, _options)
+  return function(_viewer, _columnID, _options)
   {
     var $inputField = $(this);
     var suggestionKeys = [];
-    var columnID = $inputField.data('columnId');
     var defaults = {
       returnCount: 15
     };
 
     var options = $.extend({}, defaults, _options);
+    var filterEngine = new opencadcVOFilter.FilterEngine();
 
     function filter(val, closeAutocompleteFlag)
     {
@@ -26,7 +28,7 @@ module.exports = (function ($)
         $inputField.autocomplete('close');
       }
 
-      _viewer.doFilter(val, columnID);
+      _viewer.doFilter(val, _columnID);
 
       var grid = _viewer.getGrid();
       grid.invalidateAllRows();
@@ -68,7 +70,7 @@ module.exports = (function ($)
       }
 
       return ((keyCount === 0)
-      || ((keyCount === 1) && existingColumnFilters[columnID]));
+      || ((keyCount === 1) && existingColumnFilters[_columnID]));
     }
 
     $inputField.on('change keyup', function ()
@@ -78,7 +80,7 @@ module.exports = (function ($)
       // Clear it if the input is cleared.
       if (!trimmedVal || (trimmedVal === ''))
       {
-        _viewer.getColumnFilters()[columnID] = '';
+        _viewer.getColumnFilters()[_columnID] = '';
         filter('', true);
       }
     });
@@ -134,14 +136,14 @@ module.exports = (function ($)
             dataView.getItems().length :
             dataView.getLength();
 
-          columnFilterObject[columnID] = enteredValue;
+          columnFilterObject[_columnID] = enteredValue;
 
           for (var ii = 0; ((ii < l) && (!options.returnCount
           || (suggestionKeys.length <= options.returnCount)));
                ii++)
           {
             var item = fullDataMatch ? dataView.getItemByIdx(ii) : dataView.getItem(ii);
-            var nextItem = _viewer.formatCellValue(item, grid, columnID);
+            var nextItem = _viewer.formatCellValue(item, grid, _columnID);
 
             if (!uniqueItems[nextItem]
               && _viewer.searchFilter(
@@ -149,7 +151,7 @@ module.exports = (function ($)
                 {
                   columnFilters: columnFilterObject,
                   grid: grid,
-                  doFilter: _viewer.valueFilters,
+                  doFilter: filterEngine.valueFilters.bind(filterEngine),
                   formatCellValue: _viewer.formatCellValue
                 }))
             {
