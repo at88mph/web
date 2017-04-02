@@ -8,10 +8,13 @@ Slick.Data = require('slickgrid/slick.dataview-npm');
 Slick.Grid = require('slickgrid/slick.grid-npm');
 
 require('jquery-ui/ui/widget');
+require('jquery-ui/ui/safe-active-element');
+require('jquery-ui/ui/safe-blur');
 require('jquery-ui/ui/widgets/mouse');
 require('jquery-ui/ui/unique-id');
 require('jquery-ui/ui/keycode');
 require('jquery-ui/ui/widgets/menu');
+require('jquery-ui/ui/widgets/selectmenu');
 require('jquery-ui/ui/widgets/autocomplete');
 
 var opencadcVOBuilder = require('opencadc-votable-row-builder');
