@@ -1,7 +1,5 @@
 'use strict';
 
-var opencadcJSUtil = require('opencadc-util');
-
 (function (opencadcJSUtil)
 {
   /**

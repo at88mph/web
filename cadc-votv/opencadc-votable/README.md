@@ -1,7 +1,7 @@
 # OpenCADC Virtual Observatory Table model
 
-Version 1.0
-March 2017
+Version 1.1.4
+April 2017
 
 First built to support Version 1.2 of the specification, but should be adaptable to 1.3.
 
@@ -16,8 +16,7 @@ npm install opencadc-votable
 ## Usage
 
 ```
-require('opencadc-votable');
+var opencadcVO = require('opencadc-votable');
 
-var metaData = new Metadata(...);
+var metaData = new opencadcVO.Metadata(...);
 ```
-
