@@ -1,4 +1,5 @@
-(function ($) {
+(function ($)
+{
   // register namespace
   $.extend(true, window, {
     "Slick": {
@@ -55,25 +56,26 @@
    *            unit:     Unit selected.
    *
    *
-   * @param options {Object} Options:
+   * @param _options {Object} Options:
    *    unitCssClass:   a CSS class to use for buttons (default 'slick-header-unit-pulldown')
    * @class Slick.Plugins.UnitSelection
    * @constructor
    */
-  function UnitSelection(options)
+  function UnitSelection(_options)
   {
     var _grid;
     var _self = this;
     var _handler = new Slick.EventHandler();
+
     var _defaults =
-    {
-      unitPulldownCssClass: "slick-header-unit-pulldown"
-    };
+        {
+          unitPulldownCssClass: "slick-header-unit-pulldown"
+        };
+    var options = $.extend(true, {}, _defaults, _options);
 
 
     function init(grid)
     {
-      options = $.extend(true, {}, _defaults, options);
       _grid = grid;
       _handler
           .subscribe(_grid.onHeaderRowCellRendered, handleHeaderRowCellRendered)
@@ -113,7 +115,7 @@
 
           nextOption.data("unitValue", unitDefinition.value);
 
-          if (selectedUnit && (selectedUnit == unitDefinition.value))
+          if (selectedUnit && (selectedUnit === unitDefinition.value))
           {
             nextOption.prop("selected", true);
           }
@@ -152,7 +154,6 @@
       }
     }
 
-
     function handleUnitChange(e)
     {
       var columnDef = $(this).data("column");
@@ -165,13 +166,14 @@
       $(columnDef).data("unitValue", unitValue);
 
       _self.onUnitChange.notify({
-                               "grid": _grid,
-                               "column": columnDef,
-                               "unitValue" : unitValue,
-                               "previousUnitValue": previousUnit,
-                               "unitPullDown": unitPullDown,
-                               "handler": handler
-                             }, e, _self);
+                                  "grid": _grid,
+                                  "column": columnDef,
+                                  "unitValue": unitValue,
+                                  "previousUnitValue": previousUnit,
+                                  "unitPullDown": unitPullDown,
+                                  "handler": handler,
+                                  "columnPicker": options.columnPicker
+                                }, e, _self);
 
       // Update the header in case the user updated the button definition in the handler.
       _grid.updateColumnHeader(columnDef.id);

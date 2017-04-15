@@ -2,5 +2,5 @@
 
 (function ()
 {
-  require('opencadc-votable-viewer/lib/opencadc.votable-viewer.js');
+  require('opencadc-votable-viewer/opencadc.votable-viewer.js');
 })();
