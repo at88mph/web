@@ -1,14 +1,13 @@
 'use strict';
 
-(function ()
+(function (window)
 {
   /**
    * Obtain the current URI object of the location in context.
    *
-   * @param window    The current window.
    * @return {URI}
    */
-  function currentURI(window)
+  function currentURI()
   {
     return new URI(window.location.href);
   }
@@ -21,6 +20,9 @@
    */
   function URI(_uri)
   {
+    var PARSER_REGEX = /^(?:([^:\/?\#]+):)?(?:\/\/([^\/?\#]*))?([^?\#]*)(?:\?([^\#]*))?(?:\#(.*))?/;
+    var FILE_REGEX = /\/([^\/?#]+)$/i;
+
     var _URI = _uri;
     var _uriComponents = {};
     var _query = {};
@@ -30,25 +32,27 @@
       return _URI;
     };
 
-
-    // This function creates a new anchor element and uses location
-    // properties (inherent) to get the desired URL data. Some String
-    // operations are used (to normalize results across browsers).
-    function _init()
+    /**
+     * This function creates a new anchor element and uses location
+     * properties (inherent) to get the desired URL data. Some String
+     * operations are used (to normalize results across browsers).
+     * @private
+     */
+    this._init = function()
     {
-      _reparse(_URI);
-    }
+      this._reParse(_URI);
+    };
 
     /**
      * Parse the given URI into this object.  This method preserves the uri
      * property in this object as the 'original' uri.
      *
      * @param _uri    The new URI.
+     * @private
      */
-    function _reparse(_uri)
+    this._reParse = function(_uri)
     {
-      var parser = /^(?:([^:\/?\#]+):)?(?:\/\/([^\/?\#]*))?([^?\#]*)(?:\?([^\#]*))?(?:\#(.*))?/;
-      var parsedURI = _uri.match(parser);
+      var parsedURI = _uri.match(PARSER_REGEX);
       var components = {};
 
       components.scheme = parsedURI[1] || '';
@@ -56,20 +60,21 @@
       components.path = parsedURI[3] || '';
       components.query = parsedURI[4] || '';
       components.hash = parsedURI[5] || '';
-      components.file = ((components.path && components.path.match(/\/([^\/?#]+)$/i)) || [, ''])[1];
+      components.file = ((components.path && components.path.match(FILE_REGEX)) || [, ''])[1];
 
-      _uriComponents = Object.assign(components);
-      _query = Object.assign(_parseQuery());
-    }
+      _uriComponents = Object.assign({}, components);
+      _query = Object.assign({}, this._parseQuery());
+    };
 
     /**
      * Create an Object from the query string.
      *
      * @returns {Object}
+     * @priate
      */
-    function _parseQuery()
+    this._parseQuery = function()
     {
-      var nvpair = {};
+      var keyValuePairs = {};
       var qs = _uriComponents.query;
       if (qs.trim())
       {
@@ -79,17 +84,17 @@
         {
           var pair = item.split('=');
           var queryKey = pair[0];
-          var keyValues = nvpair[queryKey] || [];
+          var keyValues = keyValuePairs[queryKey] || [];
 
           // TODO - Is it a good idea to always decode this?
           // TODO - Should it be?
           keyValues.push(pair[1]);
 
-          nvpair[queryKey] = keyValues;
+          keyValuePairs[queryKey] = keyValues;
         });
       }
-      return nvpair;
-    }
+      return keyValuePairs;
+    };
 
     /**
      * Obtain the relative URI for this URI.  Meaning, obtain the host-less
@@ -264,12 +269,11 @@
     this.removeQueryValues = function (_key)
     {
       delete this.getQuery()[_key];
-      _reparse(this.toString());
+      this._reParse(this.toString());
     };
 
     /**
-     * Build the string
-     *
+     * Build the string and return it.
      */
     this.toString = function ()
     {
@@ -278,7 +282,7 @@
 
       return ((scheme.trim() === '') ? '' : (scheme + '://'))
         + this.getHost() + this.getPath()
-        + _buildQueryString(this.getQuery(), false)
+        + this._buildQueryString(this.getQuery(), false)
         + hashString;
     };
 
@@ -292,10 +296,17 @@
 
       return ((scheme.trim() === '') ? '' : (scheme + '://'))
         + this.getHost() + this.getPath()
-        + _buildQueryString(this.getQuery(), true) + hashString;
+        + this._buildQueryString(this.getQuery(), true) + hashString;
     };
 
-    function _buildQueryString(_query, _encodeValuesFlag)
+    /**
+     * Build the query portion of the URL.
+     * @param _query
+     * @param _encodeValuesFlag
+     * @returns {string}
+     * @private
+     */
+    this._buildQueryString = function(_query, _encodeValuesFlag)
     {
       var queryString = (JSON.stringify(_query) === JSON.stringify({})) ? '' : '?';
 
@@ -318,8 +329,11 @@
       }
 
       return queryString;
-    }
+    };
 
+    /**
+     * Clear out the query portion of the URL.
+     */
     this.clearQuery = function ()
     {
       var q = this.getQuery();
@@ -328,10 +342,10 @@
         delete q[param];
       }
 
-      _reparse(this.toString());
+      this._reParse(this.toString());
     };
 
-    _init();
+    this._init();
   }
 
   // Let require() find this.
@@ -339,4 +353,4 @@
     URI: URI,
     currentURI: currentURI
   };
-})();
+})(window);

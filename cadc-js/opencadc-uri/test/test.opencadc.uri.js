@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-var opencadcJS = require('../lib/opencadc.uri.js');
+var opencadcJS = require('../opencadc.uri.js');
 
 describe('Test URI components from full URL.', function ()
 {

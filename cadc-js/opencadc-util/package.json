@@ -1,6 +1,6 @@
 {
   "name": "opencadc-util",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "OpenCADC JavaScript utility toolkit.",
   "devDependencies": {
     "mocha": "^3.2.0"
@@ -8,7 +8,7 @@
   "scripts": {
     "test": "mocha"
   },
-  "main": "lib/opencadc.util.js",
+  "main": "opencadc.util.js",
   "repository": {
     "type": "git",
     "url": "git@github.com/opencadc/web"
