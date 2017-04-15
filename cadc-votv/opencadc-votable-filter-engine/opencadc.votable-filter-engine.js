@@ -16,8 +16,7 @@
   }
 
   /**
-   * TODO - There are a lot of return points in this method.  Let"s try to
-   * TODO - reduce them.
+   * TODO - There are a lot of return points in this method.  Let's try to reduce them.
    * TODO - jenkinsd 2014.12.04
    *
    * @param filter             The filter value as entered by the user.
