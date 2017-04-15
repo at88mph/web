@@ -1,8 +1,8 @@
 {
   "name": "opencadc-votable-filter-engine",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Filtering for the opencadc-votable-viewer application, but can be used elsewhere.",
-  "main": "lib/opencadc.votable-filter-engine.js",
+  "main": "opencadc.votable-filter-engine.js",
   "directories": {
     "test": "test"
   },

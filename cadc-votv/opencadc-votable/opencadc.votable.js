@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 (function (opencadcJSUtil)
 {
@@ -147,7 +147,7 @@
      */
     this.sanitize = function (_val)
     {
-      return _val ? (_val + '') : '';
+      return _val ? (_val + "") : "";
     };
 
     /**
@@ -156,7 +156,7 @@
      */
     this.tooltipText = function ()
     {
-      return 'String: Substring match , ! to negate matches';
+      return "String: Substring match , ! to negate matches";
     }
   }
 
@@ -203,7 +203,7 @@
      */
     this.tooltipText = function ()
     {
-      return 'Number: 10 or >=10 or 10..20 for a range , ! to negate';
+      return "Number: 10 or >=10 or 10..20 for a range , ! to negate";
     }
   }
 
@@ -250,7 +250,7 @@
      */
     this.tooltipText = function ()
     {
-      return 'Number: 10 or >=10 or 10..20 for a range , ! to negate';
+      return "Number: 10 or >=10 or 10..20 for a range , ! to negate";
     }
   }
 
@@ -299,7 +299,7 @@
      */
     this.tooltipText = function ()
     {
-      return 'String: Substring match , ! to negate matches';
+      return "String: Substring match , ! to negate matches";
     }
   }
 
@@ -375,7 +375,7 @@
   function Field(_name, _id, _ucd, _utype, _unit, _xtype,
                  _dataType, _arraysize, _description, _label)
   {
-    var INTERVAL_XTYPE_KEYWORD = 'INTERVAL';
+    var INTERVAL_XTYPE_KEYWORD = "INTERVAL";
 
     var name = _name;
     var id = _id;
@@ -462,7 +462,7 @@
 
     this.isError = function ()
     {
-      return (name === 'ERROR');
+      return (name === "ERROR");
     };
   }
 
@@ -479,7 +479,7 @@
 
     this.isResults = function ()
     {
-      return (type === 'results');
+      return (type === "results");
     };
 
     this.getName = function ()

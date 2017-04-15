@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var opencadcFilterEngine = require('../lib/opencadc.votable-filter-engine');
+var opencadcFilterEngine = require('../opencadc.votable-filter-engine');
 
 describe('Are numbers.', function ()
 {

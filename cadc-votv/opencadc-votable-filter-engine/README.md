@@ -1,7 +1,7 @@
 # OpenCADC Virtual Observatory Table Filter Engine 
 
-Version 1.0
-March 2017
+Version 1.0.2
+April 2017
 
 Simple Filter class with no dependencies.  It will do the necessary comparisons, regardless of data types.
 

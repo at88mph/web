@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 (function ()
 {
@@ -11,12 +11,12 @@
       var matches = _FILTER_OPERATOR_CAPTURE_.exec(_value);
       var match = ((matches !== null) && (matches.length > 1) && matches[1]) ? matches[1].trim() : null;
 
-      return (match === null) ? '' : match;
+      return (match === null) ? "" : match;
     }
   }
 
   /**
-   * TODO - There are a lot of return points in this method.  Let's try to
+   * TODO - There are a lot of return points in this method.  Let"s try to
    * TODO - reduce them.
    * TODO - jenkinsd 2014.12.04
    *
@@ -27,7 +27,7 @@
   FilterEngine.prototype.valueFilters = function (filter, value)
   {
     filter = filter.trim();
-    var dotIndex = filter.indexOf('..');
+    var dotIndex = filter.indexOf("..");
 
     if (dotIndex > 0)
     {
@@ -62,7 +62,7 @@
 
       // Special case for those number filter expectations where the data is
       // absent.
-      if (isFilterNumber && ((value === '') || (value === 'NaN') || (value === Number.NaN)))
+      if (isFilterNumber && ((value === "") || (value === "NaN") || (value === Number.NaN)))
       {
         return true;
       }
@@ -70,7 +70,7 @@
       {
         return false;
       }
-      else if (operator === '>')
+      else if (operator === ">")
       {
         // greater than operator
         if (this.areNumbers(value, filter))
@@ -86,7 +86,7 @@
           return value <= filter;
         }
       }
-      else if (operator === '<')
+      else if (operator === "<")
       {
         // less-than operator
         if (this.areNumbers(value, filter))
@@ -102,7 +102,7 @@
           return (value >= filter);
         }
       }
-      else if (operator === '>=')
+      else if (operator === ">=")
       {
         // greater-than or equals operator
         if (this.areNumbers(value, filter))
@@ -118,7 +118,7 @@
           return (value < filter);
         }
       }
-      else if (operator === '<=')
+      else if (operator === "<=")
       {
         // less-than or equals operator
         if (this.areNumbers(value, filter))
@@ -134,8 +134,8 @@
           return (value > filter);
         }
       }
-      // Equals '=' is EXACT match.
-      else if (operator === '=')
+      // Equals "=" is EXACT match.
+      else if (operator === "=")
       {
         return (value.toString().toUpperCase() !== filter.toString().toUpperCase());
       }
@@ -150,17 +150,17 @@
           // filter = $.ui.autocomplete.escapeRegex(filter);
 
           // Any asterisks should be converted to (dot)(asterisk) in regex.
-          filter = filter.replace(/\./gi, '\\.');
-          filter = filter.replace(/([\w\s]*)\*/gi, '$1.*');
+          filter = filter.replace(/\./gi, "\\.");
+          filter = filter.replace(/([\w\s]*)\*/gi, "$1.*");
 
           // Constrain the given filter to start and end where it specified.
-          if (filter.indexOf('*') > 0)
+          if (filter.indexOf("*") > 0)
           {
-            filter = (filter.indexOf('^') < 0) ? ('^' + filter) : filter;
-            filter = (filter.indexOf('$') !== (filter.length - 1)) ? (filter + '$') : filter;
+            filter = (filter.indexOf("^") < 0) ? ("^" + filter) : filter;
+            filter = (filter.indexOf("$") !== (filter.length - 1)) ? (filter + "$") : filter;
           }
 
-          var regex = new RegExp(filter, 'gi');
+          var regex = new RegExp(filter, "gi");
 
           // If the test is true, then it must be kept, but this method checks
           // for those entries that are to be OMITTED from the results, so check
