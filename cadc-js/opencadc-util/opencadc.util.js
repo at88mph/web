@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 (function ()
 {
@@ -8,18 +8,18 @@
    * (or Sub Class), and the function does the parasitic combination inheritance:
    * makes the child object inherits from the parent object
    *
-   * @param childObject     The 'sub class' object.
-   * @param parentObject    The 'super class' object.
+   * @param childObject     The "sub class" object.
+   * @param parentObject    The "super class" object.
    */
   function inheritPrototype(childObject, parentObject)
   {
-    // As discussed above, we use the Crockford's method to copy the properties
+    // As discussed above, we use the Crockford"s method to copy the properties
     // and methods from the parentObject onto the childObject
     // So the copyOfParent object now has everything the parentObject has
     var copyOfParent = Object.create(parentObject.prototype);
 
-    //Then we set the constructor of this new object to point to the childObject.
-// Why do we manually set the copyOfParent constructor here, see the
+    // Then we set the constructor of this new object to point to the childObject.
+    // Why do we manually set the copyOfParent constructor here, see the
     // explanation immediately following this code block.
     copyOfParent.constructor = childObject;
 
@@ -47,7 +47,7 @@
     };
 
     /**
-     * Obtain whether the given string has any text (i.e. !== '').
+     * Obtain whether the given string has any text (i.e. !== "").
      * @param _str          The string to check.
      * @returns {boolean}
      */
@@ -63,8 +63,8 @@
      * Given the string:
      *
      * {code}
-     * var str = 'My name is {1} and I am {2} years old';
-     * new StringUtil().format(str, ['George', 39]);
+     * var str = "My name is {1} and I am {2} years old";
+     * new StringUtil().format(str, ["George", 39]);
      * {code}
      *
      * would return:
@@ -100,7 +100,7 @@
     this.sanitize = function (_str)
     {
       return _str ? _str.toString().replace(/&/g, "&amp;")
-                        .replace(/</g, "&lt;").replace(/>/g, "&gt;") : "";
+          .replace(/</g, "&lt;").replace(/>/g, "&gt;") : "";
     };
 
     /**
@@ -127,7 +127,7 @@
     {
       var expression = ".*" + _match + ".*";
       var regExp = (_matchCase === true) ? new RegExp(expression)
-        : new RegExp(expression, "gi");
+          : new RegExp(expression, "gi");
 
       return regExp.test(_string);
     };
@@ -139,7 +139,7 @@
      * @param _subStr       The string to look for in _str.
      * @returns {boolean}   True if it exists, false otherwise.
      */
-    this.endsWith = function(_str, _subStr)
+    this.endsWith = function (_str, _subStr)
     {
       return (_str.indexOf(_subStr) === (_str.length - _subStr.length));
     }
@@ -160,26 +160,26 @@
 
 
     /**
-     * Return whether the given value is true, or 'positive'.  This will test for
-     * things like 'true', true, 1, 'yes', 'y'.
+     * Return whether the given value is true, or "positive".  This will test for
+     * things like "true", true, 1, "yes", "y".
      *
      * @param {*} _val
      * @return {boolean}
      */
     this.isTrueValue = function (_val)
     {
-      return (_val === true) || _TRUTH_REGEX_.test(_val + '');
+      return (_val === true) || _TRUTH_REGEX_.test(_val + "");
     };
 
     /**
-     * Return whether the given value is false, or 'negative'.  This will test for
-     * things like 'false', false, 0, 'no', 'n'.
+     * Return whether the given value is false, or "negative".  This will test for
+     * things like "false", false, 0, "no", "n".
      *
      * @param {*} _val
      */
     this.isFalseValue = function (_val)
     {
-      return (_val === false) ||  _FALSE_REGEX_.test(_val + '');
+      return (_val === false) || _FALSE_REGEX_.test(_val + "");
     };
   }
 
@@ -220,10 +220,10 @@
      *
      * From the sprintf man page:
      *
-     * 'Style e is used if the exponent from its conversion is less than -4 or
+     * "Style e is used if the exponent from its conversion is less than -4 or
      *  greater than or equal to the precision.  Trailing zeros are removed from
      *  the fractional part of the result; a decimal point appears only if it
-     *  is followed by at least one digit.'
+     *  is followed by at least one digit."
      *
      * jenkinsd 2013.12.20
      *
@@ -232,10 +232,10 @@
     this.formatExponentOrFloat = function (_val, _sigDig)
     {
       var exponentialVal = _val.toExponential(_sigDig);
-      var exponent = _val.toExponential().split('+')[1];
+      var exponent = _val.toExponential().split("+")[1];
 
       return ((exponent < -4) || (exponent >= _sigDig))
-        ? exponentialVal : this.formatFixation(_val, _sigDig);
+          ? exponentialVal : this.formatFixation(_val, _sigDig);
     };
 
     /**
@@ -267,14 +267,14 @@
     {
       var leftCompare, rightCompare;
 
-      if ((typeof _left === 'string') && ((typeof _right === 'string')))
+      if ((typeof _left === "string") && ((typeof _right === "string")))
       {
         leftCompare = _left.toLowerCase();
         rightCompare = _right.toLowerCase();
       }
-      else if (((typeof _left === 'object') && ((typeof _right === 'object')))
-        || ((typeof _left === 'function')
-        && ((typeof _right === 'function'))))
+      else if (((typeof _left === "object") && ((typeof _right === "object")))
+               || ((typeof _left === "function")
+                   && ((typeof _right === "function"))))
       {
         leftCompare = _left.toString();
         rightCompare = _right.toString();
@@ -286,14 +286,14 @@
       }
 
       return (leftCompare > rightCompare)
-        ? 1 : (leftCompare < rightCompare) ? -1 : 0;
+          ? 1 : (leftCompare < rightCompare) ? -1 : 0;
     };
   }
 
   /**
    * Utility to handle Array operations.
    *
-   * @param _comparer     A comparer to compare array items.  Optional.
+   * @param {*}   _comparer     A comparer to compare array items.  Optional.
    * @constructor
    */
   function ArrayUtil(_comparer)
@@ -322,16 +322,25 @@
       {
         if (typeof _operation === "function")
         {
-          return _subtractFilterHandler(_sourceArray, _operation);
+          return this._subtractFilterHandler(_sourceArray, _operation);
         }
         else
         {
-          return _subtractArray(_sourceArray, _operation)
+          return this._subtractArray(_sourceArray, _operation)
         }
       }
     };
 
-    function _subtractFilterHandler(_sourceArray, _filterHandler)
+    /**
+     * Handler to perform the filter functions for an array.
+     *
+     * @template T
+     * @param {Array}     _sourceArray  The Array to filter from.
+     * @param {function(T=, number=, Array.<T>=)}  _filterHandler  Handler to calculate filter.
+     * @return {Array.<T>}
+     * @private
+     */
+    this._subtractFilterHandler = function(_sourceArray, _filterHandler)
     {
       if (!_filterHandler)
       {
@@ -341,9 +350,17 @@
       {
         return _sourceArray.filter(_filterHandler);
       }
-    }
+    };
 
-    function _subtractArray(_sourceArray, _array)
+    /**
+     * Subtract an array from another one.
+     *
+     * @param {Array} _sourceArray    The array to subtract from.
+     * @param {Array} _array          The array to subtract.
+     * @return {Array}  The new array.
+     * @private
+     */
+    this._subtractArray = function(_sourceArray, _array)
     {
       if (!_array)
       {
@@ -351,12 +368,12 @@
       }
       else
       {
-        return _subtractFilterHandler(_sourceArray, function (item)
+        return this._subtractFilterHandler(_sourceArray, function (item)
         {
           return (_array.indexOf(item) < 0);
         });
       }
-    }
+    };
 
     /**
      * Sort this Array in _ascendingFlag ? order.  This will clone the base
@@ -373,31 +390,30 @@
       var cloneArray = _sourceArray.slice(0);
 
       cloneArray.sort(function (o1, o2)
-      {
-        var score;
+                      {
+                        var score;
 
-        if (_propertyName)
-        {
-          if (o1.hasOwnProperty(_propertyName)
-            && o2.hasOwnProperty(_propertyName))
-          {
-            score = _innerComparer.compare(o1[_propertyName],
-              o2[_propertyName]);
-          }
-          else
-          {
-            throw new Error("Property '" + _propertyName
-              + "' does not exist in the objects "
-              + "being compared.")
-          }
-        }
-        else
-        {
-          score = _innerComparer.compare(o1, o2);
-        }
+                        if (_propertyName)
+                        {
+                          if (o1.hasOwnProperty(_propertyName)
+                              && o2.hasOwnProperty(_propertyName))
+                          {
+                            score = _innerComparer.compare(o1[_propertyName],
+                                                           o2[_propertyName]);
+                          }
+                          else
+                          {
+                            throw new Error("Property '" + _propertyName
+                                            + "' does not exist in the objects being compared.")
+                          }
+                        }
+                        else
+                        {
+                          score = _innerComparer.compare(o1, o2);
+                        }
 
-        return score;
-      });
+                        return score;
+                      });
 
       return cloneArray;
     };
@@ -417,12 +433,12 @@
 
     this.generate = function ()
     {
-      return _s4() + _s4() + '-' + _s4() + '-' + _s4() + '-' +
-        _s4() + '-' + _s4() + _s4() + _s4();
+      return _s4() + _s4() + "-" + _s4() + "-" + _s4() + "-" +
+             _s4() + "-" + _s4() + _s4() + _s4();
     };
   }
 
-// Make findable.
+  // Make findable.
   module.exports = {
     StringUtil: StringUtil,
     BooleanUtil: BooleanUtil,

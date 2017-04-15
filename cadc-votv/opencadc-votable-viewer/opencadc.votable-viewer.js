@@ -1352,7 +1352,7 @@ jQuery.fn.quickFilter = require('./opencadc.votable-viewer-quick-filter');
     var headerRowCellRenderedFn = function (e, args)
     {
       this.setupHeader(checkboxSelector, args);
-    };
+    };ƒ
 
     this.grid.onHeaderRowCellRendered.subscribe(headerRowCellRenderedFn.bind(this));
 

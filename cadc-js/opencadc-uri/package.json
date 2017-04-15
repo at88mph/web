@@ -1,6 +1,6 @@
 {
   "name": "opencadc-uri",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "OpenCADC URI JavaScript library for convenient API access.",
   "devDependencies": {
     "mocha": "^3.2.0"
