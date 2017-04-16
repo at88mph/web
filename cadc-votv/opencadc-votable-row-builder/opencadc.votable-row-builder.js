@@ -1,21 +1,14 @@
-'use strict';
+"use strict";
 
-var opencadcUtil = require('opencadc-util');
-var opencadcVOTable = require('opencadc-votable');
-var jQuery = require('jquery');
-var xpath = require('xpath');
-
-jQuery.csv = require('jquery-csv');
-
-(function ($, opencadcUtil, opencadcVOTable)
+(function ($, xpath, opencadcUtil, opencadcVOTable)
 {
   var readerEvents = {
-    onDataLoadComplete: new $.Event('opencadc-votv:onDataLoadComplete'),
-    onRowAdd: new $.Event('opencadc-votv:onRowAdd'),
+    onDataLoadComplete: new $.Event("opencadc-votv:onDataLoadComplete"),
+    onRowAdd: new $.Event("opencadc-votv:onRowAdd"),
 
     // For batch row adding.
-    onPageAddStart: new $.Event('opencadc-votv:onPageAddStart'),
-    onPageAddEnd: new $.Event('opencadc-votv:onPageAddEnd')
+    onPageAddStart: new $.Event("opencadc-votv:onPageAddStart"),
+    onPageAddEnd: new $.Event("opencadc-votv:onPageAddEnd")
   };
 
   var _DEFAULT_PAGE_SIZE_ = 50;
@@ -63,7 +56,7 @@ jQuery.csv = require('jquery-csv');
         this.fireEvent(readerEvents.onPageAddEnd);
       }
 
-      this.fireEvent(readerEvents.onRowAdd, {'rowData': rowData});
+      this.fireEvent(readerEvents.onRowAdd, {"rowData": rowData});
     };
   }
 
@@ -135,8 +128,8 @@ jQuery.csv = require('jquery-csv');
      */
     function _preparePath(_expression)
     {
-      var pathItems = _expression ? _expression.split('/') : [];
-      var path = '';
+      var pathItems = _expression ? _expression.split("/") : [];
+      var path = "";
 
       for (var piIndex = 0; piIndex < pathItems.length; piIndex++)
       {
@@ -144,7 +137,7 @@ jQuery.csv = require('jquery-csv');
 
         if (nextItem)
         {
-          path += '/' + _defaultNamespacePrefix + ':' + nextItem;
+          path += "/" + _defaultNamespacePrefix + ":" + nextItem;
         }
       }
 
@@ -192,9 +185,9 @@ jQuery.csv = require('jquery-csv');
      */
     this._init = function ()
     {
-      if (_xmlDOM.documentElement.nodeName === 'parsererror')
+      if (_xmlDOM.documentElement.nodeName === "parsererror")
       {
-        throw new Error('cadcVOTV: XML input is invalid.\n\n');
+        throw new Error("cadcVOTV: XML input is invalid.\n\n");
       }
     };
 
@@ -205,16 +198,16 @@ jQuery.csv = require('jquery-csv');
      * @return {Array}          Array of found items.
      * @private
      */
-    function _getElements(_xPathExpression)
+    this._getElements = function(_xPathExpression)
     {
-      var evaluator = new XPathEvaluator(_xmlDOM, 'votable', _defaultNamespace);
+      var evaluator = new XPathEvaluator(_xmlDOM, "votable", _defaultNamespace);
       return evaluator.evaluate(_xPathExpression);
-    }
+    };
 
     this.build = function ()
     {
       // Work around the default namespace.
-      var xmlVOTableResourceDOMs = _getElements('/VOTABLE/RESOURCE[@type="results"]');
+      var xmlVOTableResourceDOMs = this._getElements("/VOTABLE/RESOURCE[@type=\"results\"]");
       var dataTypeFactory = new opencadcVOTable.DataTypeFactory();
 
       var voTableInfos = [];
@@ -233,8 +226,8 @@ jQuery.csv = require('jquery-csv');
       // Read the results Resource.
       if (xmlVOTableResourceDOMs.length > 0)
       {
-        var nextResourcePath = '/VOTABLE/RESOURCE[1]';
-        var resourceInfoDOMs = _getElements(nextResourcePath + '/INFO');
+        var nextResourcePath = "/VOTABLE/RESOURCE[1]";
+        var resourceInfoDOMs = this._getElements(nextResourcePath + "/INFO");
 
         // Iterate Resource INFOs
         for (var infoIndex = 0; infoIndex < resourceInfoDOMs.length;
@@ -242,20 +235,20 @@ jQuery.csv = require('jquery-csv');
         {
           var nextInfo = resourceInfoDOMs[infoIndex];
           resourceInfos.push(
-              new opencadcVOTable.Info(nextInfo.getAttribute('name'),
-                                       nextInfo.getAttribute('value')));
+              new opencadcVOTable.Info(nextInfo.getAttribute("name"),
+                                       nextInfo.getAttribute("value")));
         }
 
-        var resourceTableDOMs = _getElements(nextResourcePath + '/TABLE');
+        var resourceTableDOMs = this._getElements(nextResourcePath + "/TABLE");
 
         // Iterate over tables.
         for (var tableIndex = 0; tableIndex < resourceTableDOMs.length;
              tableIndex++)
         {
-          var nextTablePath = nextResourcePath + '/TABLE[' + (tableIndex + 1) + ']';
+          var nextTablePath = nextResourcePath + "/TABLE[" + (tableIndex + 1) + "]";
 
           var tableFields = [];
-          var resourceTableFieldDOM = _getElements(nextTablePath + '/FIELD');
+          var resourceTableFieldDOM = this._getElements(nextTablePath + "/FIELD");
 
           /**
            * Method to construct a row.  This is called for each row read.
@@ -268,64 +261,61 @@ jQuery.csv = require('jquery-csv');
           {
             var cellDataDOM = rowData[index];
             return (cellDataDOM.childNodes && cellDataDOM.childNodes[0]) ?
-                cellDataDOM.childNodes[0].nodeValue : '';
+                cellDataDOM.childNodes[0].nodeValue : "";
           };
 
           for (var fieldIndex = 0; fieldIndex < resourceTableFieldDOM.length;
                fieldIndex++)
           {
-            var nextFieldPath = nextTablePath + '/FIELD[' + (fieldIndex + 1)
-                                + ']';
+            var nextFieldPath = nextTablePath + "/FIELD[" + (fieldIndex + 1) + "]";
             var fieldDOM = resourceTableFieldDOM[fieldIndex];
-            var xmlFieldID = fieldDOM.getAttribute('id');
-            var xmlFieldUType = fieldDOM.getAttribute('utype');
-            var xmlFieldName = fieldDOM.getAttribute('name');
-            var fieldID = (xmlFieldID && (xmlFieldID !== ''))
+            var xmlFieldID = fieldDOM.getAttribute("id");
+            var xmlFieldUType = fieldDOM.getAttribute("utype");
+            var xmlFieldName = fieldDOM.getAttribute("name");
+            var fieldID = (xmlFieldID && (xmlFieldID !== ""))
                 ? xmlFieldID : xmlFieldName;
 
             longestValues[fieldID] = -1;
 
-            var fieldDescriptionDOM = _getElements(nextFieldPath
-                                                   + '/DESCRIPTION');
+            var fieldDescriptionDOM = this._getElements(nextFieldPath + "/DESCRIPTION");
 
             var fieldDescription = ((fieldDescriptionDOM.length > 0)
                                     && fieldDescriptionDOM[0].childNodes
                                     && fieldDescriptionDOM[0].childNodes[0])
                 ? fieldDescriptionDOM[0].childNodes[0].nodeValue
-                : '';
+                : "";
 
             var field = new opencadcVOTable.Field(
                 xmlFieldName,
                 fieldID,
-                fieldDOM.getAttribute('ucd'),
+                fieldDOM.getAttribute("ucd"),
                 xmlFieldUType,
-                fieldDOM.getAttribute('unit'),
-                fieldDOM.getAttribute('xtype'),
-                dataTypeFactory.createDataType(fieldDOM.getAttribute('datatype')),
-                fieldDOM.getAttribute('arraysize'),
+                fieldDOM.getAttribute("unit"),
+                fieldDOM.getAttribute("xtype"),
+                dataTypeFactory.createDataType(fieldDOM.getAttribute("datatype")),
+                fieldDOM.getAttribute("arraysize"),
                 fieldDescription,
-                fieldDOM.getAttribute('name'));
+                fieldDOM.getAttribute("name"));
 
             tableFields.push(field);
             voTableFields.push(field);
           }
 
           // var tableDataRows = [];
-          var rowDataDOMs = _getElements(nextTablePath + '/DATA/TABLEDATA/TR');
+          var rowDataDOMs = this._getElements(nextTablePath + "/DATA/TABLEDATA/TR");
           var rowCount = 0;
 
           for (var rowIndex = 0, rowDataDOMLength = rowDataDOMs.length;
                rowIndex < rowDataDOMLength; rowIndex++)
           {
-            var nextRowPath = nextTablePath + '/DATA/TABLEDATA/TR['
-                              + (rowIndex + 1) + ']';
+            var nextRowPath = nextTablePath + "/DATA/TABLEDATA/TR[" + (rowIndex + 1) + "]";
             var rowDataDOM = rowDataDOMs[rowIndex];
-            var rowCellsDOM = _getElements(nextRowPath + '/TD');
-            var rowID = rowDataDOM.getAttribute('id');
+            var rowCellsDOM = this._getElements(nextRowPath + "/TD");
+            var rowID = rowDataDOM.getAttribute("id");
 
             if (!rowID)
             {
-              rowID = 'vov_' + rowIndex;
+              rowID = "vov_" + rowIndex;
             }
 
             var rowData = this.buildRowData(tableFields, rowID, rowCellsDOM,
@@ -338,7 +328,7 @@ jQuery.csv = require('jquery-csv');
         }
       }
 
-      var xmlVOTableDescription = _getElements('/VOTABLE/DESCRIPTION');
+      var xmlVOTableDescription = this._getElements("/VOTABLE/DESCRIPTION");
       var voTableDescription = (xmlVOTableDescription.length > 0)
           ? xmlVOTableDescription[0].value : null;
       var voTableMetadata = new opencadcVOTable.Metadata(
@@ -370,7 +360,7 @@ jQuery.csv = require('jquery-csv');
 
     if (input.url && input.data)
     {
-      throw new Error('Only one of URL or CSV Data is supported, not both.');
+      throw new Error("Only one of URL or CSV Data is supported, not both.");
     }
 
     var _longestValues = {};
@@ -406,7 +396,7 @@ jQuery.csv = require('jquery-csv');
       }
       else
       {
-        console.warn('Nothing to do.  Set input.url or input data to build.');
+        console.warn("Nothing to do.  Set input.url or input data to build.");
       }
     };
 
@@ -436,14 +426,14 @@ jQuery.csv = require('jquery-csv');
 
     function findRowEnd(inChunk, lastFound)
     {
-      return inChunk.indexOf('\n', lastFound + 1);
+      return inChunk.indexOf("\n", lastFound + 1);
     }
 
     this.nextRow = function (entry)
     {
       var entryAsArray = $.csv.toArray(entry);
       var tableFields = input.tableMetadata.getFields();
-      var rowData = this.buildRowData(tableFields, 'vov_' + _chunk.rowCount,
+      var rowData = this.buildRowData(tableFields, "vov_" + _chunk.rowCount,
                                       entryAsArray, _longestValues,
                                       function (rowData, index)
                                       {
@@ -456,7 +446,7 @@ jQuery.csv = require('jquery-csv');
     this.loadEnd = function ()
     {
       this.fireEvent(readerEvents.onDataLoadComplete,
-                     {'longestValues': _longestValues});
+                     {"longestValues": _longestValues});
     };
 
     this.handleProgress = function (event)
@@ -468,13 +458,13 @@ jQuery.csv = require('jquery-csv');
     {
       $.ajax({
                url: url,
-               type: 'GET',
+               type: "GET",
                xhr: this._createRequest
              }).fail(function (jqXHR, textStatus, errorThrown)
                      {
-                       throw new Error('Unable to download:\nMessage from server: ('
-                                       + jqXHR.status + ') - ' + textStatus
-                                       + '\n' + errorThrown);
+                       throw new Error("Unable to download:\nMessage from server: ("
+                                       + jqXHR.status + ") - " + textStatus
+                                       + "\n" + errorThrown);
                      });
     };
 
@@ -487,11 +477,11 @@ jQuery.csv = require('jquery-csv');
 
       if (req.readyState === req.HEADERS_RECEIVED)
       {
-        var contentType = req.getResponseHeader('Content-Type');
+        var contentType = req.getResponseHeader("Content-Type");
 
         // Only CSV supports streaming!
-        if (!contentType && !((contentType.indexOf('csv') >= 0)
-                              || (contentType.indexOf('text/plain') >= 0)))
+        if (!contentType && !((contentType.indexOf("csv") >= 0)
+                              || (contentType.indexOf("text/plain") >= 0)))
         {
           handleInputError();
         }
@@ -500,7 +490,7 @@ jQuery.csv = require('jquery-csv');
 
     function handleInputError()
     {
-      var message = 'opencadc-votv: Unable to obtain CSV VOTable from URL (' + input.url + ').';
+      var message = "opencadc-votv: Unable to obtain CSV VOTable from URL (" + input.url + ").";
       console.log(message);
 
       throw new Error(message);
@@ -518,21 +508,21 @@ jQuery.csv = require('jquery-csv');
       }
       catch (trymicrosoft)
       {
-        console.log('Trying Msxml2 request.');
+        console.log("Trying Msxml2 request.");
         try
         {
-          request = new ActiveXObject('Msxml2.XMLHTTP');
+          request = new ActiveXObject("Msxml2.XMLHTTP");
         }
         catch (othermicrosoft)
         {
           try
           {
-            console.log('Trying Microsoft request.');
-            request = new ActiveXObject('Microsoft.XMLHTTP');
+            console.log("Trying Microsoft request.");
+            request = new ActiveXObject("Microsoft.XMLHTTP");
           }
           catch (failed)
           {
-            throw new Error('Unable to create an HTTP request.  Aborting!');
+            throw new Error("Unable to create an HTTP request.  Aborting!");
           }
         }
       }
@@ -541,7 +531,7 @@ jQuery.csv = require('jquery-csv');
       // behaviour.
       if (window.ActiveXObject)
       {
-        request.addEventListener('readystatechange',
+        request.addEventListener("readystatechange",
                                  function (_event)
                                  {
                                    try
@@ -565,13 +555,13 @@ jQuery.csv = require('jquery-csv');
       }
       else
       {
-        request.addEventListener('progress', _builder.handleProgress, false);
-        request.addEventListener('load', _builder.loadEnd, false);
-        request.addEventListener('abort', _builder.loadEnd, false);
-        request.addEventListener('readystatechange', initialize, false);
+        request.addEventListener("progress", _builder.handleProgress, false);
+        request.addEventListener("load", _builder.loadEnd, false);
+        request.addEventListener("abort", _builder.loadEnd, false);
+        request.addEventListener("readystatechange", initialize, false);
       }
 
-      request.addEventListener('error', _builder.loadEnd, false);
+      request.addEventListener("error", _builder.loadEnd, false);
 
       return request;
     };
@@ -579,7 +569,7 @@ jQuery.csv = require('jquery-csv');
     this.init();
   }
 
-// 'Sub-classes' of RowBuilder
+  // 'Sub-classes' of RowBuilder
   opencadcUtil.inheritPrototype(VOTableXMLRowBuilder, RowBuilder);
   opencadcUtil.inheritPrototype(CSVRowBuilder, RowBuilder);
 
@@ -602,19 +592,19 @@ jQuery.csv = require('jquery-csv');
   {
     switch (input.type)
     {
-      case 'xml':
+      case "xml":
       {
         this.builderClass = VOTableXMLRowBuilder;
         break;
       }
 
-      case 'csv':
+      case "csv":
       {
         this.builderClass = CSVRowBuilder;
         break;
       }
 
-        // Defaults to RowBuilderFactory.prototype.builderClass (VOTableXMLBuilder)
+      // Defaults to RowBuilderFactory.prototype.builderClass (VOTableXMLBuilder)
       default:
       {
         this.builderClass = VOTableXMLRowBuilder;
@@ -625,19 +615,10 @@ jQuery.csv = require('jquery-csv');
     return new this.builderClass(input);
   };
 
-  if (typeof module !== 'undefined' && module.exports)
-  {
-    // Exposed for testing.
-    module.exports._test = {
-      RowBuilder: RowBuilder,
-      VOTableXMLRowBuilder: VOTableXMLRowBuilder,
-      CSVRowBuilder: CSVRowBuilder,
-      XPathEvaluator: XPathEvaluator
-    };
+  module.exports = {
+    RowBuilderFactory: RowBuilderFactory,
+    XPathEvaluator: XPathEvaluator,
+    events: readerEvents
+  };
 
-    module.exports.RowBuilderFactory = RowBuilderFactory;
-
-    // Use the jQuery.Event API as it simplifies things.
-    module.exports.events = readerEvents;
-  }
-})(jQuery, opencadcUtil, opencadcVOTable);
+})(jQuery, xpath, opencadcUtil, opencadcVOTable);
