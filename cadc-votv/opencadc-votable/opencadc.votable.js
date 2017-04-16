@@ -1,6 +1,6 @@
 "use strict";
 
-(function (opencadcJSUtil)
+(function (opencadcUtil)
 {
   /**
    * VOTable Metadata class.
@@ -425,7 +425,7 @@
 
     this.containsInterval = function ()
     {
-      var stringUtil = new opencadcJSUtil.StringUtil();
+      var stringUtil = new opencadcUtil.StringUtil();
       return stringUtil.contains(_xtype, INTERVAL_XTYPE_KEYWORD);
     };
 
@@ -625,4 +625,4 @@
     VOTable: VOTable,
     DataTypeFactory: DataTypeFactory
   };
-})(opencadcJSUtil);
+})(opencadcUtil);

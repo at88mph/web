@@ -1,5 +1,5 @@
 (function()
 {
-  this.opencadcJSUtil = require('opencadc-util');
+  this.opencadcUtil = require('opencadc-util');
   module.exports = require('./opencadc.votable');
 })();
