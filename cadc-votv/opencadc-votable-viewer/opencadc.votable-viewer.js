@@ -1,6 +1,6 @@
 "use strict";
 
-(function ($, Slick, opencadcJSUtil, opencadcVOFilter, opencadcVOBuilder, undefined)
+(function ($, Slick, opencadcUtil, opencadcVOFilter, opencadcVOBuilder, undefined)
 {
   var applicationEvents = {
     onDataLoaded: new $.Event("opencadc-votv:onDataLoaded"),
@@ -22,7 +22,7 @@
 
   var _DEFAULT_ROW_COUNT_MESSAGE_FN_ = function (_totalRowCount, _currentRowCount)
   {
-    var stringUtil = new opencadcJSUtil.StringUtil();
+    var stringUtil = new opencadcUtil.StringUtil();
     return stringUtil.format(_DEFAULT_ROW_COUNT_MESSAGE_FORMAT_, [_totalRowCount, _currentRowCount]);
   };
 
@@ -406,7 +406,7 @@
     this.isPropertyFlagSet = function (columnName, propertyName)
     {
       var colManager = this.getColumnManager();
-      var booleanUtil = new opencadcJSUtil.BooleanUtil();
+      var booleanUtil = new opencadcUtil.BooleanUtil();
       var flagSet = booleanUtil.isTrueValue(colManager[propertyName]);
       var colOpts = this.getOptionsForColumn(columnName);
 
@@ -433,7 +433,7 @@
      */
     this.isFitMax = function (columnID)
     {
-      var booleanUtil = new opencadcJSUtil.BooleanUtil();
+      var booleanUtil = new opencadcUtil.BooleanUtil();
       var columnOptions = this.getOptionsForColumn(columnID);
       var fitMaxEnabled = booleanUtil.isTrueValue(this.options.fitMax);
 
@@ -1691,4 +1691,4 @@
     "events": applicationEvents
   };
 
-})(jQuery, Slick, opencadcJSUtil, opencadcVOFilter, opencadcVOBuilder);
+})(jQuery, Slick, opencadcUtil, opencadcVOFilter, opencadcVOBuilder);

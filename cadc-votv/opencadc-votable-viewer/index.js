@@ -4,7 +4,7 @@
 (function ()
 {
   this.jQuery = require("jquery");
-  this.opencadcJSUtil = require("opencadc-util");
+  this.opencadcUtil = require("opencadc-util");
   require("slickgrid");
 
   // The Slick package is put into the window by default.

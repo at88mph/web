@@ -1,17 +1,17 @@
 'use strict';
 
-if (!jQuery.fn.autocomplete)
-{
-  throw 'VOTable Viewer requires the jquery-ui autocomplete module to be loaded.  \n'
-  + 'See https://jqueryui.com/autocomplete/.';
-}
-
 var opencadcVOFilter = require('opencadc-votable-filter-engine');
 
 module.exports = (function ($)
 {
   return function(_viewer, _columnID, _options)
   {
+    if (!$.fn.autocomplete)
+    {
+      throw 'VOTable Viewer requires the jquery-ui autocomplete module to be loaded.  \n'
+            + 'See https://jqueryui.com/autocomplete/.';
+    }
+
     var $inputField = $(this);
     var suggestionKeys = [];
     var defaults = {

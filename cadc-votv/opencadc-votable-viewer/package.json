@@ -1,6 +1,6 @@
 {
   "name": "opencadc-votable-viewer",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "OpenCADC JavaScript main application to stream a VOTable and display it in a grid.",
   "dependencies": {
     "jquery": "^2.2.4",
@@ -9,7 +9,7 @@
     "opencadc-votable": "^1.1.2",
     "opencadc-votable-filter-engine": "^1.0.1",
     "opencadc-votable-row-builder": "^1.0.3",
-    "slickgrid": "^3.0.0"
+    "slickgrid": "^2.3.3"
   },
   "main": "index.js",
   "devDependencies": {
