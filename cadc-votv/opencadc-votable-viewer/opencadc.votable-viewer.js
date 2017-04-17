@@ -1343,7 +1343,7 @@
         this.setupHeader(checkboxSelector, args);
       };
 
-      this.grid.onHeaderRowCellRendered.subscribe(this._headerRowCellRenderedFn);
+      this.grid.onHeaderRowCellRendered.subscribe(this._headerRowCellRenderedFn.bind(this));
 
       if (Slick.Plugins && Slick.Plugins.UnitSelection)
       {

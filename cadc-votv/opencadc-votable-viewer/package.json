@@ -9,7 +9,7 @@
     "opencadc-votable": "^1.1.2",
     "opencadc-votable-filter-engine": "^1.0.1",
     "opencadc-votable-row-builder": "^1.0.3",
-    "slickgrid": "^2.3.3"
+    "slickgrid": "file:../../../SlickGrid"
   },
   "main": "index.js",
   "devDependencies": {

@@ -10,6 +10,7 @@
   // The Slick package is put into the window by default.
   this.Slick = window.Slick;
 
+  this.jQuery.ui = require("jquery-ui");
   require("jquery-ui/ui/widget");
   require("jquery-ui/ui/safe-active-element");
   require("jquery-ui/ui/safe-blur");
@@ -18,7 +19,7 @@
   require("jquery-ui/ui/keycode");
   require("jquery-ui/ui/widgets/menu");
   require("jquery-ui/ui/widgets/selectmenu");
-  require("jquery-ui/ui/widgets/autocomplete");
+  this.jQuery.fn.autocomplete = require("jquery-ui/ui/widgets/autocomplete");
 
   this.opencadcVOBuilder = require("opencadc-votable-row-builder");
   this.opencadcVOFilter = require("opencadc-votable-filter-engine");
