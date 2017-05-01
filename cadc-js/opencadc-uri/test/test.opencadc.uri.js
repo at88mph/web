@@ -2,7 +2,7 @@
 
 
 var assert = require("assert");
-var opencadcJS = require("../opencadc.uri");
+var opencadcJS = require("../");
 
 describe("Test URI components from full URL.", function ()
 {
@@ -21,6 +21,11 @@ describe("Test URI components from full URL 2.", function ()
   it("Path should be /path/item.txt", function ()
   {
     assert.equal("/path/item.txt", testSubject.getPath());
+  });
+
+  it("Host should be www.mysite.com", function ()
+  {
+    assert.equal("www.mysite.com", testSubject.getHost());
   });
 
   it("Query string params", function ()
@@ -172,6 +177,11 @@ describe("Convert back to string.", function ()
   {
     assert.equal("http://www.mysite.com/path/item.txt?param1=val1&param2=val2&param2=val3&param3=val4#hash=42",
                  testSubject.toString());
+  });
+
+  it("Hash should be 'hash=42'", function ()
+  {
+    assert.equal("hash=42", testSubject.getHash());
   });
 
   it("URI String after remove", function ()
