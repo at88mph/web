@@ -2,7 +2,7 @@
 
 
 var assert = require("assert");
-var opencadcJS = require("../opencadc.util");
+var opencadcJS = require("../");
 
 describe("StringUtil.endsWith", function ()
 {
@@ -427,5 +427,14 @@ describe("BooleanUtil false values.", function ()
   it("Check string y", function ()
   {
     assert.ok(testSubject.isFalseValue("y") === false);
+  });
+});
+
+describe("GUID generation.", function()
+{
+  var testSubject = new opencadcJS.GUID();
+
+  it("Generate new GUID.", function () {
+    assert.equal(testSubject.generate().length, 36, "Wrong string length");
   });
 });
