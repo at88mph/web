@@ -1,4 +1,5 @@
-'use strict';
+"use strict";
+
 
 (function (window)
 {
@@ -45,7 +46,7 @@
 
     /**
      * Parse the given URI into this object.  This method preserves the uri
-     * property in this object as the 'original' uri.
+     * property in this object as the "original" uri.
      *
      * @param _uri    The new URI.
      * @private
@@ -55,12 +56,12 @@
       var parsedURI = _uri.match(PARSER_REGEX);
       var components = {};
 
-      components.scheme = parsedURI[1] || '';
-      components.host = parsedURI[2] || '';
-      components.path = parsedURI[3] || '';
-      components.query = parsedURI[4] || '';
-      components.hash = parsedURI[5] || '';
-      components.file = ((components.path && components.path.match(FILE_REGEX)) || [, ''])[1];
+      components.scheme = parsedURI[1] || "";
+      components.host = parsedURI[2] || "";
+      components.path = parsedURI[3] || "";
+      components.query = parsedURI[4] || "";
+      components.hash = parsedURI[5] || "";
+      components.file = ((components.path && components.path.match(FILE_REGEX)) || [, ""])[1];
 
       _uriComponents = Object.assign({}, components);
       _query = Object.assign({}, this._parseQuery());
@@ -78,11 +79,11 @@
       var qs = _uriComponents.query;
       if (qs.trim())
       {
-        var pairs = (qs !== '') ? qs.split('&') : [];
+        var pairs = (qs !== "") ? qs.split("&") : [];
 
         pairs.forEach(function (item)
         {
-          var pair = item.split('=');
+          var pair = item.split("=");
           var queryKey = pair[0];
           var keyValues = keyValuePairs[queryKey] || [];
 
@@ -110,12 +111,12 @@
 
       if (queryString)
       {
-        relativeURI += '?' + queryString;
+        relativeURI += "?" + queryString;
       }
 
       if (hashString)
       {
-        relativeURI += '#' + hashString;
+        relativeURI += "#" + hashString;
       }
 
       return relativeURI;
@@ -139,7 +140,7 @@
 
       if (queryString)
       {
-        relativeURI += '?' + queryString;
+        relativeURI += "?" + queryString;
       }
 
       encodedRelativeURI = encodeURI(relativeURI);
@@ -147,7 +148,7 @@
       // Treat the has separately.
       if (hashString)
       {
-        encodedRelativeURI += encodeURIComponent('#' + hashString);
+        encodedRelativeURI += encodeURIComponent("#" + hashString);
       }
 
       return encodedRelativeURI;
@@ -175,11 +176,11 @@
 
     this.getPathItems = function ()
     {
-      var splitItems = this.getPath().split('/');
+      var splitItems = this.getPath().split("/");
 
-      if ((splitItems.length > 0) && (splitItems[0] === ''))
+      if ((splitItems.length > 0) && (splitItems[0] === ""))
       {
-        // If the path starts with a '/', then the first item will be an empty
+        // If the path starts with a "/", then the first item will be an empty
         // string, so get rid of it.
         splitItems.splice(0, 1);
       }
@@ -242,7 +243,7 @@
 
       if (existingValues.length > 1)
       {
-        throw new Error('There are multiple parameters with the name "' + _key + '".');
+        throw new Error("There are multiple parameters with the name '" + _key + "'.");
       }
       else
       {
@@ -277,10 +278,10 @@
      */
     this.toString = function ()
     {
-      var hashString = (this.getHash() !== '') ? '#' + this.getHash() : '';
+      var hashString = (this.getHash() !== "") ? "#" + this.getHash() : "";
       var scheme = this.getScheme();
 
-      return ((scheme.trim() === '') ? '' : (scheme + '://'))
+      return ((scheme.trim() === "") ? "" : (scheme + "://"))
         + this.getHost() + this.getPath()
         + this._buildQueryString(this.getQuery(), false)
         + hashString;
@@ -291,10 +292,10 @@
      */
     this.toEncodedString = function ()
     {
-      var hashString = (this.getHash() !== '') ? '#' + this.getHash() : '';
+      var hashString = (this.getHash() !== "") ? "#" + this.getHash() : "";
       var scheme = this.getScheme();
 
-      return ((scheme.trim() === '') ? '' : (scheme + '://'))
+      return ((scheme.trim() === "") ? "" : (scheme + "://"))
         + this.getHost() + this.getPath()
         + this._buildQueryString(this.getQuery(), true) + hashString;
     };
@@ -308,7 +309,7 @@
      */
     this._buildQueryString = function(_query, _encodeValuesFlag)
     {
-      var queryString = (JSON.stringify(_query) === JSON.stringify({})) ? '' : '?';
+      var queryString = (JSON.stringify(_query) === JSON.stringify({})) ? "" : "?";
 
       for (var param in _query)
       {
@@ -317,13 +318,13 @@
           var values = _query[param];
           for (var valIndex = 0, vl = values.length; valIndex < vl; valIndex++)
           {
-            queryString += param + '=' + ((_encodeValuesFlag === true)
-                ? encodeURIComponent(values[valIndex]) : values[valIndex]) + '&';
+            queryString += param + "=" + ((_encodeValuesFlag === true)
+                ? encodeURIComponent(values[valIndex]) : values[valIndex]) + "&";
           }
         }
       }
 
-      if (queryString.charAt(queryString.length - 1) === ('&'))
+      if (queryString.charAt(queryString.length - 1) === ("&"))
       {
         queryString = queryString.substr(0, (queryString.length - 1));
       }
