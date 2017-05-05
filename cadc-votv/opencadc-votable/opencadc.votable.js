@@ -1,13 +1,13 @@
 "use strict";
 
-(function (opencadcUtil)
+(function (opencadcUtil, undefined)
 {
   /**
    * VOTable Metadata class.
    *
-   * @param {Array} _infos          An array of INFO elements.
-   * @param {String} _description   String descriptive text.
-   * @param {Array} _fields         An array of Field objects.
+   * @param {[]} [_infos=[]]          An array of INFO elements.
+   * @param {String} [_description=null]   String descriptive text.
+   * @param {[]} [_fields=[]]         An array of Field objects.
    * @constructor
    */
   function Metadata(_infos, _description, _fields)
@@ -26,6 +26,10 @@
       return infos;
     };
 
+    /**
+     * Obtain this Metadata's description.
+     * @return {String}
+     */
     this.getDescription = function ()
     {
       return description;
@@ -126,7 +130,7 @@
     this.compare = function (_this, _toThis)
     {
       // Already equivalent?  Great, proceed.
-      if (_this == _toThis)
+      if (_this === _toThis)
       {
         return 0;
       }
@@ -173,7 +177,7 @@
     this.compare = function (_this, _toThis)
     {
       // Already equivalent?  Great, proceed.
-      if (_this == _toThis)
+      if (_this === _toThis)
       {
         return 0;
       }
@@ -220,7 +224,7 @@
     this.compare = function (_this, _toThis)
     {
       // Already equivalent?  Great, proceed.
-      if (_this == _toThis)
+      if (_this === _toThis)
       {
         return 0;
       }
@@ -269,7 +273,7 @@
     this.compare = function (_this, _toThis)
     {
       // Already equivalent?  Great, proceed.
-      if (_this == _toThis)
+      if (_this === _toThis)
       {
         return 0;
       }
@@ -360,20 +364,20 @@
 
   /**
    *
-   * @param _name
-   * @param _id
-   * @param _ucd
-   * @param _utype
-   * @param _unit
-   * @param _xtype
-   * @param _dataType    DataType object.
-   * @param _arraysize
-   * @param _description
-   * @param _label
+   * @param {String} _name
+   * @param {String} [_id]
+   * @param {String} [_ucd]
+   * @param {String} [_utype]
+   * @param {String} [_unit]
+   * @param {String} [_xtype]
+   * @param {FloatingPointDataType|BooleanDataType|IntegerDataType|StringDataType} [_dataType=StringDataType]
+   * DataType instance.
+   * @param {String|Number} [_arraysize]
+   * @param {String}[_description]
+   * @param {String} [_label]
    * @constructor
    */
-  function Field(_name, _id, _ucd, _utype, _unit, _xtype,
-                 _dataType, _arraysize, _description, _label)
+  function Field(_name, _id, _ucd, _utype, _unit, _xtype, _dataType, _arraysize, _description, _label)
   {
     var INTERVAL_XTYPE_KEYWORD = "INTERVAL";
 
@@ -615,14 +619,18 @@
     };
   }
 
-  module.exports = {
-    Resource: Resource,
-    Row: Row,
-    Cell: Cell,
-    Info: Info,
-    Field: Field,
-    Metadata: Metadata,
-    VOTable: VOTable,
-    DataTypeFactory: DataTypeFactory
-  };
+  // In case this is imported directly into a page...
+  if (typeof module !== "undefined" && module.exports)
+  {
+    module.exports = {
+      Resource: Resource,
+      Row: Row,
+      Cell: Cell,
+      Info: Info,
+      Field: Field,
+      Metadata: Metadata,
+      VOTable: VOTable,
+      DataTypeFactory: DataTypeFactory
+    };
+  }
 })(opencadcUtil);

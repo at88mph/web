@@ -1,6 +1,6 @@
 "use strict";
 
-(function ($, xpath, opencadcUtil, opencadcVOTable)
+(function ($, xpath, opencadcUtil, opencadcVOTable, undefined)
 {
   var readerEvents = {
     onDataLoadComplete: new $.Event("opencadc-votv:onDataLoadComplete"),
@@ -345,12 +345,11 @@
    * The CSV plugin reader.
    *
    * @param input         The CSV type and table metadata.
-   *
-   *  input.data = Embedded CSV data.
-   *  input.url = {URI} object.
-   *  input.pageSize = Size of page of data from URL.
-   *  input.tableMetadata = {Metadata} instance.
-   *  input.useRelativeURL = Use a relative URI
+   * @param input.data = Embedded CSV data.
+   * @param input.url = {URI} object.
+   * @param input.pageSize = Size of page of data from URL.
+   * @param input.tableMetadata = {Metadata} instance.
+   * @param input.useRelativeURL = Use a relative URI
    *
    * @constructor
    */
@@ -570,8 +569,9 @@
   }
 
   // 'Sub-classes' of RowBuilder
-  opencadcUtil.inheritPrototype(VOTableXMLRowBuilder, RowBuilder);
-  opencadcUtil.inheritPrototype(CSVRowBuilder, RowBuilder);
+  var objectUtil = new opencadcUtil.ObjectUtil();
+  objectUtil.inheritPrototype(VOTableXMLRowBuilder, RowBuilder);
+  objectUtil.inheritPrototype(CSVRowBuilder, RowBuilder);
 
   /**
    * Factory to create an appropriate Builder instance.

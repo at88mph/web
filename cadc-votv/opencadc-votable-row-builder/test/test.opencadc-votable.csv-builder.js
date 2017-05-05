@@ -1,10 +1,14 @@
+"use strict";
+
 var assert = require("assert");
 
-// global necessary to add $.csv.toArrays properly.
-var $ = require("jquery");
-require("jquery-csv");
+global.opencadcUtil = require("opencadc-util");
+global.opencadcVOTable = require("opencadc-votable");
+global.jQuery = require("jquery");
+global.xpath = require("xpath");
+global.jQuery.csv = require("jquery-csv");
 
-var opencadcVOTableRowBuilder = require("../index");
+var opencadcVOTableRowBuilder = require("../opencadc.votable-row-builder");
 
 describe("Read in simple CSV VOTable.", function ()
 {
@@ -19,16 +23,14 @@ describe("Read in simple CSV VOTable.", function ()
                 "caom:JCMT/scuba2_00039_20100303T072646,JCMT,73.5415224228061,-3.008333346943164,MS0451-03,55258.3102546,30.6219978333,SCUBA-2,,scuba2_00039_20100303T072646,2,8.149255583144998E-4,8.849191645501601E-4,M09BGT01,Wayne S. Holland,reduced_850,2011-08-01T23:59:59.000,0.02756782985378159,3.999999999996,image,,REDUCE_SCAN_FAINT_POINT_SOURCES,,science,,0,scan,2011-08-01T23:59:59.000,39,exposure,,POLYGON ICRS 73.62720203480237 -3.0888857089753605 73.45584222806089 -3.088885082246605 73.45585549824929 -2.9277742771225164 73.62718991853836 -2.927774871103267,Millimeter,,59b81e729415a81b6e97b4051ecf3417aca9cc1f,JCMT_STANDARD_PIPELINE,,10896,2012-04-16T01:50:40.000,caom:JCMT/scuba2_00039_20100303T072646/raw_850,-3235834955827922946,caom:JCMT/scuba2_00039_20100303T072646/reduced_850,caom:JCMT/scuba2_00039_20100303T072646/reduced_850\n";
 
   var tableFields = [];
-  var csvAsArray = $.csv.toArrays(csvData);
+  var csvAsArray = global.jQuery.csv.toArrays(csvData);
   var limit = csvAsArray[0].length;
   for (var ii = 0; ii < limit; ii++)
   {
-    tableFields.push(new opencadcVOTable.Field(csvAsArray[0][ii], null, null,
-      null, null, null, null, null, null, null));
+    tableFields.push(new opencadcVOTable.Field(csvAsArray[0][ii]));
   }
 
-  var tm = new opencadcVOTable.Metadata(
-    null, null, null, null, tableFields, null);
+  var tm = new opencadcVOTable.Metadata(null, null, tableFields);
 
   var input =
     {

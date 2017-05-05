@@ -19,8 +19,8 @@
    * TODO - There are a lot of return points in this method.  Let's try to reduce them.
    * TODO - jenkinsd 2014.12.04
    *
-   * @param filter             The filter value as entered by the user.
-   * @param value              The value to be filtered or not
+   * @param {*} filter             The filter value as entered by the user.
+   * @param {*} value              The value to be filtered or not
    * @returns {Boolean} true if value is filtered-out by filter.
    */
   FilterEngine.prototype.valueFilters = function (filter, value)
@@ -146,8 +146,6 @@
         }
         else
         {
-          // filter = $.ui.autocomplete.escapeRegex(filter);
-
           // Any asterisks should be converted to (dot)(asterisk) in regex.
           filter = filter.replace(/\./gi, "\\.");
           filter = filter.replace(/([\w\s]*)\*/gi, "$1.*");
@@ -170,11 +168,20 @@
     }
   };
 
+  /**
+   * Determine whether the arg val is a number.
+   * @param {*} val     The value to check.
+   * @return {boolean}
+   */
   FilterEngine.prototype.isNumber = function (val)
   {
     return !isNaN(parseFloat(val)) && isFinite(val);
   };
 
+  /**
+   * Determine whether the arguments are numbers.
+   * @return {boolean}
+   */
   FilterEngine.prototype.areNumbers = function ()
   {
     for (var i = 0; i < arguments.length; i++)
@@ -188,6 +195,10 @@
     return true;
   };
 
+  /**
+   * Determine whether the arguments are strings.
+   * @return {boolean}
+   */
   FilterEngine.prototype.areStrings = function ()
   {
     for (var i = 0; i < arguments.length; i++)
@@ -200,6 +211,9 @@
     return true;
   };
 
-  module.exports.FilterEngine = FilterEngine;
-
+  // In case this is imported directly into a page...
+  if (typeof module !== "undefined" && module.exports)
+  {
+    module.exports.FilterEngine = FilterEngine;
+  }
 })();

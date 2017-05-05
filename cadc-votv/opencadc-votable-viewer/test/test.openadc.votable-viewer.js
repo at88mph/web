@@ -1,3 +1,5 @@
+"use strict";
+
 /*
  * Created by goliaths on 06/08/15.
  */
@@ -34,7 +36,22 @@ var xmlData =
   + "</VOTABLE>";
 
 var assert = require("assert");
-var $ = require("jquery");
+var $ = global.jQuery = require("jquery");
+
+require("slickgrid");
+
+// The Slick package is put into the window by default.
+global.Slick = window.Slick;
+global.opencadcUtil = require("opencadc-util");
+global.xpath = require("xpath");
+global.opencadcVOTable = require("opencadc-votable");
+global.opencadcRowBuilder = require("opencadc-votable-row-builder");
+global.opencadcFilterEngine = require('opencadc-votable-filter-engine');
+
+require("jquery-ui/ui/widget");
+require("jquery-ui/ui/widgets/mouse");
+require("jquery-ui/ui/widgets/sortable");
+require("jquery-ui/ui/widgets/autocomplete");
 
 var DOMParser = require("xmldom").DOMParser;
 var StringUtil = require("opencadc-util").StringUtil;

@@ -1,15 +1,13 @@
-'use strict';
+"use strict";
 
-var opencadcVOFilter = require('opencadc-votable-filter-engine');
-
-module.exports = (function ($)
+(function ($, opencadcFilterEngine, undefined)
 {
-  return function(_viewer, _columnID, _options)
+  module.exports = function(_viewer, _columnID, _options)
   {
-    if (!$.fn.autocomplete)
+    if (!$.ui.autocomplete)
     {
-      throw 'VOTable Viewer requires the jquery-ui autocomplete module to be loaded.  \n'
-            + 'See https://jqueryui.com/autocomplete/.';
+      throw "VOTable Viewer requires the jquery-ui autocomplete module to be loaded.  \n"
+            + "See https://jqueryui.com/autocomplete/.";
     }
 
     var $inputField = $(this);
@@ -19,13 +17,13 @@ module.exports = (function ($)
     };
 
     var options = $.extend({}, defaults, _options);
-    var filterEngine = new opencadcVOFilter.FilterEngine();
+    var filterEngine = new opencadcFilterEngine.FilterEngine();
 
     function filter(val, closeAutocompleteFlag)
     {
       if (closeAutocompleteFlag)
       {
-        $inputField.autocomplete('close');
+        $inputField.autocomplete("close");
       }
 
       _viewer.doFilter(val, _columnID);
@@ -73,19 +71,21 @@ module.exports = (function ($)
       || ((keyCount === 1) && existingColumnFilters[_columnID]));
     }
 
-    $inputField.on('change keyup', function ()
+    $inputField.on("change keyup", function ()
     {
       var trimmedVal = $.trim($inputField.val());
 
       // Clear it if the input is cleared.
-      if (!trimmedVal || (trimmedVal === ''))
+      if (!trimmedVal || (trimmedVal === ""))
       {
-        _viewer.getColumnFilters()[_columnID] = '';
-        filter('', true);
+        _viewer.getColumnFilters()[_columnID] = "";
+        filter("", true);
       }
     });
 
-    // Autocomplete the items from the Grid's data.
+    // autocomplete = autocomplete.bind($inputField);
+
+    // Autocomplete the items from the Grid"s data.
     $inputField.autocomplete({
       // Define the minimum search string length
       // before the suggested values are shown.
@@ -101,9 +101,9 @@ module.exports = (function ($)
 
         // Conditional logic to not use autocomplete, such as range searches.
         var trimmedVal = $.trim(enteredValue);
-        var space = ' ';
+        var space = " ";
         var numericRangeSearchRegex = /^([><=])/i;
-        var rangeSearchString = '..';
+        var rangeSearchString = "..";
         var endsWithSpace =
           (enteredValue.indexOf(space,
             (enteredValue.length
@@ -120,9 +120,9 @@ module.exports = (function ($)
           filter(trimmedVal, true);
         }
         // Clear it if the input is cleared.
-        else if (!trimmedVal || (trimmedVal === ''))
+        else if (!trimmedVal || (trimmedVal === ""))
         {
-          filter('', true);
+          filter("", true);
         }
         else
         {
@@ -171,14 +171,15 @@ module.exports = (function ($)
       },
       select: function (event, ui)
       {
-        filter(($.trim(ui.item.value) || ''), true);
+        filter(($.trim(ui.item.value) || ""), true);
       }
-    }).blur(function ()
+    });
+
+    $inputField.blur(function ()
     {
-      var enteredValue =
-        $.trim($inputField.val());
-      filter((enteredValue.length === 0) ? '' : enteredValue, true);
+      var enteredValue = $.trim($(this).val());
+      filter((enteredValue.length === 0) ? "" : enteredValue, true);
     });
   }
 
-})(jQuery);
+})(jQuery, opencadcFilterEngine);

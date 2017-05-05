@@ -57,7 +57,7 @@
   {
     // Regular expressions.
     var FILE_REGEX = /\/([^\/?#]+)$/i;
-    var PARSER_REGEX = /^(?:([^:\/?\#]+):)?(?:\/\/([^\/?\#]*))?([^?\#]*)(?:\?([^\#]*))?(?:\#(.*))?/;
+    var PARSER_REGEX = /^(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?/;
 
     var parsedURI = _uri.match(PARSER_REGEX);
     var components = {};
@@ -336,7 +336,7 @@
     this._parse(this.toString());
   };
 
-  if (typeof module !== 'undefined' && module.exports)
+  if (typeof module !== "undefined" && module.exports)
   {
     module.exports.URI = URI;
   }

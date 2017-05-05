@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "OpenCADC JavaScript main application to stream a VOTable.",
   "dependencies": {
-    "browserify": "^13.3.0",
+    "webpack": "^2.4.1",
     "uglify-js": "^2.7.5",
     "jquery": "^2.2.4",
-    "opencadc-votable": "^1.1.3",
     "opencadc-votable-viewer": "file:../../opencadc-votable-viewer"
   },
   "main": "index.js",
@@ -17,7 +16,7 @@
   },
   "scripts": {
     "test": "mocha -r jsdom-global/register",
-    "build": "browserify index.js -o opencadc.votable-viewer-app.js"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",

@@ -2,7 +2,7 @@
 
 (function ()
 {
-  var $ = require("jquery");
+  var $ = window.jQuery = window.$ = require("jquery");
   var opencadcViewer = require("opencadc-votable-viewer");
 
   $(document).ready(function ()

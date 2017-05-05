@@ -1,6 +1,6 @@
 "use strict";
 
-(function ($, Slick, opencadcUtil, opencadcVOFilter, opencadcVOBuilder, undefined)
+(function ($, window, Slick, opencadcUtil, opencadcFilterEngine, opencadcRowBuilder, quickFilter, undefined)
 {
   var applicationEvents = {
     onDataLoaded: new $.Event("opencadc-votv:onDataLoaded"),
@@ -17,8 +17,7 @@
   var _ROW_SELECT_DISABLED_KEY_ = "_ROW_SELECT_DISABLED_";
   var _PAGER_NODE_SELECTOR_ = "#pager";
   var _HEADER_NODE_SELECTOR_ = "div.grid-header";
-  var _DEFAULT_ROW_COUNT_MESSAGE_FORMAT_ =
-      "Showing {1} rows ({2} before filtering).";
+  var _DEFAULT_ROW_COUNT_MESSAGE_FORMAT_ = "Showing {1} rows ({2} before filtering).";
 
   var _DEFAULT_ROW_COUNT_MESSAGE_FN_ = function (_totalRowCount, _currentRowCount)
   {
@@ -33,7 +32,7 @@
   };
 
   /**
-   * Create a VOView object.  This is here to package everything together.
+   * Create a Viewer object.  This is here to package everything together.
    *
    * @param _targetNodeSelector  The target node selector to place the this.
    * @param _opts             The options object.
@@ -124,7 +123,7 @@
       this.toggleEmptyResultsMessage(false);
 
       var hasDisplayColumns = (this.displayColumns.length > 0);
-      var rowBuilderFactory = new opencadcVOBuilder.RowBuilderFactory();
+      var rowBuilderFactory = new opencadcRowBuilder.RowBuilderFactory();
       var rowBuilder = rowBuilderFactory.createBuilder(input);
       var inputFields = input.tableMetadata ? input.tableMetadata.getFields() : [];
       var $resultsGridHeader = this.getHeader();
@@ -304,16 +303,16 @@
         }
       };
 
-      rowBuilder.subscribe(opencadcVOBuilder.events.onDataLoadComplete,
+      rowBuilder.subscribe(opencadcRowBuilder.events.onDataLoadComplete,
                            dataLoadCompleteFn.bind(this));
 
-      rowBuilder.subscribe(opencadcVOBuilder.events.onPageAddStart,
+      rowBuilder.subscribe(opencadcRowBuilder.events.onPageAddStart,
                            this._pageAddStartFn);
 
-      rowBuilder.subscribe(opencadcVOBuilder.events.onPageAddEnd,
+      rowBuilder.subscribe(opencadcRowBuilder.events.onPageAddEnd,
                            this._onPageAddEnd);
 
-      rowBuilder.subscribe(opencadcVOBuilder.events.onRowAdd,
+      rowBuilder.subscribe(opencadcRowBuilder.events.onRowAdd,
                            this._rowAddFn);
 
       rowBuilder.build();
@@ -927,7 +926,7 @@
       // Do not display for the checkbox column.
       else if (this.isPropertyFlagSet(args.column.name, PROPERTY_KEYS.filterable))
       {
-        if (typeof $.fn.quickFilter === "undefined")
+        if (!quickFilter)
         {
           throw "The filter function requires opencadc.votable-viewer-quick-filter.js to be loaded.";
         }
@@ -944,7 +943,7 @@
                 .addClass("form-control").addClass("cadcvotv-filter-input")
                 .appendTo(args.node);
 
-        $filterInput.quickFilter(this, col.id, this.getColumnManager().filterReturnCount);
+        quickFilter.bind($filterInput)(this, col.id, this.getColumnManager().filterReturnCount);
       }
       else
       {
@@ -1553,7 +1552,7 @@
     {
       var g = this.grid;
       var dataView = g.getData();
-      var filterEngine = new opencadcVOFilter.FilterEngine();
+      var filterEngine = new opencadcFilterEngine.FilterEngine();
 
       // initialize the model after all the events have been hooked up
       dataView.beginUpdate();
@@ -1686,9 +1685,14 @@
     };
   }
 
-  module.exports = {
-    "Viewer": Viewer,
-    "events": applicationEvents
-  };
 
-})(jQuery, Slick, opencadcUtil, opencadcVOFilter, opencadcVOBuilder);
+  // In case this is imported directly into a page...
+  if (typeof module !== "undefined" && module.exports)
+  {
+    module.exports = {
+      "Viewer": Viewer,
+      "events": applicationEvents
+    };
+  }
+
+})(jQuery, window, Slick, opencadcUtil, opencadcFilterEngine, opencadcRowBuilder, quickFilter);

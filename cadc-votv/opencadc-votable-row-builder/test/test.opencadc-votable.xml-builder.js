@@ -94,7 +94,13 @@ var xmlData_1_3 =
 
 var xmldom = require("xmldom");
 var assert = require("assert");
-var opencadcVOBuilder = require("../index");
+
+global.opencadcUtil = require("opencadc-util");
+global.opencadcVOTable = require("opencadc-votable");
+global.jQuery = require("jquery");
+global.xpath = require("xpath");
+
+var opencadcVOBuilder = require("../opencadc.votable-row-builder");
 
 describe("XPath resolution", function ()
 {
