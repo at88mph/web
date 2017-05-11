@@ -3,7 +3,7 @@
  *******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
  **************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
  *
- *  (c) 2016.                            (c) 2016.
+ *  (c) 2017.                            (c) 2017.
  *  Government of Canada                 Gouvernement du Canada
  *  National Research Council            Conseil national de recherches
  *  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -66,107 +66,91 @@
  ************************************************************************
  */
 
-package ca.nrc.cadc.web;
+package ca.nrc.cadc.auth;
 
-import ca.nrc.cadc.auth.*;
-import ca.nrc.cadc.net.NetUtil;
-import ca.nrc.cadc.util.StringUtil;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.net.URL;
+import javax.security.auth.Subject;
+import java.math.BigInteger;
 import java.security.Principal;
-import java.util.HashSet;
+import java.sql.PreparedStatement;
+import java.sql.Types;
 import java.util.Set;
 
 
-public class CookiePrincipalExtractorImpl implements PrincipalExtractor
+public class HTTPIdentityManager implements IdentityManager
 {
-    private final HttpServletRequest request;
-
-    private SSOCookieCredential cookieCredential;
-    private Principal cookiePrincipal;
-
-
-    public CookiePrincipalExtractorImpl(final HttpServletRequest request)
-    {
-        this.request = request;
-        init();
-    }
-
-
-    void init()
-    {
-        final Cookie[] requestCookies = request.getCookies();
-        final Cookie[] cookies = (requestCookies == null)
-                                 ? new Cookie[0] : requestCookies;
-        for (final Cookie cookie : cookies)
-        {
-            if ("CADC_SSO".equals(cookie.getName())
-                && StringUtil.hasText(cookie.getValue()))
-            {
-                try
-                {
-                    cookiePrincipal =
-                            new CookiePrincipal(
-                                    cookie.getValue());
-                    cookieCredential =
-                            new SSOCookieCredential(
-                                    cookie.getValue(), NetUtil.getDomainName(
-                                            request.getServerName()));
-                }
-                catch (IOException e)
-                {
-                    System.out.println(
-                            "Cannot use SSO Cookie. Reason: "
-                            + e.getMessage());
-                }
-            }
-        }
-    }
-
-
+    /**
+     * Create a subject from the specified owner object. This is the reverse
+     * of toOwner(Subject). The returned subject must include at least one
+     * Principal but need not contain any credentials.
+     *
+     * @param owner
+     * @return
+     */
     @Override
-    public Set<Principal> getPrincipals()
-    {
-        final Set<Principal> principals = new HashSet<>();
-
-        addHTTPPrincipal(principals);
-
-        return principals;
-    }
-
-    @Override
-    public X509CertificateChain getCertificateChain()
+    public Subject toSubject(final Object owner)
     {
         return null;
     }
 
+    /**
+     * Convert the specified subject into an arbitrary object. This is the reverse
+     * of toSubject(owner). The persistent object must capture the identity (the
+     * principal from the subject) but generally does not capture the credentials.
+     *
+     * @param subject The Subject to check.
+     * @return arbitrary owner object to be persisted
+     */
     @Override
-    public DelegationToken getDelegationToken()
+    public Object toOwner(final Subject subject)
     {
-        return null;
+        final String ownerStringName = toOwnerString(subject);
+
+        return (ownerStringName == null) ? null :
+               new BigInteger(ownerStringName.getBytes());
     }
 
-    @Override
-    public SSOCookieCredential getSSOCookieCredential()
+    @SuppressWarnings("unchecked")
+    private <K extends Principal> String scanPrincipals(
+            final Subject subject, final Class<K> principalClass)
     {
-        return cookieCredential;
+        final Set<K> principals = subject.getPrincipals(principalClass);
+
+        if (principals.isEmpty())
+        {
+            return null;
+        }
+        else
+        {
+            return ((K) (principals.toArray()[0])).getName();
+        }
     }
 
-    private void addHTTPPrincipal(final Set<Principal> principals)
+    /**
+     * Get the SQL TYPE for the column that stores the object
+     * returned by toOwner(Subject);
+     *
+     * @return a valid SQL type for use with a PreparedStatement
+     * @see Types
+     * @see PreparedStatement
+     */
+    @Override
+    public int getOwnerType()
     {
-        final String httpUser = request.getRemoteUser();
+        return Types.BIGINT;
+    }
 
-        if (StringUtil.hasText(httpUser))
-        {
-            principals.add(new HttpPrincipal(httpUser));
-        }
-
-        if (cookiePrincipal != null)
-        {
-            principals.add(cookiePrincipal);
-        }
+    /**
+     * Convert the specified subject to a suitable string representation of the
+     * owner. This should normally be an X509 distinguished name if IVOA
+     * single-sign-on has been implemented.
+     *
+     * @param subject           The subject to scan.
+     * @return string representation of the owner (principal)
+     */
+    @Override
+    public String toOwnerString(Subject subject)
+    {
+        return (subject == null)
+               ? null : scanPrincipals(subject, HttpPrincipal.class);
     }
 }

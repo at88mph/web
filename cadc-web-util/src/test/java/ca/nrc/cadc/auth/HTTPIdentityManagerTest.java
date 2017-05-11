@@ -3,7 +3,7 @@
  *******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
  **************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
  *
- *  (c) 2016.                            (c) 2016.
+ *  (c) 2017.                            (c) 2017.
  *  Government of Canada                 Gouvernement du Canada
  *  National Research Council            Conseil national de recherches
  *  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -66,107 +66,51 @@
  ************************************************************************
  */
 
-package ca.nrc.cadc.web;
-
-import ca.nrc.cadc.auth.*;
-import ca.nrc.cadc.net.NetUtil;
-import ca.nrc.cadc.util.StringUtil;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.net.URL;
-import java.security.Principal;
-import java.util.HashSet;
-import java.util.Set;
+package ca.nrc.cadc.auth;
 
 
-public class CookiePrincipalExtractorImpl implements PrincipalExtractor
+import javax.security.auth.Subject;
+
+import org.junit.Test;
+
+import java.math.BigInteger;
+
+import static org.junit.Assert.*;
+
+
+public class HTTPIdentityManagerTest
 {
-    private final HttpServletRequest request;
-
-    private SSOCookieCredential cookieCredential;
-    private Principal cookiePrincipal;
-
-
-    public CookiePrincipalExtractorImpl(final HttpServletRequest request)
+    @Test
+    public void toOwnerString() throws Exception
     {
-        this.request = request;
-        init();
+        final IdentityManager testSubject = new HTTPIdentityManager();
+
+        final Subject subject = new Subject();
+
+        assertNull("Should be null.", testSubject.toOwnerString(subject));
+        assertNull("Should be null.", testSubject.toOwnerString(null));
+
+        subject.getPrincipals().add(new CookiePrincipal("YADDAYADDA"));
+        assertNull("Should be null.", testSubject.toOwnerString(subject));
+
+        subject.getPrincipals().add(new HttpPrincipal("TEST123"));
+        assertEquals("Should be TEST123.", "TEST123",
+                     testSubject.toOwnerString(subject));
     }
 
-
-    void init()
+    @Test
+    public void toOwner() throws Exception
     {
-        final Cookie[] requestCookies = request.getCookies();
-        final Cookie[] cookies = (requestCookies == null)
-                                 ? new Cookie[0] : requestCookies;
-        for (final Cookie cookie : cookies)
-        {
-            if ("CADC_SSO".equals(cookie.getName())
-                && StringUtil.hasText(cookie.getValue()))
-            {
-                try
-                {
-                    cookiePrincipal =
-                            new CookiePrincipal(
-                                    cookie.getValue());
-                    cookieCredential =
-                            new SSOCookieCredential(
-                                    cookie.getValue(), NetUtil.getDomainName(
-                                            request.getServerName()));
-                }
-                catch (IOException e)
-                {
-                    System.out.println(
-                            "Cannot use SSO Cookie. Reason: "
-                            + e.getMessage());
-                }
-            }
-        }
-    }
+        final IdentityManager testSubject = new HTTPIdentityManager();
 
+        final Subject subject = new Subject();
 
-    @Override
-    public Set<Principal> getPrincipals()
-    {
-        final Set<Principal> principals = new HashSet<>();
+        assertNull("Should be null.", testSubject.toOwner(subject));
+        assertNull("Should be null.", testSubject.toOwner(null));
 
-        addHTTPPrincipal(principals);
-
-        return principals;
-    }
-
-    @Override
-    public X509CertificateChain getCertificateChain()
-    {
-        return null;
-    }
-
-    @Override
-    public DelegationToken getDelegationToken()
-    {
-        return null;
-    }
-
-    @Override
-    public SSOCookieCredential getSSOCookieCredential()
-    {
-        return cookieCredential;
-    }
-
-    private void addHTTPPrincipal(final Set<Principal> principals)
-    {
-        final String httpUser = request.getRemoteUser();
-
-        if (StringUtil.hasText(httpUser))
-        {
-            principals.add(new HttpPrincipal(httpUser));
-        }
-
-        if (cookiePrincipal != null)
-        {
-            principals.add(cookiePrincipal);
-        }
+        subject.getPrincipals().add(new HttpPrincipal("TEST123"));
+        assertEquals("Should be 23720122240807475.",
+                     new BigInteger("TEST123".getBytes()),
+                     testSubject.toOwner(subject));
     }
 }
