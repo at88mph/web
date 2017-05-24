@@ -93,7 +93,7 @@ public abstract class AbstractTestWebPage
     static final By CADC_CANADA_SITE_LINK = By.linkText("Canada.gc.ca");
     static final By PARENT_ELEMENT_BY = By.xpath("..");
 
-    protected final WebDriver driver;
+    protected WebDriver driver;
     protected final int timeoutInSeconds;
 
 
@@ -282,8 +282,7 @@ public abstract class AbstractTestWebPage
         final Actions action = new Actions(driver);
         scrollIntoView(elem);
         waitForElementClickable(elem);
-        elem.click();
-//        action.moveToElement(elem).click(elem).build().perform();
+        action.moveToElement(elem).click(elem).build().perform();
     }
 
     public void resetForm() throws Exception
