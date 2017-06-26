@@ -73,9 +73,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.configuration2.PropertiesConfiguration;
-import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
-import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.junit.After;
 import org.junit.Test;
 
@@ -105,15 +102,8 @@ public class ApplicationConfigurationTest
         System.setProperty(ApplicationConfiguration.class.getCanonicalName() + ".PROP1", "VAL1");
 
         final ApplicationConfiguration testSubject = new ApplicationConfiguration(tmpConfigFile.getPath());
-
-        final Parameters parameters = new Parameters();
-
-        final FileBasedConfigurationBuilder<PropertiesConfiguration> builder =
-                new FileBasedConfigurationBuilder<>(
-                        PropertiesConfiguration.class).configure(parameters.fileBased().setFile(tmpConfigFile));
-
-        final List<String> results = testSubject.lookup(ApplicationConfiguration.class.getCanonicalName()
-                                                        + ".PROP1");
+        final List<String> results =
+                testSubject.lookup(ApplicationConfiguration.class.getCanonicalName() + ".PROP1");
         final List<String> expected = new ArrayList<>();
 
         expected.add("VAL1");

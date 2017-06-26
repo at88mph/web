@@ -11,7 +11,6 @@ import org.apache.commons.configuration2.CombinedConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.SystemConfiguration;
-import org.apache.commons.configuration2.builder.BuilderParameters;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -20,8 +19,7 @@ import org.apache.log4j.Logger;
 
 public class ApplicationConfiguration
 {
-    private static final Logger LOGGER = Logger
-            .getLogger(ApplicationConfiguration.class);
+    private static final Logger LOGGER = Logger.getLogger(ApplicationConfiguration.class);
     private final CombinedConfiguration configuration;
 
     public ApplicationConfiguration(final String filePath)
@@ -30,21 +28,16 @@ public class ApplicationConfiguration
 
         final Parameters parameters = new Parameters();
         final FileBasedConfigurationBuilder builder =
-                new FileBasedConfigurationBuilder<>(
-                        PropertiesConfiguration.class)
-                        .configure(parameters.properties()
-                                           .setFileName(filePath));
+                new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class)
+                        .configure(parameters.properties().setFileName(filePath));
 
         try
         {
-            configuration.addConfiguration((Configuration) builder
-                    .getConfiguration());
+            configuration.addConfiguration((Configuration) builder.getConfiguration());
         }
         catch (ConfigurationException var5)
         {
-            LOGGER.warn(String.format(
-                    "No configuration found at %s.\nUsing defaults.",
-                    filePath));
+            LOGGER.warn(String.format("No configuration found at %s.\nUsing defaults.", filePath));
         }
 
     }
@@ -57,6 +50,7 @@ public class ApplicationConfiguration
         this.configuration = new CombinedConfiguration();
         configuration.addConfiguration(new SystemConfiguration());
     }
+
 
     public URI lookupServiceURI(String key, URI defaultValue)
     {

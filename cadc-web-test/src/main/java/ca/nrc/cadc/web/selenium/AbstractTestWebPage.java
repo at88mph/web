@@ -134,16 +134,6 @@ public abstract class AbstractTestWebPage
         return find(CADC_HEADER_LINK_SELECTOR).getText();
     }
 
-    public AbstractTestWebPage clickCanadaSiteLink() throws Exception
-    {
-        waitForElementPresent(CADC_CANADA_SITE_LINK);
-        click(canadaGCCALink);
-
-        return new AbstractTestWebPage(driver)
-        {
-        };
-    }
-
     /**
      * Like assertTrue, but fails at the end of the test (during tearDown)
      *

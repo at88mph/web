@@ -98,7 +98,7 @@ import ca.nrc.cadc.util.StringUtil;
 
 /**
  * Subclasses of this should have the necessary tools to create an automated web application test.
- *
+ * <p>
  * TODO: Clean this up to only have shared code.
  */
 public abstract class AbstractWebApplicationIntegrationTest
@@ -346,14 +346,27 @@ public abstract class AbstractWebApplicationIntegrationTest
     public <T extends AbstractTestWebPage> T goTo(final String path, final String query, final Class<T> pageClass)
             throws Exception
     {
-        final String webAppURL = webURL + path + (StringUtil.hasText(query)
-                                                  ? ("?" + query) : "");
-        System.out.println("Visiting: " + webAppURL);
-        driver.get(webAppURL);
+        final String webAppURL = webURL + path + (StringUtil.hasText(query) ? ("?" + query) : "");
+        return goTo(webAppURL, pageClass);
+    }
+
+    /**
+     * Visit the given path with a query attached to it.  Return the page with
+     * the given class.
+     *
+     * @param url       The URL to visit.
+     * @param pageClass The class of the returned instance.
+     * @param <T>       The type of Page to return.
+     * @return A page element.
+     * @throws Exception For any test execution errors
+     */
+    public <T extends AbstractTestWebPage> T goTo(final String url, final Class<T> pageClass) throws Exception
+    {
+        System.out.println("Visiting: " + url);
+        driver.get(url);
 
         final Class[] constructorArgTypes = new Class[]{WebDriver.class};
-        final Constructor<T> constructor =
-                pageClass.getConstructor(constructorArgTypes);
+        final Constructor<T> constructor = pageClass.getConstructor(constructorArgTypes);
         return constructor.newInstance(driver);
     }
 
