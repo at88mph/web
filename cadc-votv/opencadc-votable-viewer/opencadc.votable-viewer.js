@@ -1248,7 +1248,8 @@
                                       }
 
                                       var rows = [];
-                                      for (var i = 0; i < args.grid.getDataLength(); i++)
+                                      var dataLength = args.grid.getDataLength();
+                                      for (var i = 0; i < dataLength; i++)
                                       {
                                         rows.push(i);
                                       }
@@ -1369,8 +1370,9 @@
       this.grid.onColumnsResized.subscribe(function (e, args)
                                            {
                                              var columns = args.grid.getColumns();
+                                             var colLen = columns.length;
 
-                                             for (var i = 0, ci = columns.length; i < ci; i++)
+                                             for (var i = 0, ci = colLen; i < ci; i++)
                                              {
                                                var column = columns[i];
 
