@@ -7,12 +7,12 @@
     "test": "test"
   },
   "dependencies": {
-    "opencadc-votable": "^1.1.6",
-    "opencadc-util": "^1.0.2",
-    "jquery-csv": "^0.8.0",
     "jquery": "^2.2.4",
-    "xpath": "^0.0.24",
-    "jsdom": "^9.12.0"
+    "jquery-csv": "^0.8.0",
+    "jsdom": "^9.12.0",
+    "opencadc-util": "^1.0.5",
+    "opencadc-votable": "^1.1.7",
+    "xpath": "^0.0.24"
   },
   "scripts": {
     "test": "mocha -r jsdom-global/register"
@@ -27,8 +27,8 @@
   ],
   "devDependencies": {
     "jsdom-global": "^2.1.1",
-    "xmldom": "^0.1.27",
-    "mocha": "^3.2.0"
+    "mocha": "^3.4.2",
+    "xmldom": "^0.1.27"
   },
   "author": "Dustin N. Jenkins",
   "license": "GPL-3.0",

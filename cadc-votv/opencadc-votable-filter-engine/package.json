@@ -14,7 +14,7 @@
     "url": "https://www.github.com/opencadc/web"
   },
   "devDependencies": {
-    "mocha": "^3.2.0"
+    "mocha": "^3.4.2"
   },
   "keywords": [
     "VOTable",
@@ -24,4 +24,3 @@
   "license": "GPL-3.0",
   "homepage": "https://www.github.com/opencadc/web/cadc-votv/openadc-votable-filter-engine"
 }
-
