@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "OpenCADC JavaScript main application to stream a VOTable.",
   "dependencies": {
-    "browserify": "^13.3.0",
     "uglify-js": "^2.7.5",
     "jquery": "^2.2.4",
     "opencadc-votable-viewer": "^1.0.0"

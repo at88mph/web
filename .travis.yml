@@ -10,8 +10,8 @@ before_install:
 script:
 - cd cadc-web-util
 - gradle clean build test
-- cd ../cadc-votv/
-- npm install && npm update && npm test
+- cd ../cadc-js/opencadc-util && npm install && npm test
+- cd ../opencadc-uri && npm install && npm test
 #after_success:
 #notifications:
   #slack:
