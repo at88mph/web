@@ -38,25 +38,37 @@ var xmlData =
 var assert = require("assert");
 var $ = global.jQuery = require("jquery");
 
-require("slickgrid");
-
+// TODO -
+// TODO - Why do these need to be put into the global namespace even though the window object is exposed?
+// TODO - There is something I'm missing here with how NPM/Node imports stuff...
+// TODO -
+// TODO - jenkinsd 2017.07.14
+// TODO -
 // The Slick package is put into the window by default.
+require("slickgrid");
 global.Slick = window.Slick;
 global.opencadcUtil = require("opencadc-util");
 global.xpath = require("xpath");
 global.opencadcVOTable = require("opencadc-votable");
 global.opencadcRowBuilder = require("opencadc-votable-row-builder");
-global.opencadcFilterEngine = require('opencadc-votable-filter-engine');
+global.opencadcFilterEngine = require("opencadc-votable-filter-engine");
+global.quickFilter = require("../opencadc.votable-viewer-quick-filter");
 
 require("jquery-ui/ui/widget");
 require("jquery-ui/ui/widgets/mouse");
 require("jquery-ui/ui/widgets/sortable");
 require("jquery-ui/ui/widgets/autocomplete");
 
+require("../index");
+
+// TODO -
+// TODO - Fin
+// TODO -
+
 var DOMParser = require("xmldom").DOMParser;
 var StringUtil = require("opencadc-util").StringUtil;
-var opencadcVOTV = require("../index");
 
+var opencadcVOTV = window.opencadcViewer;
 var stringUtil = new StringUtil();
 
 // Create a DOM to pass in.

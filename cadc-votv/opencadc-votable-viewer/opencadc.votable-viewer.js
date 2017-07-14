@@ -61,8 +61,30 @@
         || $("<div class='cadcvotv-empty-results-message'>No results returned.</div>")
             .appendTo($(".grid-container"));
 
+    var defaults = {
+      atDataLoadComplete: function (_totalRowCount, _currentRowCount,
+                                                               _headerLabel)
+      {
+        var message = _DEFAULT_ROW_COUNT_MESSAGE_FN_(_totalRowCount,
+                                                     _currentRowCount);
+        if (this.options.maxRowLimit <= _totalRowCount)
+        {
+          // and display warning message if maximum row limit is reached
+          message += " " + this.options.maxRowLimitWarning;
+          this.getHeader().css("background-color", "rgb(235, 235, 49)");
+        }
+
+        _headerLabel.text(message);
+      }.bind(this),
+      atPageInfoChanged: function (count1, count2, $label)
+      {
+        $label.text(this.getRowCountMessage(count1, count2));
+      }.bind(this),
+      rowCountMessage: _DEFAULT_ROW_COUNT_MESSAGE_FN_
+    };
+
     this.grid = null;
-    this.options = _opts;
+    this.options = $.extend({}, defaults, _opts);
     this.columns = [];
     this.plugins = [];
     this.displayColumns = this.options.displayColumns || this.columns;
@@ -85,27 +107,21 @@
     // var _rowCountMessage = this.options.rowCountMessage
     //   ? this.options.rowCountMessage : _defaultRowCountMessage;
 
-    this._defaultDataLoadComplete = function (_totalRowCount, _currentRowCount,
-                                              _headerLabel)
+    this.rowCountMessage = this.options.rowCountMessage;
+    this.dataLoadComplete = this.options.atDataLoadComplete;
+    this.pageInfoChanged = this.options.atPageInfoChanged;
+
+    this._onPagingInfoChanged = function (e, pagingInfo)
     {
-      var message = _DEFAULT_ROW_COUNT_MESSAGE_FN_(_totalRowCount,
-                                                   _currentRowCount);
-      if (this.options.maxRowLimit <= _totalRowCount)
+      var isLastPage = (pagingInfo.pageNum === (pagingInfo.totalPages - 1));
+      var enableAddRow = (isLastPage || (pagingInfo.pageSize === 0));
+      var options = this.grid.getOptions();
+
+      if (options.enableAddRow !== enableAddRow)
       {
-        // and display warning message if maximum row limit is reached
-        message += " " + this.options.maxRowLimitWarning;
-        this.getHeader().css("background-color", "rgb(235, 235, 49)");
+        this.grid.setOptions({enableAddRow: enableAddRow});
       }
-
-      _headerLabel.text(message);
     };
-
-    this.rowCountMessage = this.options.rowCountMessage ||
-                           _DEFAULT_ROW_COUNT_MESSAGE_FN_;
-    this.dataLoadComplete = this.options.atDataLoadComplete
-                            || this._defaultDataLoadComplete;
-    this.pageInfoChanged = this.options.atPageInfoChanged
-                           || this._defaultPageChanging;
 
     /**
      * @param input  Object representing the input.
@@ -291,29 +307,10 @@
         this.trigger(applicationEvents.onUnitChanged, args);
       };
 
-      this._onPagingInfoChanged = function (e, pagingInfo)
-      {
-        var isLastPage = (pagingInfo.pageNum === (pagingInfo.totalPages - 1));
-        var enableAddRow = (isLastPage || (pagingInfo.pageSize === 0));
-        var options = this.grid.getOptions();
-
-        if (options.enableAddRow !== enableAddRow)
-        {
-          this.grid.setOptions({enableAddRow: enableAddRow});
-        }
-      };
-
-      rowBuilder.subscribe(opencadcRowBuilder.events.onDataLoadComplete,
-                           dataLoadCompleteFn.bind(this));
-
-      rowBuilder.subscribe(opencadcRowBuilder.events.onPageAddStart,
-                           this._pageAddStartFn);
-
-      rowBuilder.subscribe(opencadcRowBuilder.events.onPageAddEnd,
-                           this._onPageAddEnd);
-
-      rowBuilder.subscribe(opencadcRowBuilder.events.onRowAdd,
-                           this._rowAddFn);
+      rowBuilder.subscribe(opencadcRowBuilder.events.onDataLoadComplete, dataLoadCompleteFn.bind(this));
+      rowBuilder.subscribe(opencadcRowBuilder.events.onPageAddStart, this._pageAddStartFn.bind(this));
+      rowBuilder.subscribe(opencadcRowBuilder.events.onPageAddEnd, this._onPageAddEnd.bind(this));
+      rowBuilder.subscribe(opencadcRowBuilder.events.onRowAdd, this._rowAddFn.bind(this));
 
       rowBuilder.build();
     };
@@ -1149,10 +1146,10 @@
 
           if (forceFitMax)
           {
-            cadc.vot.picker.events.onSort.subscribe(this.resetColumnWidths);
-            cadc.vot.picker.events.onResetColumnOrder.subscribe(this.resetColumnWidths);
-            cadc.vot.picker.events.onShowAllColumns.subscribe(this.resetColumnWidths);
-            cadc.vot.picker.events.onSortAlphabetically.subscribe(this.resetColumnWidths);
+            cadc.vot.picker.events.onSort.subscribe(this.resetColumnWidths.bind(this));
+            cadc.vot.picker.events.onResetColumnOrder.subscribe(this.resetColumnWidths.bind(this));
+            cadc.vot.picker.events.onShowAllColumns.subscribe(this.resetColumnWidths.bind(this));
+            cadc.vot.picker.events.onSortAlphabetically.subscribe(this.resetColumnWidths.bind(this));
           }
 
           cadc.vot.picker.events.onColumnAddOrRemove.subscribe(function ()
@@ -1164,7 +1161,7 @@
                                                                  }
                                                                });
 
-          cadc.vot.picker.events.onResetColumnOrder.subscribe(this._onColumnOrderReset);
+          cadc.vot.picker.events.onResetColumnOrder.subscribe(this._onColumnOrderReset.bind(this));
         }
         else if (pickerStyle === "header")
         {
@@ -1172,26 +1169,25 @@
                                                          this.options);
           if (forceFitMax)
           {
-            columnPicker.onColumnAddOrRemove.subscribe(this.resetColumnWidths);
+            columnPicker.onColumnAddOrRemove.subscribe(this.resetColumnWidths.bind(this));
           }
 
-          columnPicker.onResetColumnOrder.subscribe(this._onColumnOrderReset);
+          columnPicker.onResetColumnOrder.subscribe(this._onColumnOrderReset.bind(this));
         }
         else if (pickerStyle === "tooltip")
         {
           columnPicker =
-              new Slick.Controls.PanelTooltipColumnPicker(this.columns,
-                                                          this.grid,
+              new Slick.Controls.PanelTooltipColumnPicker(this.columns, this.grid,
                                                           columnPickerConfig.panel,
                                                           columnPickerConfig.tooltipOptions,
                                                           columnPickerConfig.options);
 
           if (forceFitMax)
           {
-            columnPicker.onSort.subscribe(this.resetColumnWidths);
-            columnPicker.onResetColumnOrder.subscribe(this.resetColumnWidths);
-            columnPicker.onShowAllColumns.subscribe(this.resetColumnWidths);
-            columnPicker.onSortAlphabetically.subscribe(this.resetColumnWidths);
+            columnPicker.onSort.subscribe(this.resetColumnWidths.bind(this));
+            columnPicker.onResetColumnOrder.subscribe(this.resetColumnWidths.bind(this));
+            columnPicker.onShowAllColumns.subscribe(this.resetColumnWidths.bind(this));
+            columnPicker.onSortAlphabetically.subscribe(this.resetColumnWidths.bind(this));
           }
 
           columnPicker.onColumnAddOrRemove.subscribe(function ()
@@ -1203,7 +1199,7 @@
                                                        }
                                                      });
 
-          columnPicker.onResetColumnOrder.subscribe(this._onColumnOrderReset);
+          columnPicker.onResetColumnOrder.subscribe(this._onColumnOrderReset.bind(this));
         }
         else
         {
@@ -1321,7 +1317,7 @@
         }).bind(this));
       }
 
-      dataView.onPagingInfoChanged.subscribe(this._onPagingInfoChanged);
+      dataView.onPagingInfoChanged.subscribe(this._onPagingInfoChanged.bind(this));
 
       $(window).resize((function ()
       {
@@ -1350,7 +1346,7 @@
         var unitSelectionPlugin = new Slick.Plugins.UnitSelection({columnPicker: columnPicker});
 
         // Extend the filter row to include the pulldown menu.
-        unitSelectionPlugin.onUnitChange.subscribe(this._onUnitChange);
+        unitSelectionPlugin.onUnitChange.subscribe(this._onUnitChange.bind(this));
 
         this.grid.registerPlugin(unitSelectionPlugin);
       }
@@ -1361,8 +1357,7 @@
       for (var enabledPluginName in enabledPlugins)
       {
         // TODO - rework plugin lookup.
-        this.registerPlugin(new cadc.vot.plugin[enabledPluginName](
-            enabledPlugins[enabledPluginName]));
+        this.registerPlugin(new cadc.vot.plugin[enabledPluginName](enabledPlugins[enabledPluginName]));
       }
       // End VOTable Viewer plugins.
 
@@ -1634,11 +1629,6 @@
 
       // Unsubscribe all events.
       $(this).off();
-    };
-
-    this._defaultPageChanging = function (count1, count2, $label)
-    {
-      $label.text(this.getRowCountMessage(count1, count2));
     };
 
     this.getTotalRows = function ()
