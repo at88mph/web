@@ -70,12 +70,10 @@
   width: 100%;
 }
 
-/*.slick-header-column.slick-header-column-checkboxsel span.slick-column-name input*/
-/*{*/
-  /*margin-left: 3px;*/
-  /*margin-bottom: 5px;*/
-  /*vertical-align: middle;*/
-/*}*/
+.slick-header-column.ui-state-default
+{
+    height: 26px;
+}
 
 .slick-header-column.slick-header-column-checkboxsel
 {

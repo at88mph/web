@@ -1,117 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="chrome=1">
-  <link href="https://fonts.googleapis.com/css?family=Chivo:900"
-        rel="stylesheet" type="text/css">
-  <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"
-        media="screen">
-  <link rel="stylesheet" type="text/css"
-        href="../../css/bootstrap-theme.min.css" media="screen">
-  <link rel="stylesheet" type="text/css" href="jquery-ui.min.css"/>
-  <link rel="stylesheet" type="text/css"
-        href="../../css/slick.grid.css"/>
-  <link rel="stylesheet" type="text/css" href="../../css/slick.pager.css"/>
-  <link rel="stylesheet" type="text/css"
-        href="../../css/slick.columnpicker.css"/>
-  <link rel="stylesheet" type="text/css" href="../../css/cadc.votv.css"/>
-  <link rel="stylesheet" type="text/css"
-        href="../../css/slick-default-theme.css"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href="https://fonts.googleapis.com/css?family=Chivo:900"
+          rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"
+          media="screen">
+    <link rel="stylesheet" type="text/css"
+          href="../../css/bootstrap-theme.min.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="jquery-ui.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="../../css/slick.grid.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/slick.pager.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="../../css/slick.columnpicker.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/cadc.votv.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="../../css/slick-default-theme.css"/>
 
-  <style type="text/css">
-    .slick-header-columns {
-      background: url('../../css/images/header-columns-bg.gif') repeat-x center bottom;
-    }
+    <style type="text/css">
+        div#results-grid-header.grid-header {
+            width: 100% !important;
+        }
 
-    .slick-header-column {
-      background: url('../../css/images/header-columns-bg.gif') repeat-x center bottom;
-    }
+        .container {
+            width: auto;
+            padding-left: 60px;
+            padding-right: 60px;
+        }
 
-    .slick-header-column:hover, .slick-header-column-active {
-      background: white url('../../css/images/header-columns-over-bg.gif') repeat-x center bottom;
-    }
+        #myGrid {
+            width: 100% !important;
+            font-size: 1.0em;
+            height: 500px;
+            outline: 0;
+            background: #fff;
+            border: 1px solid gray;
+            z-index: 100 !important;
+        }
 
-    .slick-sort-indicator-desc {
-      background: url('../../css/images/sort-desc.gif');
-    }
+        /**
+          Used to determine column widths.
+        */
+        #lengthFinder {
+            position: absolute;
+            visibility: hidden;
+            height: auto;
+            /*width: auto;*/
+            white-space: nowrap;
 
-    .slick-sort-indicator-asc {
-      background: url('../../css/images/sort-asc.gif');
-    }
+            /* Be generous with spacing. */
+            font-size: 1.1em;
+            font-family: Verdana, Arial, sans-serif;
+        }
 
-    div#results-grid-header.grid-header {
-      width: 100% !important;
-    }
+        #lengthFinder {
+            font-size: 1.4em;
+        }
 
-    .container {
-      width: auto;
-      padding-left: 60px;
-      padding-right: 60px;
-    }
+        .slick-header-column .slick-column-name {
+            margin-left: 16px;
+        }
 
-    #myGrid {
-      width: 100% !important;
-      font-size: 1.0em;
-      height: 500px;
-      outline: 0;
-      background: #fff;
-      border: 1px solid gray;
-      z-index: 100 !important;
-    }
+        .slick-header-column .slick-sort-indicator {
+            margin-top: -10px;
+        }
 
-    /**
-      Used to determine column widths.
-    */
-    #lengthFinder {
-      position: absolute;
-      visibility: hidden;
-      height: auto;
-      /*width: auto;*/
-      white-space: nowrap;
+    </style>
 
-      /* Be generous with spacing. */
-      font-size: 1.1em;
-      font-family: Verdana, Arial, sans-serif;
-    }
-
-    #lengthFinder {
-      font-size: 1.4em;
-    }
-
-    .slick-header-column .slick-column-name {
-      font-weight: normal;
-    }
-
-  </style>
-
-  <!--[if lt IE 9]>
-  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-  <title>Bootstrap VOTV Grid</title>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Bootstrap VOTV Grid</title>
 </head>
 <body>
 <div class="container">
-  <div class="row">
-    <h1>Bootstrap VOTable Viewer</h1>
+    <div class="row">
+        <h1>Bootstrap VOTable Viewer</h1>
 
-    <!-- Grid starts here -->
+        <!-- Grid starts here -->
 
-    <div class="grid-container margin-top-medium" style="width: 100%;">
-      <div id="cadcvotv-empty-results-message"
-           class="cadcvotv-empty-results-message">
-        <strong>Nothing to show</strong>
-      </div>
-      <div id="results-grid-header" class="grid-header" style="width: 100%;">
-        <span class="grid-header-label"></span>
-      </div>
-      <div id="myGrid" style="width: 100%;"></div>
+        <div class="grid-container margin-top-medium" style="width: 100%;">
+            <div id="cadcvotv-empty-results-message"
+                 class="cadcvotv-empty-results-message">
+                <strong>Nothing to show</strong>
+            </div>
+            <div id="results-grid-header" class="grid-header" style="width: 100%;">
+                <span class="grid-header-label"></span>
+            </div>
+            <div id="myGrid" style="width: 100%;"></div>
+        </div>
+        <div id="lengthFinder"></div>
+
+        <!-- End Grid -->
+
     </div>
-    <div id="lengthFinder"></div>
-
-    <!-- End Grid -->
-
-  </div>
 </div>
 <script type="application/javascript"
         src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
@@ -119,94 +103,93 @@
 <script type="application/javascript"
         src="../../opencadc-votable-viewer/dist/opencadc-votable-viewer.js"></script>
 <script type="application/javascript">
-  $(document).ready(function ()
-                    {
-                      var tableMetadata = new opencadcVOTable.Metadata(null, null, null);
+  $(document).ready(function () {
+    var tableMetadata = new opencadcVOTable.Metadata(null, null, null);
 
-                      var _selector = new opencadcVOTable.Field("_checkbox_selector", "_checkbox_selector",
-                                                                "UCD_SELECT", "UTYPE_SELECT", null, null, null, null,
-                                                                null, "_checkbox_select");
-                      var name = new opencadcVOTable.Field("Name", "Name", "UCD1", "UTYPE1", "UNIT1",
-                                                           null, null, null, null, "Name");
-                      var location = new opencadcVOTable.Field("Location", "Location", "UCD2", "UTYPE2", "UNIT2",
-                                                               null, null, null, null, "Location");
-                      var astronomy = new opencadcVOTable.Field("Astronomy", "Astronomy", "UCD3", "UTYPE3", "UNIT3",
-                                                                null, null, null, null, "Astronomy");
-                      var telescope = new opencadcVOTable.Field("Telescope", "Telescope", "UCD3", "UTYPE3", "UNIT3",
-                                                                null, null, null, null, "Telescope");
+    var _selector = new opencadcVOTable.Field("_checkbox_selector", "_checkbox_selector",
+                                              "UCD_SELECT", "UTYPE_SELECT", null, null, null, null,
+                                              null, "_checkbox_select");
+    var name = new opencadcVOTable.Field("Name", "Name", "UCD1", "UTYPE1", "UNIT1",
+                                         null, null, null, null, "Name");
+    var location = new opencadcVOTable.Field("Location", "Location", "UCD2", "UTYPE2", "UNIT2",
+                                             null, null, null, null, "Location");
+    var astronomy = new opencadcVOTable.Field("Astronomy", "Astronomy", "UCD3", "UTYPE3", "UNIT3",
+                                              null, null, null, null, "Astronomy");
+    var telescope = new opencadcVOTable.Field("Telescope", "Telescope", "UCD3", "UTYPE3", "UNIT3",
+                                              null, null, null, null, "Telescope");
 
-                      tableMetadata.addField(_selector);
-                      tableMetadata.addField(name);
-                      tableMetadata.addField(location);
-                      tableMetadata.addField(astronomy);
-                      tableMetadata.addField(telescope);
+    tableMetadata.addField(_selector);
+    tableMetadata.addField(name);
+    tableMetadata.addField(location);
+    tableMetadata.addField(astronomy);
+    tableMetadata.addField(telescope);
 
-                      // List the running VMs and load them into the running VMs tab.
-                      var options = {
-                        editable: false,
-                        enableAddRow: false,
-                        showHeaderRow: true,
-                        forceFitColumns: true,
-                        enableCellNavigation: true,
-                        asyncEditorLoading: true,
-                        explicitInitialization: true,
-                        columnFilterPluginName: "suggest",
-                        headerRowHeight: 40,
-                        showTopPanel: false,
-                        sortColumn: "Started on",
-                        defaultColumnWidth: 80,
-                        sortDir: "desc",
-                        rerenderOnResize: false,
-                        pager: false,
-                        gridResizable: true,
-                        columnManager: {
-                          filterable: true,
-                          filterReturnCount: 10,
-                          forceFitColumnMode: "max",
-                          forceFitColumns: true,
-                          resizable: true
-                        },
-                        columnOptions: {
-                          "Astronomy": {
-                            cssClass: "text-warning"
-                          },
-                          "_checkbox_selector": {
-                            fitMax: false,
-                            filterable: false
-                          }
-                        }
-                      };
+    // List the running VMs and load them into the running VMs tab.
+    var options = {
+      editable: false,
+      enableAddRow: false,
+      showHeaderRow: true,
+      forceFitColumns: true,
+      enableCellNavigation: true,
+      asyncEditorLoading: true,
+      explicitInitialization: true,
+      columnFilterPluginName: "suggest",
+      headerRowHeight: 30,
+      showTopPanel: false,
+      sortColumn: "Name",
+      defaultColumnWidth: 80,
+      sortDir: "desc",
+      rerenderOnResize: false,
+      pager: false,
+      gridResizable: true,
+      columnManager: {
+        filterable: true,
+        filterReturnCount: 10,
+        forceFitColumnMode: "max",
+        forceFitColumns: true,
+        resizable: true,
+        sortable: true
+      },
+      columnOptions: {
+        "Astronomy": {
+          cssClass: "text-warning"
+        },
+        "_checkbox_selector": {
+          fitMax: false,
+          filterable: false,
+          sortable: false
+        }
+      }
+    };
 
-                      var showTable = function (csvData)
-                      {
-                        var viewer = new opencadcViewer.Viewer("#myGrid", options);
+    var showTable = function (csvData) {
+      var viewer = new opencadcViewer.Viewer("#myGrid", options);
 
-                        viewer.subscribe(opencadcViewer.events.onDataLoaded, function ()
-                        {
-                          this.render();
-                          this.refreshGrid();
-                        });
+      viewer.subscribe(opencadcViewer.events.onDataLoaded, function () {
+        this.render();
+        this.refreshGrid();
+      });
 
-                        viewer.build({
-                                       data: csvData,
-                                       type: "csv",
-                                       pageSize: 10,
-                                       tableMetadata: tableMetadata
-                                     });
-                      };
+      viewer.build({
+                     data: csvData,
+                     type: "csv",
+                     pageSize: 10,
+                     tableMetadata: tableMetadata
+                   });
+    };
 
-                      var csvData = "ID, Name, Location, Astronomy, Telescope\n"
-                                    +
-                                    "100, Phil Orbit, Mauna Kea, Optical, CHFT\n"
-                                    + "101, Chad Sky, Atacama, Radio, ALMA\n"
-                                    +
-                                    "102, Carrie Redshift, Mauna Kea, Optical, JCMT\n"
-                                    +
-                                    "103, Mary Declination, Montreal, Optical, OOM\n"
-                                    +
-                                    "104, Peter Wavelength, Australia, Radio, SKA";
-                      showTable(csvData);
-                    });
+    var csvData = "ID, Name, Location, Astronomy, Telescope\n"
+                  +
+                  "100, Phil Orbit, Mauna Kea, Optical, CHFT\n"
+                  + "101, Chad Sky, Atacama, Radio, ALMA\n"
+                  +
+                  "102, Carrie Redshift, Mauna Kea, Optical, JCMT\n"
+                  +
+                  "103, Mary Declination, Montreal, Optical, OOM\n"
+                  +
+                  "104, Peter Wavelength, Australia, Radio, SKA";
+    showTable(csvData);
+  });
 </script>
 </body>
 </html>

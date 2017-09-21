@@ -282,14 +282,6 @@
         this.trigger(applicationEvents.onColumnOrderReset, null);
       };
 
-      this._onGridSort = function (e, args)
-      {
-        this.isSortAscending = args.isSortAscending;
-        this.sortColumn = args.sortCol.field;
-
-        this._doGridSort(args.grid);
-      };
-
       this._onUnitChange = function (e, args)
       {
         if (args.columnPicker.updateColumnData)
@@ -656,13 +648,13 @@
      */
     this.sort = function ()
     {
-      if (this.sortcol)
+      if (this.sortColumn)
       {
         var isAscending = (this.isSortAscending || (this.isSortAscending === 1));
-        this.grid.setSortColumn(this.sortcol, isAscending);
+        this.grid.setSortColumn(this.sortColumn, isAscending);
 
         this.trigger(applicationEvents.onSort, {
-          sortCol: this.sortcol,
+          sortCol: this.sortColumn,
           grid: this.grid,
           isSortAscending: isAscending
         });
@@ -1272,17 +1264,30 @@
           // column list.
           if (sortColumnObj)
           {
+            var sortFunc = function(a, b)
+            {
+              return sortColumnObj.comparer.compare(a[sortColumnObj.id], b[sortColumnObj.id]);
+            };
+
             var data = _grid.getData();
 
             // using native sort with comparer
             // preferred method but can be very slow in IE
             // with huge datasets
-            data.sort(sortColumnObj.comparer.compare, this.isSortAscending);
+            data.sort(sortFunc, this.isSortAscending);
             data.refresh();
           }
 
           this.refreshGrid();
         }
+      };
+
+      this._onGridSort = function (e, args)
+      {
+        this.isSortAscending = args.sortAsc;
+        this.sortColumn = args.sortCol.field;
+
+        this._doGridSort(args.grid);
       };
 
       /**
@@ -1302,7 +1307,7 @@
       /**
        * Handle the Grid sorts.
        */
-      this.grid.onSort.subscribe(this._onGridSort);
+      this.grid.onSort.subscribe(this._onGridSort.bind(this));
 
       if (this.getRowManager().onRowRendered)
       {

@@ -9,18 +9,18 @@
     "opencadc-votable": "^1.1.7",
     "opencadc-votable-filter-engine": "^1.0.2",
     "opencadc-votable-row-builder": "^1.0.8",
-    "slickgrid": "file:../../../SlickGrid/slickgrid-3.0.2.tgz"
+    "slickgrid": "file:../../../SlickGrid/"
   },
   "main": "index.js",
   "devDependencies": {
-    "jsdom-global": "^2.1.1",
-    "xmldom": "^0.1.27",
-    "mocha": "^3.2.0",
     "jquery-csv": "^0.8.0",
-    "xpath": "^0.0.24",
     "jsdom": "^9.12.0",
+    "jsdom-global": "^2.1.1",
+    "mocha": "^3.5.3",
     "uglify-js": "^2.8.29",
-    "webpack": "^2.7.0"
+    "webpack": "^2.7.0",
+    "xmldom": "^0.1.27",
+    "xpath": "^0.0.24"
   },
   "scripts": {
     "test": "mocha -r jsdom-global/register",
