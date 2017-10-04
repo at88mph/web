@@ -102,14 +102,11 @@ public class ApplicationConfigurationTest
         System.setProperty(ApplicationConfiguration.class.getCanonicalName() + ".PROP1", "VAL1");
 
         final ApplicationConfiguration testSubject = new ApplicationConfiguration(tmpConfigFile.getPath());
-        final List<String> results =
+        final String result =
                 testSubject.lookup(ApplicationConfiguration.class.getCanonicalName() + ".PROP1");
-        final List<String> expected = new ArrayList<>();
 
-        expected.add("VAL1");
-        expected.add("VAL21");
-
-        assertEquals("Wrong value.", expected, results);
+        // The first one found should be the System one.
+        assertEquals("Wrong value.", "VAL1", result);
     }
 
     @Test
