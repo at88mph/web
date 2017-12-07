@@ -5,11 +5,12 @@
   "dependencies": {
     "jquery": "^2.2.4",
     "jquery-ui": "^1.12.1",
+    "jquery.event.drag": "^2.2.2",
     "opencadc-util": "^1.0.2",
     "opencadc-votable": "^1.1.7",
     "opencadc-votable-filter-engine": "^1.0.2",
     "opencadc-votable-row-builder": "^1.0.8",
-    "slickgrid": "file:../../../SlickGrid/"
+    "datatables.net": "^1.10.16"
   },
   "main": "index.js",
   "devDependencies": {
@@ -18,7 +19,7 @@
     "jsdom-global": "^2.1.1",
     "mocha": "^3.5.3",
     "uglify-js": "^2.8.29",
-    "webpack": "^2.7.0",
+    "webpack": "^3.8.1",
     "xmldom": "^0.1.27",
     "xpath": "^0.0.24"
   },

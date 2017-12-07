@@ -1,6 +1,4 @@
-'use strict';
-
-(function ()
-{
-  require('opencadc-votable-viewer/opencadc.votable-viewer.js');
-})();
+'use strict'
+;(function(window, jQuery) {
+  require('./opencadc-votable-viewer')
+})(window, jQuery)

@@ -5,16 +5,18 @@
   "dependencies": {
     "uglify-js": "^2.7.5",
     "jquery": "^2.2.4",
-    "opencadc-votable-viewer": "^1.0.0"
+    "opencadc-votable-viewer": "./opencadc-votable-viewer"
   },
   "main": "index.js",
   "devDependencies": {
     "jsdom-global": "^2.1.1",
     "xmldom": "^0.1.27",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "webpack": "^3.8.1"
   },
   "scripts": {
-    "test": "mocha -r jsdom-global/register"
+    "test": "mocha -r jsdom-global/register",
+    "package": "webpack"
   },
   "repository": {
     "type": "git",
