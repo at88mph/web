@@ -173,26 +173,25 @@
     }
 
     function getData() {
-      if (getInternalBuilder()) {
-        return getInternalBuilder().getData()
-      } else {
-        return null
-      }
+      var internalBuilder = getInternalBuilder()
+      return internalBuilder ? internalBuilder.getData() : null
     }
 
     function build(buildRowData) {
-      if (getInternalBuilder() && getInternalBuilder().build) {
-        getInternalBuilder().build(buildRowData)
+      var internalBuilder = getInternalBuilder()
+      if (internalBuilder && internalBuilder.build) {
+        internalBuilder.build(buildRowData)
 
-        if (getInternalBuilder().getVOTable) {
-          _selfBuilder.voTable = getInternalBuilder().getVOTable()
+        if (internalBuilder.getVOTable) {
+          _selfBuilder.voTable = internalBuilder.getVOTable()
         }
       }
     }
 
     function subscribe(builderEvent, handler) {
-      if (getInternalBuilder().subscribe) {
-        getInternalBuilder().subscribe(builderEvent, handler)
+      var internalBuilder = getInternalBuilder()
+      if (internalBuilder.subscribe) {
+        internalBuilder.subscribe(builderEvent, handler)
       }
     }
 
@@ -633,7 +632,6 @@
     function getVOTable() {
       return _selfJSONBuilder.voTable
     }
-    4
 
     function getData() {
       return _selfJSONBuilder.jsonData
@@ -652,7 +650,7 @@
    * @param buildRowData  The function to make something vo-consistent from the row data.
    * @constructor
    */
-  function CSVBuilder(maxRowLimit, input, buildRowData) {
+  function CSVBuilder(_maxRowLimit, input, buildRowData) {
     var $_selfCSVBuilder = $(this)
     var longestValues = {}
     var chunk = { lastMatch: 0, rowCount: 0 }
@@ -661,7 +659,7 @@
     function init() {
       if (pageSize) {
         // Also issue a page end on load complete.
-        subscribe(cadc.vot.onDataLoadComplete, function(e) {
+        subscribe(cadc.vot.onDataLoadComplete, function(_e) {
           fireEvent(cadc.vot.onPageAddEnd)
         })
       }
@@ -678,17 +676,7 @@
     }
 
     function append(asChunk) {
-      var found = findRowEnd(asChunk, chunk.lastMatch)
-
-      // skip the first row - it contains facsimiles of column names
-      if (chunk.rowCount === 0 && found > 0) {
-        found = advanceToNextRow(asChunk, found)
-      }
-
-      while (found > 0 && found !== chunk.lastMatch) {
-        nextRow(asChunk.slice(chunk.lastMatch, found))
-        found = advanceToNextRow(asChunk, found)
-      }
+      nextRow(asChunk)
     }
 
     function getCurrent() {
@@ -704,18 +692,8 @@
       $_selfCSVBuilder.trigger(event, eventData)
     }
 
-    function advanceToNextRow(asChunk, lastFound) {
+    function nextRow(entryAsArray) {
       chunk.rowCount++
-      chunk.lastMatch = lastFound
-      return findRowEnd(asChunk, chunk.lastMatch)
-    }
-
-    function findRowEnd(inChunk, lastFound) {
-      return inChunk.indexOf('\n', lastFound + 1)
-    }
-
-    function nextRow(entry) {
-      var entryAsArray = $.csv.toArray(entry)
       var tableFields = input.tableMetadata.getFields()
 
       var rowData = buildRowData(
@@ -724,7 +702,7 @@
         entryAsArray,
         longestValues,
         function(rowData, index) {
-          return rowData[index].trim()
+          return rowData[index] + ''
         }
       )
 
@@ -791,8 +769,8 @@
         _selfStreamBuilder.errorCallbackFunction = errorCallback
       } else {
         _selfStreamBuilder.errorCallbackFunction = function(
-          jqXHR,
-          status,
+          _jqXHR,
+          _status,
           message
         ) {
           var outputMessage =
@@ -805,10 +783,6 @@
           throw new Error(outputMessage)
         }
       }
-    }
-
-    function getErrorCallbackFunction() {
-      return _selfStreamBuilder.errorCallbackFunction
     }
 
     function getURL() {
@@ -828,15 +802,43 @@
       return urlToUse
     }
 
+    function loadEnd() {
+      __MAIN_BUILDER.getInternalBuilder().loadEnd()
+    }
+
     function start() {
-      $.ajax({
-        url: getURLString(),
-        type: 'GET',
-        xhrFields: {
-          withCredentials: true
+      // var currRow = 0
+
+      __MAIN_BUILDER.setInternalBuilder(
+        new cadc.vot.CSVBuilder(maxRowLimit, input, __MAIN_BUILDER.buildRowData)
+      )
+
+      if (readyCallback) {
+        readyCallback(__MAIN_BUILDER)
+      }
+
+      Papa.parse(getURLString(), {
+        download: true,
+        // worker: true, // Workers can't be used when beforeFirstChunk is set, plus they may not be supported.
+        header: false,
+        skipEmptyLines: true,
+        withCredentials: true,
+        step: function(row) {
+          __MAIN_BUILDER.appendToBuilder(row.data[0])
         },
-        xhr: createRequest
-      }).fail(getErrorCallbackFunction())
+        beforeFirstChunk: function(chunk) {
+          return chunk.substring(chunk.indexOf('\n'))
+        },
+        complete: function() {
+          loadEnd()
+        },
+        error: function(error, _file) {
+          if (errorCallback) {
+            errorCallback(null, null, error)
+            handleInputError()
+          }
+        }
+      })
     }
 
     function handleInputError() {
@@ -847,109 +849,6 @@
       console.log(message)
 
       throw new Error(message)
-    }
-
-    /**
-     * Create the internal builder once the request has been established.
-     */
-    function initializeInternalBuilder(event, target) {
-      var req = event.target
-
-      if (req.readyState == req.HEADERS_RECEIVED) {
-        var contentType = req.getResponseHeader('Content-Type')
-
-        // Only CSV supports streaming!
-        if (
-          contentType &&
-          (contentType.indexOf('csv') >= 0 ||
-            contentType.indexOf('text/plain') >= 0)
-        ) {
-          __MAIN_BUILDER.setInternalBuilder(
-            new cadc.vot.CSVBuilder(
-              maxRowLimit,
-              input,
-              __MAIN_BUILDER.buildRowData
-            )
-          )
-
-          if (readyCallback) {
-            readyCallback(__MAIN_BUILDER)
-          }
-        } else {
-          handleInputError()
-        }
-      }
-    }
-
-    function loadEnd() {
-      __MAIN_BUILDER.getInternalBuilder().loadEnd()
-    }
-
-    function handleProgress(event, target) {
-      __MAIN_BUILDER.appendToBuilder(event.target.responseText)
-    }
-
-    function createRequest() {
-      var request
-
-      try {
-        // This won't work in versions 5 & 6 of Internet Explorer.
-        request = new XMLHttpRequest()
-      } catch (trymicrosoft) {
-        console.log('Trying Msxml2 request.')
-        try {
-          request = new ActiveXObject('Msxml2.XMLHTTP')
-        } catch (othermicrosoft) {
-          try {
-            console.log('Trying Microsoft request.')
-            request = new ActiveXObject('Microsoft.XMLHTTP')
-          } catch (failed) {
-            throw new Error('Unable to create an HTTP request.  Aborting!')
-          }
-        }
-      }
-
-      var readyStateChangeHandler
-
-      // Internet Explorer will need to be handled via the old state change
-      // behaviour.
-      if (window.ActiveXObject) {
-        readyStateChangeHandler = function(_event, _target) {
-          try {
-            initializeInternalBuilder(_event, _target)
-
-            // Complete
-            if (this.readyState === this.DONE) {
-              handleProgress(_event, _target)
-              loadEnd()
-            }
-          } catch (e) {
-            console.log(e)
-            handleInputError()
-          }
-        }
-      } else {
-        request.addEventListener('progress', handleProgress, false)
-        request.addEventListener('load', loadEnd, false)
-        request.addEventListener('abort', loadEnd, false)
-        readyStateChangeHandler = initializeInternalBuilder
-      }
-
-      request.addEventListener('error', loadEnd, false)
-      request.addEventListener(
-        'readystatechange',
-        readyStateChangeHandler,
-        false
-      )
-
-      // Load end was not supported by Safari, so use the individual events that
-      // it represents instead.
-      //
-      // jenkinsd 2014.01.21
-      //
-      //      request.addEventListener("loadend", loadEnd, false);
-
-      return request
     }
 
     $.extend(this, {
