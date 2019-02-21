@@ -1,4 +1,5 @@
-;(function($, window, undefined) {
+;
+(function ($, window, undefined) {
   'use strict'
   // register namespace
   $.extend(true, window, {

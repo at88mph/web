@@ -1,0 +1,40 @@
+{
+  "name": "cadc-votv",
+  "version": "1.0.0",
+  "description": "VOTable viewer in JavaScript",
+  "main": "cadc.votv.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "uglify-js": "3.4.9",
+    "jquery": "^3.3.1"
+  },
+  "author": "Dustin Jenkins (djenkins.cadc@gmail.com)",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "describe": "^1.2.0",
+    "mocha": "^5.2.0",
+    "xmldom": "^0.1.27",
+    "xmlhttprequest": "^1.8.0",
+    "jsdom": "^13.2.0"
+  },
+  "scripts": {
+    "test": "mocha -r xmlhttprequest",
+    "dist": "uglifyjs cadc.votv.js -c -m -o cadc.votv.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opencadc/web.git"
+  },
+  "keywords": [
+    "votable",
+    "ivoa",
+    "javascript"
+  ],
+  "bugs": {
+    "url": "https://github.com/opencadc/web/issues"
+  },
+  "homepage": "https://github.com/opencadc/web#readme"
+}
