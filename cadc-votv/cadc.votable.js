@@ -253,7 +253,7 @@
    */
   function Field (_name, _id, _ucd, _utype, _unit, _xtype, __datatype, _arraysize, _description, label) {
     this._INTERVAL_XTYPE_KEYWORD_ = 'INTERVAL'
-    this.types = this.set(__datatype, _xtype)
+    const types = this.set(__datatype, _xtype)
 
     this.name = _name
     this.id = _id

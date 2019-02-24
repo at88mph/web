@@ -1,9 +1,7 @@
 'use strict'
 
 const { assert, expect } = require('chai')
-const jsdom = require('jsdom')
-const { JSDOM } = jsdom
-const { document } = new JSDOM().window
+global.StringUtil = require('opencadc-util').StringUtil
 const { Metadata, Field, VOTable } = require('../cadc.votable')
 
 const xmlData =
@@ -134,7 +132,7 @@ describe('Metadata tests', function () {
     expect(fr1.getID(), 'Field should be F1 at index 3.').to.equal('F1')
 
     const frNull = testSubject.getFields()[0]
-    expect(frNull, 'Field frNull should be null at 0.').to.be.null
+    expect(frNull, 'Field frNull should be null at 0.').to.be.undefined
 
     const fr2 = testSubject.getFields()[13]
     expect(fr2.getID(), 'Field should be F1 at index 13.').to.equal('F2')
@@ -144,11 +142,11 @@ describe('Metadata tests', function () {
   })
 
   it('Get field from metadata.', function () {
-    const testSubject = new cadc.vot.Metadata(null, null, null, null, null, null)
+    const testSubject = new Metadata(null, null, null, null, null, null)
 
-    const f1 = new cadc.vot.Field('F1', 'F1', 'UCD1', 'UTYPE1', 'UNIT1', null, null, null, null, 'F1')
-    const f2 = new cadc.vot.Field('F2', 'F2', 'UCD2', 'UTYPE2', 'UNIT2', null, null, null, null, 'F2')
-    const f3 = new cadc.vot.Field('F3', 'F3', 'UCD3', 'UTYPE3', 'UNIT3', null, null, null, null, 'F3')
+    const f1 = new Field('F1', 'F1', 'UCD1', 'UTYPE1', 'UNIT1', null, null, null, null, 'F1')
+    const f2 = new Field('F2', 'F2', 'UCD2', 'UTYPE2', 'UNIT2', null, null, null, null, 'F2')
+    const f3 = new Field('F3', 'F3', 'UCD3', 'UTYPE3', 'UNIT3', null, null, null, null, 'F3')
 
     testSubject.addField(f1)
     testSubject.addField(f2)
