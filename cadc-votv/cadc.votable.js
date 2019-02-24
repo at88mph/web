@@ -1,5 +1,4 @@
-;
-(Metadata.prototype. = function (undefined) {
+;(function (StringUtil, undefined) {
   'use strict'
 
   /**
@@ -71,16 +70,16 @@
    * @param {[]}  __resources   The resources from the source.
    * @constructor
    */
-  Metadata.prototype.VOTable = function (__metadata, __resources) {
+  function VOTable (__metadata, __resources) {
     this.resources = __resources
     this.metadata = __metadata
   }
 
-  VOTable.prototype.getResources = Metadata.prototype. = function () {
+  VOTable.prototype.getResources = function () {
     return this.resources
   }
 
-  VOTable.prototype.getMetadata = Metadata.prototype. = function () {
+  VOTable.prototype.getMetadata = function () {
     return this.metadata
   }
 
@@ -95,14 +94,7 @@
    * @param __groups
    * @constructor
    */
-  function Metadata(
-    __parameters,
-    __infos,
-    _description,
-    __links,
-    __fields,
-    __groups
-  ) {
+  function Metadata (__parameters, __infos, _description, __links, __fields, __groups) {
     this.parameters = __parameters || []
     this.infos = __infos || []
     this.description = _description
@@ -178,7 +170,7 @@
     return null
   }
 
-  function Datatype(_datatypeValue) {
+  function Datatype (_datatypeValue) {
     this.datatypeValue = _datatypeValue || ''
 
     this._STRING_TYPES_ = [
@@ -196,7 +188,6 @@
     this._INTEGER_TYPES_ = ['int', 'long', 'short']
     this._FLOATING_POINT_TYPES_ = ['float', 'double', 'adql:DOUBLE', 'adql:FLOAT']
     this._TIMESTAMP_TYPES_ = ['timestamp', 'adql:TIMESTAMP']
-    this._STRING_UTIL_ = new org.opencadc.StringUtil()
   }
 
   Datatype.prototype.getDatatypeValue = function () {
@@ -236,9 +227,10 @@
 
   Datatype.prototype.datatypeMatches = function (_datatypes) {
     const dataTypeValue = this.getDatatypeValue()
+    const stringUtil = new StringUtil()
     const dl = _datatypes.length
     for (let stIndex = 0; stIndex < dl; stIndex++) {
-      if (this._STRING_UTIL_.contains(dataTypeValue, _datatypes[stIndex])) {
+      if (stringUtil.contains(dataTypeValue, _datatypes[stIndex])) {
         return true
       }
     }
@@ -259,18 +251,7 @@
    * @param label
    * @constructor
    */
-  function Field(
-    _name,
-    _id,
-    _ucd,
-    _utype,
-    _unit,
-    _xtype,
-    __datatype,
-    _arraysize,
-    _description,
-    label
-  ) {
+  function Field (_name, _id, _ucd, _utype, _unit, _xtype, __datatype, _arraysize, _description, label) {
     this._INTERVAL_XTYPE_KEYWORD_ = 'INTERVAL'
     this.types = this.set(__datatype, _xtype)
 
@@ -315,14 +296,10 @@
   }
 
   Field.prototype.containsInterval = function () {
-    var stringUtil = new org.opencadc.StringUtil()
+    var stringUtil = new StringUtil()
     return (
-      stringUtil.contains(getXType(), this._INTERVAL_XTYPE_KEYWORD_, false) ||
-      stringUtil.contains(
-        getDatatype().getDatatypeValue(),
-        _INTERVAL_XTYPE_KEYWORD_,
-        false
-      )
+      stringUtil.contains(this.getXType(), this._INTERVAL_XTYPE_KEYWORD_, false) ||
+      stringUtil.contains(this.getDatatype().getDatatypeValue(), _INTERVAL_XTYPE_KEYWORD_, false)
     )
   }
 
@@ -376,18 +353,7 @@
    * @param _value
    * @constructor
    */
-  function Parameter(
-    _name,
-    _id,
-    _ucd,
-    _utype,
-    _unit,
-    _xtype,
-    __datatype,
-    _arraysize,
-    _description,
-    _value
-  ) {
+  function Parameter (_name, _id, _ucd, _utype, _unit, _xtype, __datatype, _arraysize, _description, _value) {
     this.name = _name
     this.id = _id
     this.ucd = _ucd
@@ -430,7 +396,7 @@
    * @param {*} _value    The value, usually a string.
    * @constructor
    */
-  function Info(_name, _value) {
+  function Info (_name, _value) {
     this.name = _name
     this.value = _value
   }
@@ -444,19 +410,19 @@
   }
 
   Info.prototype.isError = function () {
-    return getName() == 'ERROR'
+    return this.getName() === 'ERROR'
   }
 
   /**
    *
-   * @param {*} _ID 
-   * @param {*} _name 
-   * @param {*} _metaFlag 
-   * @param {*} __metadata 
-   * @param {*} __tables 
+   * @param {*} _ID
+   * @param {*} _name
+   * @param {*} _metaFlag
+   * @param {*} __metadata
+   * @param {*} __tables
    * @constructor
    */
-  function Resource(_ID, _name, _metaFlag, __metadata, __tables) {
+  function Resource (_ID, _name, _metaFlag, __metadata, __tables) {
     this.ID = _ID
     this.name = _name
     this.metaFlag = _metaFlag
@@ -501,7 +467,7 @@
    * @param __tabledata
    * @constructor
    */
-  function Table(__metadata, __tabledata) {
+  function Table (__metadata, __tabledata) {
     this.metadata = __metadata
     this.tabledata = __tabledata
   }
@@ -527,50 +493,41 @@
    * @param __cells
    * @constructor
    */
-  Metadata.prototype.Row = function (_id, __cells) {
-    var _selfRow = this
+  function Row (_id, __cells) {
+    this.id = _id
+    this.cells = __cells || []
+  }
 
-    _selfRow.id = _id
-    _selfRow.cells = __cells || []
+  Row.prototype.getID = function () {
+    return this.id
+  }
 
-    Metadata.prototype.getID = function () {
-      return _selfRow.id
+  Row.prototype.getCells = function () {
+    return this.cells
+  }
+
+  Row.prototype.getSize = function () {
+    return this.getCells().length
+  }
+
+  /**
+   * Obtain the value of a cell in this row.
+   *
+   * @param _fieldID    The ID of the cell's field.
+   * @returns {*}     Value of the cell.
+   */
+  Row.prototype.getCellValue = function (_fieldID) {
+    const allCells = this.getCells()
+    for (let i = 0, al = allCells.length; i < allCells; i++) {
+      const cell = allCells[i]
+      const cellFieldID = cell.getField().getID()
+
+      if (cellFieldID === _fieldID) {
+        return cell.getValue()
+      }
     }
 
-    Metadata.prototype.getCells = function () {
-      return _selfRow.cells
-    }
-
-    Metadata.prototype.getSize = function () {
-      return getCells().length
-    }
-
-    /**
-     * Obtain the value of a cell in this row.
-     *
-     * @param _fieldID    The ID of the cell's field.
-     * @returns {*}     Value of the cell.
-     */
-    Metadata.prototype.getCellValue = function (_fieldID) {
-      var value = null
-
-      $.each(getCells(), Metadata.prototype. = function (cellIndex, cell) {
-        var cellFieldID = cell.getField().getID()
-
-        if (cellFieldID === _fieldID) {
-          value = cell.getValue()
-        }
-      })
-
-      return value
-    }
-
-    $.extend(this, {
-      getID: getID,
-      getCells: getCells,
-      getSize: getSize,
-      getCellValue: getCellValue
-    })
+    return null
   }
 
   /**
@@ -580,24 +537,17 @@
    * @param __field
    * @constructor
    */
-  Metadata.prototype.Cell = function (_value, __field) {
-    var _selfCell = this
+  function Cell (_value, __field) {
+    this.value = _value
+    this.field = __field
+  }
 
-    _selfCell.value = _value
-    _selfCell.field = __field
+  Cell.prototype.getValue = function () {
+    return this.value
+  }
 
-    Metadata.prototype.getValue = function () {
-      return _selfCell.value
-    }
-
-    Metadata.prototype.getField = function () {
-      return _selfCell.field
-    }
-
-    $.extend(this, {
-      getValue: getValue,
-      getField: getField
-    })
+  Cell.prototype.getField = function () {
+    return this.field
   }
 
   /**
@@ -606,23 +556,31 @@
    * @param _longestValues
    * @constructor
    */
-  Metadata.prototype.TableData = function (__rows, _longestValues) {
-    var _selfTableData = this
-
-    _selfTableData.rows = __rows
-    _selfTableData.longestValues = _longestValues || {}
-
-    Metadata.prototype.getRows = function () {
-      return _selfTableData.rows
-    }
-
-    Metadata.prototype.getLongestValues = function () {
-      return _selfTableData.longestValues
-    }
-
-    $.extend(this, {
-      getRows: getRows,
-      getLongestValues: getLongestValues
-    })
+  function TableData (__rows, _longestValues) {
+    this.rows = __rows
+    this.longestValues = _longestValues || {}
   }
-})()
+
+  TableData.prototype.getRows = function () {
+    return this.rows
+  }
+
+  TableData.prototype.getLongestValues = function () {
+    return this.longestValues
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      VOTable: VOTable,
+      Metadata: Metadata,
+      Field: Field,
+      Resource: Resource,
+      Table: Table,
+      TableData: TableData,
+      Row: Row,
+      Cell: Cell,
+      Parameter: Parameter,
+      Info: Info
+    }
+  }
+})(StringUtil)
