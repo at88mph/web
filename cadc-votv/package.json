@@ -1,6 +1,6 @@
 {
   "name": "cadc-votv",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "VOTable viewer in JavaScript",
   "main": "cadc.votv.js",
   "directories": {
@@ -16,6 +16,7 @@
     "assert": "^1.4.1",
     "describe": "^1.2.0",
     "mocha": "^5.2.0",
+    "chai": "^4.2.0",
     "xmldom": "^0.1.27",
     "xmlhttprequest": "^1.8.0",
     "jsdom": "^13.2.0"

@@ -1,24 +1,6 @@
-;(function($, window, undefined) {
+;
+(Metadata.prototype. = function (undefined) {
   'use strict'
-
-  // register namespace
-  $.extend(true, window, {
-    cadc: {
-      vot: {
-        VOTable: VOTable,
-        Metadata: Metadata,
-        Datatype: Datatype,
-        Field: Field,
-        Parameter: Parameter,
-        Resource: Resource,
-        Info: Info,
-        Table: Table,
-        Row: Row,
-        Cell: Cell,
-        TableData: TableData
-      }
-    }
-  })
 
   /**
    *
@@ -82,31 +64,24 @@
    or variable-length list of Primitives
    or multidimensional array of Primitives
    Primitive 	= 	integer, character, float, floatComplex, etc (see table of primitives below).
-   *  
+   *
    * The VOTable object.
    *
-   * @param __metadata    The metadata from the source.
-   * @param __resources   The resources from the source.
+   * @param {Metadata}  __metadata    The metadata from the source.
+   * @param {[]}  __resources   The resources from the source.
    * @constructor
    */
-  function VOTable(__metadata, __resources) {
-    var _self = this
+  Metadata.prototype.VOTable = function (__metadata, __resources) {
+    this.resources = __resources
+    this.metadata = __metadata
+  }
 
-    _self.resources = __resources
-    _self.metadata = __metadata
+  VOTable.prototype.getResources = Metadata.prototype. = function () {
+    return this.resources
+  }
 
-    function getResources() {
-      return _self.resources
-    }
-
-    function getMetadata() {
-      return _self.metadata
-    }
-
-    $.extend(this, {
-      getResources: getResources,
-      getMetadata: getMetadata
-    })
+  VOTable.prototype.getMetadata = Metadata.prototype. = function () {
+    return this.metadata
   }
 
   /**
@@ -128,103 +103,85 @@
     __fields,
     __groups
   ) {
-    var _selfMetadata = this
+    this.parameters = __parameters || []
+    this.infos = __infos || []
+    this.description = _description
+    this.links = __links || []
+    this.fields = __fields || []
+    this.groups = __groups || []
+  }
 
-    _selfMetadata.parameters = __parameters || []
-    _selfMetadata.infos = __infos || []
-    _selfMetadata.description = _description
-    _selfMetadata.links = __links || []
-    _selfMetadata.fields = __fields || []
-    _selfMetadata.groups = __groups || []
+  Metadata.prototype.getInfos = function () {
+    return this.infos
+  }
 
-    function getInfos() {
-      return _selfMetadata.infos
-    }
+  Metadata.prototype.getDescription = function () {
+    return this.description
+  }
 
-    function getDescription() {
-      return _selfMetadata.description
-    }
+  Metadata.prototype.getParameters = function () {
+    return this.parameters
+  }
 
-    function getParameters() {
-      return _selfMetadata.parameters
-    }
+  Metadata.prototype.getFields = function () {
+    return this.fields
+  }
 
-    function getFields() {
-      return _selfMetadata.fields
-    }
+  /**
+   * Set this metadata's fields.
+   *
+   * @param {[]}  _fields  Array of values.
+   */
+  Metadata.prototype.setFields = function (_fields) {
+    this.fields = _fields
+  }
 
-    /**
-     * Set this metadata's fields.
-     *
-     * @param _fields  {Array} of values.
-     */
-    function setFields(_fields) {
-      _selfMetadata.fields = _fields
-    }
+  Metadata.prototype.getLinks = function () {
+    return this.links
+  }
 
-    function getLinks() {
-      return _selfMetadata.links
-    }
+  Metadata.prototype.getGroups = function () {
+    return this.groups
+  }
 
-    function getGroups() {
-      return _selfMetadata.groups
-    }
+  Metadata.prototype.addField = function (_field) {
+    this.getFields().push(_field)
+  }
 
-    function addField(_field) {
-      getFields().push(_field)
-    }
+  Metadata.prototype.insertField = function (_fieldIndex, _field) {
+    this.getFields()[_fieldIndex] = _field
+  }
 
-    function insertField(_fieldIndex, _field) {
-      getFields()[_fieldIndex] = _field
-    }
+  Metadata.prototype.hasFieldWithID = function (_fieldID) {
+    return this.getField(_fieldID) != null
+  }
 
-    function hasFieldWithID(_fieldID) {
-      return getField(_fieldID) != null
-    }
+  /**
+   * Obtain a Field by its ID.
+   * @param _fieldID    The field ID to obtain a field for.
+   *
+   * @return {cadc.vot.Field}   Field instance, or null if not found.
+   */
+  Metadata.prototype.getField = function (_fieldID) {
+    if (_fieldID) {
+      const currFields = this.getFields()
+      const cfl = currFields.length
+      for (let f = 0; f < cfl; f++) {
+        const nextField = currFields[f]
 
-    /**
-     * Obtain a Field by its ID.
-     * @param _fieldID    The field ID to obtain a field for.
-     *
-     * @return {cadc.vot.Field}   Field instance, or null if not found.
-     */
-    function getField(_fieldID) {
-      if (_fieldID) {
-        var currFields = getFields()
-
-        for (var f = 0; f < currFields.length; f++) {
-          var nextField = currFields[f]
-
-          if (nextField && currFields[f].getID() == _fieldID) {
-            return nextField
-          }
+        if (nextField && currFields[f].getID() == _fieldID) {
+          return nextField
         }
       }
-
-      return null
     }
 
-    $.extend(this, {
-      getInfos: getInfos,
-      getDescription: getDescription,
-      getParameters: getParameters,
-      getFields: getFields,
-      getField: getField,
-      setFields: setFields,
-      getLinks: getLinks,
-      getGroups: getGroups,
-      addField: addField,
-      insertField: insertField,
-      hasFieldWithID: hasFieldWithID
-    })
+    return null
   }
 
   function Datatype(_datatypeValue) {
-    var _selfDatatype = this
+    this.datatypeValue = _datatypeValue || ''
 
-    _selfDatatype.datatypeValue = _datatypeValue || ''
-
-    var stringTypes = [
+    this._STRING_TYPES_ = [
       'varchar',
       'char',
       'adql:VARCHAR',
@@ -236,64 +193,56 @@
       'interval',
       'uri'
     ]
-    var integerTypes = ['int', 'long', 'short']
-    var floatingPointTypes = ['float', 'double', 'adql:DOUBLE', 'adql:FLOAT']
-    var timestampTypes = ['timestamp', 'adql:TIMESTAMP']
-    var stringUtil = new org.opencadc.StringUtil()
+    this._INTEGER_TYPES_ = ['int', 'long', 'short']
+    this._FLOATING_POINT_TYPES_ = ['float', 'double', 'adql:DOUBLE', 'adql:FLOAT']
+    this._TIMESTAMP_TYPES_ = ['timestamp', 'adql:TIMESTAMP']
+    this._STRING_UTIL_ = new org.opencadc.StringUtil()
+  }
 
-    function getDatatypeValue() {
-      return _selfDatatype.datatypeValue
-    }
+  Datatype.prototype.getDatatypeValue = function () {
+    return this.datatypeValue
+  }
 
-    function isNumeric() {
-      // will accept float, double, long, int, short, real, adql:DOUBLE,
-      // adql:INTEGER, adql:POINT, adql:REAL
-      //
-      return !isCharDatatype() && !isTimestamp() && !isBoolean()
-    }
+  Datatype.prototype.isNumeric = function () {
+    // will accept float, double, long, int, short, real, adql:DOUBLE,
+    // adql:INTEGER, adql:POINT, adql:REAL
+    //
+    return !this.isCharDatatype() && !this.isTimestamp() && !this.isBoolean()
+  }
 
-    /**
-     * Return whether this datatype is a Timestamp.
-     * @returns {boolean}   True if timestamp, False otherwise.
-     */
-    function isTimestamp() {
-      return datatypeMatches(timestampTypes)
-    }
+  /**
+   * Return whether this datatype is a Timestamp.
+   * @returns {boolean}   True if timestamp, False otherwise.
+   */
+  Datatype.prototype.isTimestamp = function () {
+    return this.datatypeMatches(this._TIMESTAMP_TYPES_)
+  }
 
-    function isBoolean() {
-      return getDatatypeValue() === 'boolean'
-    }
+  Datatype.prototype.isBoolean = function () {
+    return this.getDatatypeValue() === 'boolean'
+  }
 
-    function isFloatingPointNumeric() {
-      return datatypeMatches(floatingPointTypes)
-    }
+  Datatype.prototype.isFloatingPointNumeric = function () {
+    return this.datatypeMatches(this._FLOATING_POINT_TYPES_)
+  }
 
-    function isIntegerNumeric() {
-      return datatypeMatches(integerTypes)
-    }
+  Datatype.prototype.isIntegerNumeric = function () {
+    return this.datatypeMatches(this._INTEGER_TYPES_)
+  }
 
-    function isCharDatatype() {
-      return datatypeMatches(stringTypes)
-    }
+  Datatype.prototype.isCharDatatype = function () {
+    return this.datatypeMatches(this._STRING_TYPES_)
+  }
 
-    function datatypeMatches(_datatypes) {
-      var dataTypeValue = getDatatypeValue()
-      for (var stIndex = 0; stIndex < _datatypes.length; stIndex++) {
-        if (stringUtil.contains(dataTypeValue, _datatypes[stIndex])) {
-          return true
-        }
+  Datatype.prototype.datatypeMatches = function (_datatypes) {
+    const dataTypeValue = this.getDatatypeValue()
+    const dl = _datatypes.length
+    for (let stIndex = 0; stIndex < dl; stIndex++) {
+      if (this._STRING_UTIL_.contains(dataTypeValue, _datatypes[stIndex])) {
+        return true
       }
-      return false
     }
-
-    $.extend(this, {
-      getDatatypeValue: getDatatypeValue,
-      isNumeric: isNumeric,
-      isTimestamp: isTimestamp,
-      isIntegerNumeric: isIntegerNumeric,
-      isFloatingPointNumeric: isFloatingPointNumeric,
-      isBoolean: isBoolean
-    })
+    return false
   }
 
   /**
@@ -322,107 +271,95 @@
     _description,
     label
   ) {
-    var _selfField = this
-    var INTERVAL_XTYPE_KEYWORD = 'INTERVAL'
-    var types = set(__datatype, _xtype)
+    this._INTERVAL_XTYPE_KEYWORD_ = 'INTERVAL'
+    this.types = this.set(__datatype, _xtype)
 
-    _selfField.name = _name
-    _selfField.id = _id
-    _selfField.ucd = _ucd
-    _selfField.utype = _utype
-    _selfField.unit = _unit
-    _selfField.xtype = types._xt
-    _selfField.datatype = types._dt
-    _selfField.arraysize = _arraysize
-    _selfField.description = _description
-    _selfField.label = label
+    this.name = _name
+    this.id = _id
+    this.ucd = _ucd
+    this.utype = _utype
+    this.unit = _unit
+    this.xtype = types._xt
+    this.datatype = types._dt
+    this.arraysize = _arraysize
+    this.description = _description
+    this.label = label
+  }
 
-    function getName() {
-      return _selfField.name
-    }
+  Field.prototype.getName = function () {
+    return this.name
+  }
 
-    function getID() {
-      return _selfField.id
-    }
+  Field.prototype.getID = function () {
+    return this.id
+  }
 
-    function getLabel() {
-      return _selfField.label
-    }
+  Field.prototype.getLabel = function () {
+    return this.label
+  }
 
-    function getUType() {
-      return _selfField.utype
-    }
+  Field.prototype.getUType = function () {
+    return this.utype
+  }
 
-    function getUCD() {
-      return _selfField.ucd
-    }
+  Field.prototype.getUCD = function () {
+    return this.ucd
+  }
 
-    function getUnit() {
-      return _selfField.unit
-    }
+  Field.prototype.getUnit = function () {
+    return this.unit
+  }
 
-    function getXType() {
-      return _selfField.xtype
-    }
+  Field.prototype.getXType = function () {
+    return this.xtype
+  }
 
-    function containsInterval() {
-      var stringUtil = new org.opencadc.StringUtil()
-      return (
-        stringUtil.contains(getXType(), INTERVAL_XTYPE_KEYWORD, false) ||
-        stringUtil.contains(
-          getDatatype().getDatatypeValue(),
-          INTERVAL_XTYPE_KEYWORD,
-          false
-        )
+  Field.prototype.containsInterval = function () {
+    var stringUtil = new org.opencadc.StringUtil()
+    return (
+      stringUtil.contains(getXType(), this._INTERVAL_XTYPE_KEYWORD_, false) ||
+      stringUtil.contains(
+        getDatatype().getDatatypeValue(),
+        _INTERVAL_XTYPE_KEYWORD_,
+        false
       )
-    }
+    )
+  }
 
-    function getDatatype() {
-      return _selfField.datatype
-    }
+  Field.prototype.getDatatype = function () {
+    return this.datatype
+  }
 
-    function getDescription() {
-      return _selfField.description
-    }
+  Field.prototype.getDescription = function () {
+    return this.description
+  }
 
-    function getArraySize() {
-      return _selfField.arraysize
-    }
+  Field.prototype.getArraySize = function () {
+    return this.arraysize
+  }
 
-    function set(_dtype, _xtype) {
-      var dt, xt
-      if (_xtype) {
-        // xtype = 'polygon' | 'circle' | 'point' | 'interval' | 'uri'
-        // over-rides the datatype of 'double'
-        dt = new Datatype(_xtype)
-      } else if (_dtype) {
-        if (typeof _dtype === 'object') {
-          dt = _dtype
-        } else {
-          var stringUtil = new org.opencadc.StringUtil()
-          if (stringUtil.contains(_dtype, INTERVAL_XTYPE_KEYWORD)) {
-            xt = INTERVAL_XTYPE_KEYWORD
-          }
-          dt = new Datatype(_dtype)
-        }
+  Field.prototype.set = function (_dtype, _xtype) {
+    var dt, xt
+    if (_xtype) {
+      // xtype = 'polygon' | 'circle' | 'point' | 'interval' | 'uri'
+      // over-rides the datatype of 'double'
+      dt = new Datatype(_xtype)
+    } else if (_dtype) {
+      if (typeof _dtype === 'object') {
+        dt = _dtype
       } else {
-        dt = new Datatype('varchar')
+        if (this._STRING_UTIL_.contains(_dtype, INTERVAL_XTYPE_KEYWORD)) {
+          xt = INTERVAL_XTYPE_KEYWORD
+        }
+        dt = new Datatype(_dtype)
       }
-      return { _dt: dt, _xt: xt }
+    } else {
+      dt = new Datatype('varchar')
     }
-
-    $.extend(this, {
-      getDatatype: getDatatype,
-      getID: getID,
-      getName: getName,
-      getUnit: getUnit,
-      getUType: getUType,
-      getXType: getXType,
-      containsInterval: containsInterval,
-      getDescription: getDescription,
-      getUCD: getUCD,
-      getArraySize: getArraySize
-    })
+    return {
+      _dt: dt,
+      _xt: xt
+    }
   }
 
   /**
@@ -451,124 +388,111 @@
     _description,
     _value
   ) {
-    var _selfParameter = this
-
-    _selfParameter.name = _name
-    _selfParameter.id = _id
-    _selfParameter.ucd = _ucd
-    _selfParameter.utype = _utype
-    _selfParameter.unit = _unit
-    _selfParameter.xtype = _xtype
-    _selfParameter.datatype = __datatype || {}
-    _selfParameter.arraysize = _arraysize
-    _selfParameter.description = _description
-    _selfParameter.value = _value
-
-    function getName() {
-      return _selfParameter.name
-    }
-
-    function getValue() {
-      return _selfParameter.value
-    }
-
-    function getUType() {
-      return _selfParameter.utype
-    }
-
-    function getID() {
-      return _selfParameter.id
-    }
-
-    function getUCD() {
-      return _selfParameter.ucd
-    }
-
-    function getDescription() {
-      return _selfParameter.description
-    }
-
-    $.extend(this, {
-      getName: getName,
-      getValue: getValue,
-      getUType: getUType,
-      getID: getID,
-      getUCD: getUCD,
-      getDescription: getDescription
-    })
+    this.name = _name
+    this.id = _id
+    this.ucd = _ucd
+    this.utype = _utype
+    this.unit = _unit
+    this.xtype = _xtype
+    this.datatype = __datatype || {}
+    this.arraysize = _arraysize
+    this.description = _description
+    this.value = _value
   }
 
+  Parameter.prototype.getName = function () {
+    return this.name
+  }
+
+  Parameter.prototype.getValue = function () {
+    return this.value
+  }
+
+  Parameter.prototype.getUType = function () {
+    return this.utype
+  }
+
+  Parameter.prototype.getID = function () {
+    return this.id
+  }
+
+  Parameter.prototype.getUCD = function () {
+    return this.ucd
+  }
+
+  Parameter.prototype.getDescription = function () {
+    return this.description
+  }
+
+  /**
+   * Info object.
+   * @param {String} _name  This info's Name.
+   * @param {*} _value    The value, usually a string.
+   * @constructor
+   */
   function Info(_name, _value) {
-    var _selfInfo = this
-
-    _selfInfo.name = _name
-    _selfInfo.value = _value
-
-    function getName() {
-      return _selfInfo.name
-    }
-
-    function getValue() {
-      return _selfInfo.value
-    }
-
-    function isError() {
-      return getName() == 'ERROR'
-    }
-
-    $.extend(this, {
-      getName: getName,
-      getValue: getValue,
-      isError: isError
-    })
+    this.name = _name
+    this.value = _value
   }
 
+  Info.prototype.getName = function () {
+    return _selfInfo.name
+  }
+
+  Info.prototype.getValue = function () {
+    return _selfInfo.value
+  }
+
+  Info.prototype.isError = function () {
+    return getName() == 'ERROR'
+  }
+
+  /**
+   *
+   * @param {*} _ID 
+   * @param {*} _name 
+   * @param {*} _metaFlag 
+   * @param {*} __metadata 
+   * @param {*} __tables 
+   * @constructor
+   */
   function Resource(_ID, _name, _metaFlag, __metadata, __tables) {
-    var _selfResource = this
+    this.ID = _ID
+    this.name = _name
+    this.metaFlag = _metaFlag
+    this.metadata = __metadata
+    this.tables = __tables
+  }
 
-    _selfResource.ID = _ID
-    _selfResource.name = _name
-    _selfResource.metaFlag = _metaFlag
-    _selfResource.metadata = __metadata
-    _selfResource.tables = __tables
+  Resource.prototype.getTables = function () {
+    return this.tables
+  }
 
-    function getTables() {
-      return _selfResource.tables
-    }
+  Resource.prototype.getID = function () {
+    return this.ID
+  }
 
-    function getID() {
-      return _selfResource.ID
-    }
+  Resource.prototype.isMeta = function () {
+    return this.metaFlag
+  }
 
-    function isMeta() {
-      return _selfResource.metaFlag
-    }
+  Resource.prototype.getName = function () {
+    return this.name
+  }
 
-    function getName() {
-      return _selfResource.name
-    }
+  /**
+   * @returns {Metadata} This Resource's Metadata object.
+   */
+  Resource.prototype.getMetadata = function () {
+    return this.metadata
+  }
 
-    function getMetadata() {
-      return _selfResource.metadata
-    }
+  Resource.prototype.getDescription = function () {
+    return this.getMetadata().getDescription()
+  }
 
-    function getDescription() {
-      return getMetadata().getDescription()
-    }
-
-    function getInfos() {
-      return getMetadata().getInfos()
-    }
-
-    $.extend(this, {
-      getTables: getTables,
-      getMetadata: getMetadata,
-      getID: getID,
-      getName: getName,
-      isMeta: isMeta,
-      getInfos: getInfos,
-      getDescription: getDescription
-    })
+  Resource.prototype.getInfos = function () {
+    return this.getMetadata().getInfos()
   }
 
   /**
@@ -578,28 +502,23 @@
    * @constructor
    */
   function Table(__metadata, __tabledata) {
-    var _selfTable = this
+    this.metadata = __metadata
+    this.tabledata = __tabledata
+  }
 
-    _selfTable.metadata = __metadata
-    _selfTable.tabledata = __tabledata
+  Table.prototype.getTableData = function () {
+    return this.tabledata
+  }
 
-    function getTableData() {
-      return _selfTable.tabledata
-    }
+  /**
+   * @returns {Metadata}  Metadata for this Table.
+   */
+  Table.prototype.getMetadata = function () {
+    return this.metadata
+  }
 
-    function getMetadata() {
-      return _selfTable.metadata
-    }
-
-    function getFields() {
-      return getMetadata().getFields()
-    }
-
-    $.extend(this, {
-      getTableData: getTableData,
-      getFields: getFields,
-      getMetadata: getMetadata
-    })
+  Table.prototype.getFields = function () {
+    return this.getMetadata().getFields()
   }
 
   /**
@@ -608,21 +527,21 @@
    * @param __cells
    * @constructor
    */
-  function Row(_id, __cells) {
+  Metadata.prototype.Row = function (_id, __cells) {
     var _selfRow = this
 
     _selfRow.id = _id
     _selfRow.cells = __cells || []
 
-    function getID() {
+    Metadata.prototype.getID = function () {
       return _selfRow.id
     }
 
-    function getCells() {
+    Metadata.prototype.getCells = function () {
       return _selfRow.cells
     }
 
-    function getSize() {
+    Metadata.prototype.getSize = function () {
       return getCells().length
     }
 
@@ -632,10 +551,10 @@
      * @param _fieldID    The ID of the cell's field.
      * @returns {*}     Value of the cell.
      */
-    function getCellValue(_fieldID) {
+    Metadata.prototype.getCellValue = function (_fieldID) {
       var value = null
 
-      $.each(getCells(), function(cellIndex, cell) {
+      $.each(getCells(), Metadata.prototype. = function (cellIndex, cell) {
         var cellFieldID = cell.getField().getID()
 
         if (cellFieldID === _fieldID) {
@@ -661,17 +580,17 @@
    * @param __field
    * @constructor
    */
-  function Cell(_value, __field) {
+  Metadata.prototype.Cell = function (_value, __field) {
     var _selfCell = this
 
     _selfCell.value = _value
     _selfCell.field = __field
 
-    function getValue() {
+    Metadata.prototype.getValue = function () {
       return _selfCell.value
     }
 
-    function getField() {
+    Metadata.prototype.getField = function () {
       return _selfCell.field
     }
 
@@ -687,17 +606,17 @@
    * @param _longestValues
    * @constructor
    */
-  function TableData(__rows, _longestValues) {
+  Metadata.prototype.TableData = function (__rows, _longestValues) {
     var _selfTableData = this
 
     _selfTableData.rows = __rows
     _selfTableData.longestValues = _longestValues || {}
 
-    function getRows() {
+    Metadata.prototype.getRows = function () {
       return _selfTableData.rows
     }
 
-    function getLongestValues() {
+    Metadata.prototype.getLongestValues = function () {
       return _selfTableData.longestValues
     }
 
@@ -706,4 +625,4 @@
       getLongestValues: getLongestValues
     })
   }
-})(jQuery, window)
+})()
