@@ -27,12 +27,6 @@ global.document = document
 
 const Viewer = require('../cadc.votv')
 
-global.cadc = {
-  vot: {
-    Viewer: Viewer
-  }
-}
-
 // Create a DOM to pass in.
 const targetNode = document.createElement('div')
 targetNode.setAttribute('id', 'myGrid')

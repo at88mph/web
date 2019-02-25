@@ -1,5 +1,5 @@
 ;
-(function ($, window, document, undefined) {
+(function ($, window, document, Slick, undefined) {
   'use strict'
 
   const _STATIC_ = {
@@ -105,7 +105,7 @@
     const filters = args.columnFilters
     const grid = args.grid
 
-    for (const columnId in filters) {
+    for (let columnId in filters) {
       if (filters.hasOwnProperty(columnId)) {
         const filterValue = filters[columnId]
         if (columnId !== undefined && filterValue !== '') {
@@ -447,7 +447,7 @@
   }
 
   Viewer.prototype.columnFiltersEmpty = function () {
-    for (const cf in this.columnFilters) {
+    for (let cf in this.columnFilters) {
       if (this.columnFilters.hasOwnProperty(cf)) {
         const nextFilter = this.columnFilters[cf]
 
@@ -527,16 +527,16 @@
     const dataRow = {}
 
     dataRow['id'] = row.getID()
-    for (const ci = 0, cl = cellArray.length; ci < cl; ci++) {
+    for (let ci = 0, cl = cellArray.length; ci < cl; ci++) {
       const cell = cellArray[ci]
       const cellFieldID = cell.getField().getID()
       dataRow[cellFieldID] = cell.getValue()
     }
 
-    if (getRowManager().isRowDisabled) {
+    if (this.getRowManager().isRowDisabled) {
       dataRow[
         cadc.vot.ROW_SELECT_DISABLED_KEY
-      ] = getRowManager().isRowDisabled(row)
+      ] = this.getRowManager().isRowDisabled(row)
     }
 
     // Add items directly to prevent unnecessary refreshes.
@@ -711,7 +711,7 @@
 
         if (nextDefaultColumn) {
           const thisCols = this.getColumns()
-          for (const j = 0, cj = thisCols.length; j < cj; j++) {
+          for (let j = 0, cj = thisCols.length; j < cj; j++) {
             if (thisCols[j].id == nextDefaultColumn) {
               cols.push(thisCols[j])
             }
@@ -842,7 +842,7 @@
     const lengthStr = ''
     const userColumnWidth = colOpts.width
 
-    for (const v = 0; v < textWidthToUse; v++) {
+    for (let v = 0; v < textWidthToUse; v++) {
       lengthStr += '_'
     }
 
@@ -881,7 +881,7 @@
     const totalWidth = 0
 
     // Handle the visible columns
-    for (const j = 0, jl = gridColumns.length; j < jl; j++) {
+    for (let j = 0, jl = gridColumns.length; j < jl; j++) {
       const gridColumn = gridColumns[j]
       const existingColumn = this.getColumn(gridColumn.id)
 
@@ -1245,7 +1245,7 @@
       const totalWidth = 0
       const gridColumns = this.grid.getColumns()
 
-      for (const ci = 0, cl = gridColumns.length; ci < cl; ci++) {
+      for (let ci = 0, cl = gridColumns.length; ci < cl; ci++) {
         const nextCol = gridColumns[ci]
         totalWidth += nextCol.width
       }
@@ -1390,7 +1390,7 @@
     // VOTable viewer plugins.
     const enabledPlugins = this.getEnabledPlugins()
 
-    for (const enabledPluginName in enabledPlugins) {
+    for (let enabledPluginName in enabledPlugins) {
       this.registerPlugin(
         new cadc.vot.plugin[enabledPluginName](
           enabledPlugins[enabledPluginName]
@@ -1474,7 +1474,7 @@
     this.clearColumns()
     const columnManager = this.getColumnManager()
 
-    for (const fi = 0, fl = _fields.length; fi < fl; fi++) {
+    for (let fi = 0, fl = _fields.length; fi < fl; fi++) {
       const field = _fields[fi]
       const fieldKey = field.getID()
       const colOpts = this.getOptionsForColumn(fieldKey)
@@ -1664,7 +1664,7 @@
 
     if (opts.hasOwnProperty('plugins')) {
       const plugins = opts.plugins
-      for (const pluginName in plugins) {
+      for (let pluginName in plugins) {
         if (plugins.hasOwnProperty(pluginName)) {
           const plugin = plugins[pluginName]
 
@@ -1691,4 +1691,4 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = Viewer
   }
-})(jQuery, window, document)
+})(jQuery, window, document, Slick)

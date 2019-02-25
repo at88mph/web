@@ -170,8 +170,13 @@
     return null
   }
 
+  /**
+   * Datatype constructor taking the value or name of this datatype.
+   * @param {String} _datatypeValue The value (name) of the datatype.  Defaults to 'varchar'.
+   * @constructor
+   */
   function Datatype (_datatypeValue) {
-    this.datatypeValue = _datatypeValue || ''
+    this.datatypeValue = _datatypeValue || 'varchar'
 
     this._STRING_TYPES_ = [
       'varchar',
@@ -188,6 +193,14 @@
     this._INTEGER_TYPES_ = ['int', 'long', 'short']
     this._FLOATING_POINT_TYPES_ = ['float', 'double', 'adql:DOUBLE', 'adql:FLOAT']
     this._TIMESTAMP_TYPES_ = ['timestamp', 'adql:TIMESTAMP']
+
+    if (
+      this.datatypeMatches(
+        this._STRING_TYPES_.concat(this._INTEGER_TYPES_, this._FLOATING_POINT_TYPES_, this._TIMESTAMP_TYPES_, 'boolean')
+      ) === false
+    ) {
+      throw new Error(`Datatype ${this.datatypeValue} is not a valid entry.`)
+    }
   }
 
   Datatype.prototype.getDatatypeValue = function () {
@@ -573,6 +586,7 @@
     module.exports = {
       VOTable: VOTable,
       Metadata: Metadata,
+      Datatype: Datatype,
       Field: Field,
       Resource: Resource,
       Table: Table,

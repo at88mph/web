@@ -2,7 +2,7 @@
 
 const { assert, expect } = require('chai')
 global.StringUtil = require('opencadc-util').StringUtil
-const { Metadata, Field, VOTable } = require('../cadc.votable')
+const { Metadata, Field, VOTable, Datatype } = require('../cadc.votable')
 
 const xmlData =
   '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -160,5 +160,24 @@ describe('Metadata tests', function () {
 
     expect(testSubject.getField('BOGUS'), 'Wrong field retrieved.').to.be.null
     expect(testSubject.getField(null), 'Wrong field retrieved.').to.be.null
+  })
+})
+
+describe('Datatype tests.', function () {
+  it('Constructor test.', function () {
+    expect(function () {
+      new Datatype('BOGUS')
+    }).to.throw('Datatype BOGUS is not a valid entry.')
+  })
+
+  it('Default value test.', function () {
+    expect(new Datatype().getDatatypeValue(), 'Should default to varchar.').to.equal('varchar')
+  })
+
+  it('Numeric checks.', function () {
+    expect(new Datatype().isNumeric(), 'Should not be numeric.').to.be.false
+    expect(new Datatype('boolean').isNumeric(), 'Should not be numeric.').to.be.false
+    expect(new Datatype('int').isNumeric(), 'Should be numeric.').to.be.true
+    expect(new Datatype('FLOAT').isNumeric(), 'Should be numeric.').to.be.true
   })
 })
