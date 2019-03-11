@@ -10,7 +10,7 @@
     "uglify-js": "3.4.9",
     "jquery": "^3.3.1",
     "opencadc-util": "^1.0.6",
-    "slickgrid": "^2.4.3"
+    "slickgrid": "../../SlickGrid"
   },
   "author": "Dustin Jenkins (djenkins.cadc@gmail.com)",
   "license": "GPL-3.0",

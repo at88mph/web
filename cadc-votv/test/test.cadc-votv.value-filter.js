@@ -25,6 +25,7 @@ global.window = document
 global.jQuery = require('jquery/dist/jquery')(window)
 global.document = document
 
+global.Slick = require('slickgrid/slick.core').Slick
 const Viewer = require('../cadc.votv')
 
 // Create a DOM to pass in.

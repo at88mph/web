@@ -22,12 +22,16 @@ const jQuery = require('jquery/dist/jquery')
 global.jQuery = jQuery
 this.document = global.document = window.document
 
-require('slickgrid/lib/jquery.event.drag-2.3.0')
 require('slickgrid/slick.core')
+global.Slick = this.Slick = global.window.Slick
 
-global.Slick = global.window.Slick
-require('slickgrid/slick.dataview')
-require('slickgrid/slick.grid')
+global.Slick.Data = {
+  DataView: require('slickgrid/slick.dataview')
+}
+
+const Viewer = require('../cadc.votv')
+global.StringUtil = require('opencadc-util').StringUtil
+const { Field, Row, Cell } = require('../cadc.votable')
 
 // Create a DOM to pass in.
 const targetNode = global.document.createElement('div')

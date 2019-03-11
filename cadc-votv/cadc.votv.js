@@ -1,5 +1,5 @@
 ;
-(function ($, window, document, Slick, undefined) {
+(function ($, window, document, Slick, SlickDataView, CADC, undefined) {
   'use strict'
 
   const _STATIC_ = {
@@ -1021,7 +1021,7 @@
     let checkboxSelector
     const enableSelection = !thisOpts.enableSelection || thisOpts.enableSelection == true
 
-    if (typeof CADC !== 'undefined' && CADC.CheckboxSelectColumn) {
+    if (CADC.hasOwnProperty('CheckboxSelectColumn')) {
       checkboxSelector = new CADC.CheckboxSelectColumn({
         cssClass: 'slick-cell-checkboxsel',
         width: thisOpts.headerCheckboxWidth,
@@ -1035,7 +1035,7 @@
         oneClickDownloadURLColumnID: thisOpts.oneClickDownloadURLColumnID,
         oneClickInvisibleDefault: thisOpts.oneClickInvisibleDefault
       })
-    } else if (Slick.CheckboxSelectColumn) {
+    } else if (Slick.hasOwnProperty('CheckboxSelectColumn')) {
       checkboxSelector = new Slick.CheckboxSelectColumn({
         cssClass: 'slick-cell-checkboxsel',
         width: 55,
@@ -1097,7 +1097,7 @@
       )
     }
 
-    const dataView = new Slick.Data.DataView({
+    const dataView = new SlickDataView({
       inlineFilters: true
     })
 
@@ -1691,4 +1691,4 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = Viewer
   }
-})(jQuery, window, document, Slick)
+})(jQuery, window, document, Slick, Slick.Data.DataView, (typeof CADC === 'undefined' ? {} : CADC))
