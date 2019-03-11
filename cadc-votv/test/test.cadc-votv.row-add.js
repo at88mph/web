@@ -1,28 +1,46 @@
 'use strict'
 
-const { assert, expect } = require('chai')
+const {
+  assert,
+  expect
+} = require('chai')
 
 global.XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest
 global.DOMParser = require('xmldom').DOMParser
 
 const jsdom = require('jsdom')
-const { JSDOM } = jsdom
+const {
+  JSDOM
+} = jsdom
 
-const { document } = new JSDOM().window
-const { window } = new JSDOM().window
+const window = (new JSDOM('', {
+  pretendToBeVisual: true
+})).window
 
-global.window = document
-global.jQuery = require('jquery/dist/jquery')(window)
-global.document = document
+global.window = window
+const jQuery = require('jquery/dist/jquery')
+global.jQuery = jQuery
+this.document = global.document = window.document
+
+require('slickgrid/lib/jquery.event.drag-2.3.0')
+require('slickgrid/slick.core')
+
+global.Slick = global.window.Slick
+require('slickgrid/slick.dataview')
+require('slickgrid/slick.grid')
+
+// Create a DOM to pass in.
+const targetNode = global.document.createElement('div')
+targetNode.setAttribute('id', 'myGrid')
+global.document.body.appendChild(targetNode)
 
 const Viewer = require('../cadc.votv')
 global.StringUtil = require('opencadc-util').StringUtil
-const { Field, Row, Cell } = require('../cadc.votable')
-
-// Create a DOM to pass in.
-const targetNode = document.createElement('div')
-targetNode.setAttribute('id', 'myGrid')
-document.body.appendChild(targetNode)
+const {
+  Field,
+  Row,
+  Cell
+} = require('../cadc.votable')
 
 describe('Add rows to Viewer.', function () {
   // Create the options for the Grid.

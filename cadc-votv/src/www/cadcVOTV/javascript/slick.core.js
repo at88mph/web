@@ -4,7 +4,7 @@
  * @namespace Slick
  */
 
-(function ($) {
+(function ($, window, undefined) {
   // register namespace
   $.extend(true, window, {
     "Slick": {
@@ -487,6 +487,6 @@
       return (activeEditController ? activeEditController.cancelCurrentEdit() : true);
     };
   }
-})(jQuery);
+})(jQuery, window);
 
 

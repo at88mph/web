@@ -1,5 +1,5 @@
-;(function (StringUtil, undefined) {
-  'use strict'
+;(function(StringUtil, undefined) {
+  "use strict"
 
   /**
    *
@@ -70,16 +70,16 @@
    * @param {[]}  __resources   The resources from the source.
    * @constructor
    */
-  function VOTable (__metadata, __resources) {
+  function VOTable(__metadata, __resources) {
     this.resources = __resources
     this.metadata = __metadata
   }
 
-  VOTable.prototype.getResources = function () {
+  VOTable.prototype.getResources = function() {
     return this.resources
   }
 
-  VOTable.prototype.getMetadata = function () {
+  VOTable.prototype.getMetadata = function() {
     return this.metadata
   }
 
@@ -94,7 +94,14 @@
    * @param __groups
    * @constructor
    */
-  function Metadata (__parameters, __infos, _description, __links, __fields, __groups) {
+  function Metadata(
+    __parameters,
+    __infos,
+    _description,
+    __links,
+    __fields,
+    __groups
+  ) {
     this.parameters = __parameters || []
     this.infos = __infos || []
     this.description = _description
@@ -103,19 +110,19 @@
     this.groups = __groups || []
   }
 
-  Metadata.prototype.getInfos = function () {
+  Metadata.prototype.getInfos = function() {
     return this.infos
   }
 
-  Metadata.prototype.getDescription = function () {
+  Metadata.prototype.getDescription = function() {
     return this.description
   }
 
-  Metadata.prototype.getParameters = function () {
+  Metadata.prototype.getParameters = function() {
     return this.parameters
   }
 
-  Metadata.prototype.getFields = function () {
+  Metadata.prototype.getFields = function() {
     return this.fields
   }
 
@@ -124,27 +131,27 @@
    *
    * @param {[]}  _fields  Array of values.
    */
-  Metadata.prototype.setFields = function (_fields) {
+  Metadata.prototype.setFields = function(_fields) {
     this.fields = _fields
   }
 
-  Metadata.prototype.getLinks = function () {
+  Metadata.prototype.getLinks = function() {
     return this.links
   }
 
-  Metadata.prototype.getGroups = function () {
+  Metadata.prototype.getGroups = function() {
     return this.groups
   }
 
-  Metadata.prototype.addField = function (_field) {
+  Metadata.prototype.addField = function(_field) {
     this.getFields().push(_field)
   }
 
-  Metadata.prototype.insertField = function (_fieldIndex, _field) {
+  Metadata.prototype.insertField = function(_fieldIndex, _field) {
     this.getFields()[_fieldIndex] = _field
   }
 
-  Metadata.prototype.hasFieldWithID = function (_fieldID) {
+  Metadata.prototype.hasFieldWithID = function(_fieldID) {
     return this.getField(_fieldID) != null
   }
 
@@ -154,7 +161,7 @@
    *
    * @return {cadc.vot.Field}   Field instance, or null if not found.
    */
-  Metadata.prototype.getField = function (_fieldID) {
+  Metadata.prototype.getField = function(_fieldID) {
     if (_fieldID) {
       const currFields = this.getFields()
       const cfl = currFields.length
@@ -175,39 +182,49 @@
    * @param {String} _datatypeValue The value (name) of the datatype.  Defaults to 'varchar'.
    * @constructor
    */
-  function Datatype (_datatypeValue) {
-    this.datatypeValue = _datatypeValue || 'varchar'
+  function Datatype(_datatypeValue) {
+    this.datatypeValue = _datatypeValue || "varchar"
 
     this._STRING_TYPES_ = [
-      'varchar',
-      'char',
-      'adql:VARCHAR',
-      'adql:CLOB',
-      'adql:REGION',
-      'polygon',
-      'point',
-      'circle',
-      'interval',
-      'uri'
+      "varchar",
+      "char",
+      "adql:VARCHAR",
+      "adql:CLOB",
+      "adql:REGION",
+      "polygon",
+      "point",
+      "circle",
+      "interval",
+      "uri"
     ]
-    this._INTEGER_TYPES_ = ['int', 'long', 'short']
-    this._FLOATING_POINT_TYPES_ = ['float', 'double', 'adql:DOUBLE', 'adql:FLOAT']
-    this._TIMESTAMP_TYPES_ = ['timestamp', 'adql:TIMESTAMP']
+    this._INTEGER_TYPES_ = ["int", "long", "short"]
+    this._FLOATING_POINT_TYPES_ = [
+      "float",
+      "double",
+      "adql:DOUBLE",
+      "adql:FLOAT"
+    ]
+    this._TIMESTAMP_TYPES_ = ["timestamp", "adql:TIMESTAMP"]
 
     if (
       this.datatypeMatches(
-        this._STRING_TYPES_.concat(this._INTEGER_TYPES_, this._FLOATING_POINT_TYPES_, this._TIMESTAMP_TYPES_, 'boolean')
+        this._STRING_TYPES_.concat(
+          this._INTEGER_TYPES_,
+          this._FLOATING_POINT_TYPES_,
+          this._TIMESTAMP_TYPES_,
+          "boolean"
+        )
       ) === false
     ) {
       throw new Error(`Datatype ${this.datatypeValue} is not a valid entry.`)
     }
   }
 
-  Datatype.prototype.getDatatypeValue = function () {
+  Datatype.prototype.getDatatypeValue = function() {
     return this.datatypeValue
   }
 
-  Datatype.prototype.isNumeric = function () {
+  Datatype.prototype.isNumeric = function() {
     // will accept float, double, long, int, short, real, adql:DOUBLE,
     // adql:INTEGER, adql:POINT, adql:REAL
     //
@@ -218,27 +235,27 @@
    * Return whether this datatype is a Timestamp.
    * @returns {boolean}   True if timestamp, False otherwise.
    */
-  Datatype.prototype.isTimestamp = function () {
+  Datatype.prototype.isTimestamp = function() {
     return this.datatypeMatches(this._TIMESTAMP_TYPES_)
   }
 
-  Datatype.prototype.isBoolean = function () {
-    return this.getDatatypeValue() === 'boolean'
+  Datatype.prototype.isBoolean = function() {
+    return this.getDatatypeValue() === "boolean"
   }
 
-  Datatype.prototype.isFloatingPointNumeric = function () {
+  Datatype.prototype.isFloatingPointNumeric = function() {
     return this.datatypeMatches(this._FLOATING_POINT_TYPES_)
   }
 
-  Datatype.prototype.isIntegerNumeric = function () {
+  Datatype.prototype.isIntegerNumeric = function() {
     return this.datatypeMatches(this._INTEGER_TYPES_)
   }
 
-  Datatype.prototype.isCharDatatype = function () {
+  Datatype.prototype.isCharDatatype = function() {
     return this.datatypeMatches(this._STRING_TYPES_)
   }
 
-  Datatype.prototype.datatypeMatches = function (_datatypes) {
+  Datatype.prototype.datatypeMatches = function(_datatypes) {
     const dataTypeValue = this.getDatatypeValue()
     const stringUtil = new StringUtil()
     const dl = _datatypes.length
@@ -264,8 +281,19 @@
    * @param label
    * @constructor
    */
-  function Field (_name, _id, _ucd, _utype, _unit, _xtype, __datatype, _arraysize, _description, label) {
-    this._INTERVAL_XTYPE_KEYWORD_ = 'INTERVAL'
+  function Field(
+    _name,
+    _id,
+    _ucd,
+    _utype,
+    _unit,
+    _xtype,
+    __datatype,
+    _arraysize,
+    _description,
+    label
+  ) {
+    this._INTERVAL_XTYPE_KEYWORD_ = "INTERVAL"
     const types = this.set(__datatype, _xtype)
 
     this.name = _name
@@ -280,62 +308,70 @@
     this.label = label
   }
 
-  Field.prototype.getName = function () {
+  Field.prototype.getName = function() {
     return this.name
   }
 
-  Field.prototype.getID = function () {
+  Field.prototype.getID = function() {
     return this.id
   }
 
-  Field.prototype.getLabel = function () {
+  Field.prototype.getLabel = function() {
     return this.label
   }
 
-  Field.prototype.getUType = function () {
+  Field.prototype.getUType = function() {
     return this.utype
   }
 
-  Field.prototype.getUCD = function () {
+  Field.prototype.getUCD = function() {
     return this.ucd
   }
 
-  Field.prototype.getUnit = function () {
+  Field.prototype.getUnit = function() {
     return this.unit
   }
 
-  Field.prototype.getXType = function () {
+  Field.prototype.getXType = function() {
     return this.xtype
   }
 
-  Field.prototype.containsInterval = function () {
+  Field.prototype.containsInterval = function() {
     var stringUtil = new StringUtil()
     return (
-      stringUtil.contains(this.getXType(), this._INTERVAL_XTYPE_KEYWORD_, false) ||
-      stringUtil.contains(this.getDatatype().getDatatypeValue(), _INTERVAL_XTYPE_KEYWORD_, false)
+      stringUtil.contains(
+        this.getXType(),
+        this._INTERVAL_XTYPE_KEYWORD_,
+        false
+      ) ||
+      stringUtil.contains(
+        this.getDatatype().getDatatypeValue(),
+        _INTERVAL_XTYPE_KEYWORD_,
+        false
+      )
     )
   }
 
-  Field.prototype.getDatatype = function () {
+  Field.prototype.getDatatype = function() {
     return this.datatype
   }
 
-  Field.prototype.getDescription = function () {
+  Field.prototype.getDescription = function() {
     return this.description
   }
 
-  Field.prototype.getArraySize = function () {
+  Field.prototype.getArraySize = function() {
     return this.arraysize
   }
 
-  Field.prototype.set = function (_dtype, _xtype) {
+  Field.prototype.set = function(_dtype, _xtype) {
     var dt, xt
     if (_xtype) {
       // xtype = 'polygon' | 'circle' | 'point' | 'interval' | 'uri'
       // over-rides the datatype of 'double'
       dt = new Datatype(_xtype)
     } else if (_dtype) {
-      if (typeof _dtype === 'object') {
+      if (typeof _dtype === "object") {
         dt = _dtype
       } else {
         if (this._STRING_UTIL_.contains(_dtype, INTERVAL_XTYPE_KEYWORD)) {
@@ -344,7 +380,7 @@
         dt = new Datatype(_dtype)
       }
     } else {
-      dt = new Datatype('varchar')
+      dt = new Datatype("varchar")
     }
     return {
       _dt: dt,
@@ -366,7 +402,18 @@
    * @param _value
    * @constructor
    */
-  function Parameter (_name, _id, _ucd, _utype, _unit, _xtype, __datatype, _arraysize, _description, _value) {
+  function Parameter(
+    _name,
+    _id,
+    _ucd,
+    _utype,
+    _unit,
+    _xtype,
+    __datatype,
+    _arraysize,
+    _description,
+    _value
+  ) {
     this.name = _name
     this.id = _id
     this.ucd = _ucd
@@ -379,27 +426,27 @@
     this.value = _value
   }
 
-  Parameter.prototype.getName = function () {
+  Parameter.prototype.getName = function() {
     return this.name
   }
 
-  Parameter.prototype.getValue = function () {
+  Parameter.prototype.getValue = function() {
     return this.value
   }
 
-  Parameter.prototype.getUType = function () {
+  Parameter.prototype.getUType = function() {
     return this.utype
   }
 
-  Parameter.prototype.getID = function () {
+  Parameter.prototype.getID = function() {
     return this.id
   }
 
-  Parameter.prototype.getUCD = function () {
+  Parameter.prototype.getUCD = function() {
     return this.ucd
   }
 
-  Parameter.prototype.getDescription = function () {
+  Parameter.prototype.getDescription = function() {
     return this.description
   }
 
@@ -409,21 +456,21 @@
    * @param {*} _value    The value, usually a string.
    * @constructor
    */
-  function Info (_name, _value) {
+  function Info(_name, _value) {
     this.name = _name
     this.value = _value
   }
 
-  Info.prototype.getName = function () {
+  Info.prototype.getName = function() {
     return _selfInfo.name
   }
 
-  Info.prototype.getValue = function () {
+  Info.prototype.getValue = function() {
     return _selfInfo.value
   }
 
-  Info.prototype.isError = function () {
-    return this.getName() === 'ERROR'
+  Info.prototype.isError = function() {
+    return this.getName() === "ERROR"
   }
 
   /**
@@ -435,7 +482,7 @@
    * @param {*} __tables
    * @constructor
    */
-  function Resource (_ID, _name, _metaFlag, __metadata, __tables) {
+  function Resource(_ID, _name, _metaFlag, __metadata, __tables) {
     this.ID = _ID
     this.name = _name
     this.metaFlag = _metaFlag
@@ -443,34 +490,34 @@
     this.tables = __tables
   }
 
-  Resource.prototype.getTables = function () {
+  Resource.prototype.getTables = function() {
     return this.tables
   }
 
-  Resource.prototype.getID = function () {
+  Resource.prototype.getID = function() {
     return this.ID
   }
 
-  Resource.prototype.isMeta = function () {
+  Resource.prototype.isMeta = function() {
     return this.metaFlag
   }
 
-  Resource.prototype.getName = function () {
+  Resource.prototype.getName = function() {
     return this.name
   }
 
   /**
    * @returns {Metadata} This Resource's Metadata object.
    */
-  Resource.prototype.getMetadata = function () {
+  Resource.prototype.getMetadata = function() {
     return this.metadata
   }
 
-  Resource.prototype.getDescription = function () {
+  Resource.prototype.getDescription = function() {
     return this.getMetadata().getDescription()
   }
 
-  Resource.prototype.getInfos = function () {
+  Resource.prototype.getInfos = function() {
     return this.getMetadata().getInfos()
   }
 
@@ -480,23 +527,23 @@
    * @param __tabledata
    * @constructor
    */
-  function Table (__metadata, __tabledata) {
+  function Table(__metadata, __tabledata) {
     this.metadata = __metadata
     this.tabledata = __tabledata
   }
 
-  Table.prototype.getTableData = function () {
+  Table.prototype.getTableData = function() {
     return this.tabledata
   }
 
   /**
    * @returns {Metadata}  Metadata for this Table.
    */
-  Table.prototype.getMetadata = function () {
+  Table.prototype.getMetadata = function() {
     return this.metadata
   }
 
-  Table.prototype.getFields = function () {
+  Table.prototype.getFields = function() {
     return this.getMetadata().getFields()
   }
 
@@ -506,20 +553,20 @@
    * @param __cells
    * @constructor
    */
-  function Row (_id, __cells) {
+  function Row(_id, __cells) {
     this.id = _id
     this.cells = __cells || []
   }
 
-  Row.prototype.getID = function () {
+  Row.prototype.getID = function() {
     return this.id
   }
 
-  Row.prototype.getCells = function () {
+  Row.prototype.getCells = function() {
     return this.cells
   }
 
-  Row.prototype.getSize = function () {
+  Row.prototype.getSize = function() {
     return this.getCells().length
   }
 
@@ -529,7 +576,7 @@
    * @param _fieldID    The ID of the cell's field.
    * @returns {*}     Value of the cell.
    */
-  Row.prototype.getCellValue = function (_fieldID) {
+  Row.prototype.getCellValue = function(_fieldID) {
     const allCells = this.getCells()
     for (let i = 0, al = allCells.length; i < allCells; i++) {
       const cell = allCells[i]
@@ -550,16 +597,16 @@
    * @param __field
    * @constructor
    */
-  function Cell (_value, __field) {
+  function Cell(_value, __field) {
     this.value = _value
     this.field = __field
   }
 
-  Cell.prototype.getValue = function () {
+  Cell.prototype.getValue = function() {
     return this.value
   }
 
-  Cell.prototype.getField = function () {
+  Cell.prototype.getField = function() {
     return this.field
   }
 
@@ -569,20 +616,20 @@
    * @param _longestValues
    * @constructor
    */
-  function TableData (__rows, _longestValues) {
+  function TableData(__rows, _longestValues) {
     this.rows = __rows
     this.longestValues = _longestValues || {}
   }
 
-  TableData.prototype.getRows = function () {
+  TableData.prototype.getRows = function() {
     return this.rows
   }
 
-  TableData.prototype.getLongestValues = function () {
+  TableData.prototype.getLongestValues = function() {
     return this.longestValues
   }
 
-  if (typeof module !== 'undefined' && module.exports) {
+  if (typeof module !== "undefined" && module.exports) {
     module.exports = {
       VOTable: VOTable,
       Metadata: Metadata,

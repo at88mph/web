@@ -693,7 +693,7 @@
     const defaultColumnIDs = opts.defaultColumnIDs
 
     if (!defaultColumnIDs || defaultColumnIDs.length === 0) {
-      cols = this.getColumns().slice(0)
+      cols.concat(this.getColumns().slice(0))
     } else {
       for (let i = 0, dcii = defaultColumnIDs.length; i < dcii; i++) {
         const nextDefaultColumn = defaultColumnIDs[i]
