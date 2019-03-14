@@ -1,5 +1,5 @@
 ;
-(function ($, window, document, Slick, SlickDataView, CADC, undefined) {
+(function ($, window, document, CADC, undefined) {
   'use strict'
 
   const _STATIC_ = {
@@ -1691,4 +1691,4 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = Viewer
   }
-})(jQuery, window, document, Slick, Slick.Data.DataView, (typeof CADC === 'undefined' ? {} : CADC))
+})(jQuery, window, document, (typeof CADC === 'undefined' ? {} : CADC))

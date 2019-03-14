@@ -22,13 +22,8 @@ const jQuery = require('jquery/dist/jquery')
 global.jQuery = jQuery
 this.document = global.document = window.document
 
-require('slickgrid/slick.core')
-global.Slick = this.Slick = global.window.Slick
-
-global.Slick.Data = {
-  DataView: require('slickgrid/slick.dataview')
-}
-
+require('datatables.net')(window, jQuery)
+require('datatables.net-buttons')(window, jQuery)
 const Viewer = require('../cadc.votv')
 global.StringUtil = require('opencadc-util').StringUtil
 const { Field, Row, Cell } = require('../cadc.votable')
