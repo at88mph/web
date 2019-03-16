@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bootsrap DataTables</title>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css" />
+</head>
+
+<body>
+    <table id="cadc-votv-data" class="table">
+        <thead>
+            <tr>
+                <th scope="col">Preview</th>
+                <th scope="col">Collection</th>
+                <th scope="col">Obs. ID</th>
+                <th scope="col">Product ID</th>
+                <th scope="col">RA (J2000.0)</th>
+                <th scope="col">Dec. (J2000.0)</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">Instrument</th>
+                <th scope="col">Int. Time</th>
+                <th scope="col">Target Name</th>
+                <th scope="col">Filter</th>
+                <th scope="col">Cal. Lev.</th>
+                <th scope="col">Obs. Type</th>
+                <th scope="col">Min. Wavelength</th>
+                <th scope="col">Max. Wavelength</th>
+                <th scope="col">Proposal ID</th>
+                <th scope="col">P.I. Name</th>
+                <th scope="col">Data Release</th>
+                <th scope="col">Field of View</th>
+                <th scope="col">Polygon</th>
+                <th scope="col">Pixel Scale</th>
+                <th scope="col">Resolving Power</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Data Type</th>
+                <th scope="col">Moving Target</th>
+                <th scope="col">Provenance Name</th>
+                <th scope="col">Intent</th>
+                <th scope="col">Target Type</th>
+                <th scope="col">Target Standard</th>
+                <th scope="col">Target Keywords</th>
+                <th scope="col">Sequence Number</th>
+                <th scope="col">Algorithm Name</th>
+                <th scope="col">Proposal Title</th>
+                <th scope="col">Proposal Keywords</th>
+                <th scope="col">IQ</th>
+                <th scope="col">Instrument Keywords</th>
+                <th scope="col">Tau</th>
+                <th scope="col">Molecule</th>
+                <th scope="col">Transition</th>
+                <th scope="col">Proposal Project</th>
+                <th scope="col">Band</th>
+                <th scope="col">Prov. Version</th>
+                <th scope="col">Prov. Project</th>
+                <th scope="col">Prov. Run ID</th>
+                <th scope="col">Prov. Last Executed</th>
+                <th scope="col">Rest-frame Energy</th>
+                <th scope="col">Quality</th>
+                <th scope="col">DOWNLOADABLE</th>
+                <th scope="col">Publisher ID</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th scope="col">Preview</th>
+                <th scope="col">Collection</th>
+                <th scope="col">Obs. ID</th>
+                <th scope="col">Product ID</th>
+                <th scope="col">RA (J2000.0)</th>
+                <th scope="col">Dec. (J2000.0)</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">Instrument</th>
+                <th scope="col">Int. Time</th>
+                <th scope="col">Target Name</th>
+                <th scope="col">Filter</th>
+                <th scope="col">Cal. Lev.</th>
+                <th scope="col">Obs. Type</th>
+                <th scope="col">Min. Wavelength</th>
+                <th scope="col">Max. Wavelength</th>
+                <th scope="col">Proposal ID</th>
+                <th scope="col">P.I. Name</th>
+                <th scope="col">Data Release</th>
+                <th scope="col">Field of View</th>
+                <th scope="col">Polygon</th>
+                <th scope="col">Pixel Scale</th>
+                <th scope="col">Resolving Power</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Data Type</th>
+                <th scope="col">Moving Target</th>
+                <th scope="col">Provenance Name</th>
+                <th scope="col">Intent</th>
+                <th scope="col">Target Type</th>
+                <th scope="col">Target Standard</th>
+                <th scope="col">Target Keywords</th>
+                <th scope="col">Sequence Number</th>
+                <th scope="col">Algorithm Name</th>
+                <th scope="col">Proposal Title</th>
+                <th scope="col">Proposal Keywords</th>
+                <th scope="col">IQ</th>
+                <th scope="col">Instrument Keywords</th>
+                <th scope="col">Tau</th>
+                <th scope="col">Molecule</th>
+                <th scope="col">Transition</th>
+                <th scope="col">Proposal Project</th>
+                <th scope="col">Band</th>
+                <th scope="col">Prov. Version</th>
+                <th scope="col">Prov. Project</th>
+                <th scope="col">Prov. Run ID</th>
+                <th scope="col">Prov. Last Executed</th>
+                <th scope="col">Rest-frame Energy</th>
+                <th scope="col">Quality</th>
+                <th scope="col">DOWNLOADABLE</th>
+                <th scope="col">Publisher ID</th>
+            </tr>
+        </tfoot>
+    </table>
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script>
+    <script type="text/javascript" charset="utf8">
+        $(document).ready(function () {
+            $('#cadc-votv-data').dataTable({
+                'ajax': 'tap_output.json'
+            })
+        })
+    </script>
+</body>
+
+</html>
