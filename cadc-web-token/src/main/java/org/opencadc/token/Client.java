@@ -73,6 +73,21 @@ import ca.nrc.cadc.net.HttpGet;
 import ca.nrc.cadc.reg.Standards;
 import ca.nrc.cadc.reg.client.LocalAuthority;
 import ca.nrc.cadc.util.StringUtil;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JOSEObjectType;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.jwk.source.JWKSourceBuilder;
+import com.nimbusds.jose.proc.BadJOSEException;
+import com.nimbusds.jose.proc.DefaultJOSEObjectTypeVerifier;
+import com.nimbusds.jose.proc.JWSKeySelector;
+import com.nimbusds.jose.proc.JWSVerificationKeySelector;
+import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jwt.JWTClaimNames;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
+import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
+import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import com.nimbusds.oauth2.sdk.AccessTokenResponse;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
@@ -109,6 +124,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
 
 
@@ -121,6 +137,7 @@ public class Client {
     private static final String WELL_KNOWN_ENDPOINT = "/.well-known/openid-configuration";
     private static final String AUTH_ENDPOINT_KEY = "authorization_endpoint";
     private static final String TOKEN_ENDPOINT_KEY = "token_endpoint";
+    private static final String JWKS_URI_KEY = "jwks_uri";
 
 
     private final String clientID;
@@ -502,6 +519,64 @@ public class Client {
     public static URL getTokenEndpoint() throws IOException {
         final JSONObject jsonObject = Client.getWellKnownJSON();
         final String tokenEndpointString = jsonObject.getString(Client.TOKEN_ENDPOINT_KEY);
+        return new URL(tokenEndpointString);
+    }
+
+    public static void validateAccessTokenSignature(final String accessToken) throws IOException {
+        // Create a JWT processor for the access tokens
+        final ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
+
+        // Set the required "typ" header "at+jwt" for access tokens
+        jwtProcessor.setJWSTypeVerifier(new DefaultJOSEObjectTypeVerifier<>(new JOSEObjectType("at+jwt")));
+
+        // The public RSA keys to validate the signatures will be sourced from the
+        // OAuth 2.0 server's JWK set URL. The key source will cache the retrieved
+        // keys for 5 minutes. 30 seconds prior to the cache's expiration the JWK
+        // set will be refreshed from the URL on a separate dedicated thread.
+        // Retrial is added to mitigate transient network errors.
+        final JWKSource<SecurityContext> keySource = JWKSourceBuilder
+                .create(Client.getJWKEndpoint())
+                .retrying(true)
+                .build();
+
+        // The expected JWS algorithm of the access tokens (agreed out-of-band)
+        final JWSAlgorithm expectedJWSAlg = JWSAlgorithm.RS256;
+
+        // Configure the JWT processor with a key selector to feed matching public
+        // RSA keys sourced from the JWK set URL
+        final JWSKeySelector<SecurityContext> keySelector = new JWSVerificationKeySelector<>(
+                expectedJWSAlg,
+                keySource);
+        jwtProcessor.setJWSKeySelector(keySelector);
+
+        // Set the required JWT claims for access tokens
+        jwtProcessor.setJWTClaimsSetVerifier(new DefaultJWTClaimsVerifier<>(
+                new JWTClaimsSet.Builder().issuer(Client.getIssuer().toExternalForm()).build(),
+                new HashSet<>(Arrays.asList(
+                        JWTClaimNames.SUBJECT,
+                        JWTClaimNames.ISSUED_AT,
+                        JWTClaimNames.EXPIRATION_TIME,
+                        "scp",
+                        "cid",
+                        JWTClaimNames.JWT_ID))));
+
+        // Process the token
+        JWTClaimsSet claimsSet;
+        try {
+            claimsSet = jwtProcessor.process(accessToken, null);
+            LOGGER.debug(claimsSet.toString(true));
+        } catch (java.text.ParseException | BadJOSEException e) {
+            // Invalid token
+            throw new NotAuthenticatedException(e.getMessage(), e);
+        } catch (JOSEException e) {
+            // Key sourcing failed or another internal exception
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
+    private static URL getJWKEndpoint() throws IOException {
+        final JSONObject jsonObject = Client.getWellKnownJSON();
+        final String tokenEndpointString = jsonObject.getString(Client.JWKS_URI_KEY);
         return new URL(tokenEndpointString);
     }
 

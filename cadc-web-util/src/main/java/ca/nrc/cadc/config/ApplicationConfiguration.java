@@ -6,6 +6,7 @@ import java.net.URI;
 
 import org.apache.commons.configuration2.CombinedConfiguration;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.EnvironmentConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
@@ -24,6 +25,7 @@ public class ApplicationConfiguration {
 
         // Prefer System properties.
         combinedConfiguration.addConfiguration(new SystemConfiguration());
+        combinedConfiguration.addConfiguration(new EnvironmentConfiguration());
 
         final Parameters parameters = new Parameters();
         final FileBasedConfigurationBuilder<PropertiesConfiguration> builder =
